@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Orderaty.Data;
 using Orderaty.Models;
 using Orderaty.ViewModels;
+using System.Security.Claims;
 
 namespace Orderaty.Controllers
 {
@@ -73,6 +74,7 @@ namespace Orderaty.Controllers
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, UserRole.Client.ToString());
+                    await userManager.AddClaimAsync(user, new Claim("FullName", user.FullName));
                     var client = new Client
                     {
                         Id = user.Id,
@@ -81,10 +83,9 @@ namespace Orderaty.Controllers
 
                     
                     if (_user.Image != null)
-                    {
-                        user.Image = _user.Image.FileName;
-                        await SaveImage(_user.Image);
-                    }
+                        user.Image = await SaveImage(_user.Image);
+
+
                     await db.Clients.AddAsync(client);
                     await db.SaveChangesAsync();
                     return RedirectToAction("Login");
@@ -123,6 +124,7 @@ namespace Orderaty.Controllers
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, UserRole.Seller.ToString());
+                    await userManager.AddClaimAsync(user, new Claim("FullName", user.FullName));
                     var seller = new Seller
                     {
                         Id = user.Id,
@@ -132,11 +134,10 @@ namespace Orderaty.Controllers
                         Status = _user.Status,
                         Rating = _user.Rating
                     };
+
                     if (_user.Image != null)
-                    {
-                        user.Image = _user.Image.FileName;
-                        await SaveImage(_user.Image);
-                    }
+                        user.Image = await SaveImage(_user.Image);
+
                     await db.Sellers.AddAsync(seller);
                     await db.SaveChangesAsync();
                     return RedirectToAction("Login");
@@ -160,18 +161,20 @@ namespace Orderaty.Controllers
 
 
 
-        private async Task SaveImage(IFormFile image)
+        private async Task<string> SaveImage(IFormFile image)
         {
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}";
             var imgPath = Path.Combine(hostingEnvironment.WebRootPath, "images", "users");
             if (!Directory.Exists(imgPath))
             {
                 Directory.CreateDirectory(imgPath);
             }
-            imgPath = Path.Combine(imgPath, image.FileName);
+            imgPath = Path.Combine(imgPath, fileName);
             using (var fileStream = new FileStream(imgPath, FileMode.Create))
             {
                 await image.CopyToAsync(fileStream);
             }
+            return fileName;
         }
     }
 }

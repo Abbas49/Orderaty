@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Orderaty.styles.css" asp-append-version="true" />
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <header>
@@ -30,7 +31,7 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <span class="nav-link text-success">Welcome, @User.Identity.Name</span>
+                                <a class="nav-link text-success" href="/Client/Profile">Welcome, @User.FindFirst("FullName")?.Value</a>
                             </li>
                             <li class="nav-item">
                                 <form asp-action="Logout" asp-controller="User" method="post" class="d-inline">

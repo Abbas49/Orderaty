@@ -1,0 +1,259 @@
+﻿@model Orderaty.ViewModels.ClientProfile
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "_Layout";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<div class="profile-page">
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-img">
+                    <form asp-action="ChangePhoto" method="post" enctype="multipart/form-data" class="photo-form">
+                        <div class="profile-img">
+                            <img src="~/images/users/@Model?.ImagePath" alt="Profile Picture" />
+                            <div class="upload-overlay">
+                                <input type="file" name="image" id="newImage" accept="image/*" onchange="this.form.submit()" hidden />
+                                <label for="newImage" class="upload-text">Change Photo</label>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+               
+            </div>
+
+            <form asp-action="Update" method="post" enctype="multipart/form-data" class="profile-form">
+                <div class="editable-name">
+                    <h2 id="displayName">@Model.FullName</h2>
+                    <input asp-for="FullName" type="text" id="editName" value="@Model.FullName" style="display:none;" />
+                    <button type="button" id="editBtn" title="Edit Name">✏️</button>
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input asp-for="Email" readonly />
+                </div>
+                <div class="input-group">
+                    <label>Username</label>
+                    <input asp-for="UserName" readonly />
+                </div>
+                <div class="input-group">
+                    <label>Phone</label>
+                    <input asp-for="Phone" />
+                </div>
+                <div class="input-group">
+                    <label>Address</label>
+                    <input asp-for="Address" />
+                </div>
+
+                <button type="submit" class="btn-update">Update Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    const editBtn = document.getElementById("editBtn");
+    const displayName = document.getElementById("displayName");
+    const editName = document.getElementById("editName");
+
+    editBtn.addEventListener("click", () => {
+        displayName.style.display = "none";
+        editName.style.display = "inline-block";
+        editName.focus();
+    });
+
+    // عند الضغط على Enter أو الخروج من input
+    editName.addEventListener("blur", saveName);
+    editName.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") saveName();
+    });
+
+    function saveName() {
+        const newName = editName.value.trim();
+        if (newName) displayName.textContent = newName;
+
+        displayName.style.display = "inline-block";
+        editName.style.display = "none";
+    }
+</script>
+@section Styles {
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #004e92, #000428);
+        }
+
+        .profile-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 100px); 
+            padding: 40px 0;
+        }
+
+        .editable-name {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .editable-name h2 {
+                margin: 15px 0 5px;
+                color: #004e92;
+                font-weight: 600;
+            }
+
+            .editable-name input {
+                font-size: 20px;
+                font-weight: 600;
+                color: #004e92;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                padding: 5px 10px;
+                outline: none;
+                transition: border-color 0.2s ease;
+            }
+
+                .editable-name input:focus {
+                    border-color: #004e92;
+                }
+
+        #editBtn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #004e92;
+            transition: transform 0.2s ease;
+        }
+
+            #editBtn:hover {
+                transform: scale(1.1);
+            }
+        .profile-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .profile-card {
+            background: #fff;
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 600px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+            .profile-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            }
+
+        .profile-img {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            margin: 0 auto;
+        }
+
+            .profile-img img {
+                width: 130px;
+                height: 130px;
+                border-radius: 50%;
+                border: 5px solid #004e92;
+                object-fit: cover;
+                transition: 0.3s ease;
+            }
+
+        .upload-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 78, 146, 0.8);
+            border-radius: 0 0 50% 50%;
+            height: 40%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .profile-img:hover .upload-overlay {
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        .upload-text {
+            color: white;
+            font-size: 14px;
+            line-height: 52px;
+            display: block;
+        }
+
+        .profile-header h2 {
+            margin: 15px 0 5px;
+            color: #004e92;
+            font-weight: 600;
+        }
+
+        .role {
+            background: #004e92;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 15px;
+            font-size: 13px;
+        }
+
+        .profile-form {
+            margin-top: 25px;
+            text-align: left;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+            .input-group label {
+                display: block;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 6px;
+            }
+
+            .input-group input {
+                width: 100%;
+                padding: 10px 14px;
+                border-radius: 10px;
+                border: 1px solid #ccc;
+                transition: border 0.2s ease;
+            }
+
+                .input-group input:focus {
+                    outline: none;
+                    border-color: #004e92;
+                }
+
+        .btn-update {
+            width: 100%;
+            background: #004e92;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .btn-update:hover {
+                background: #006ad4;
+                transform: scale(1.02);
+            }
+    </style>
+}

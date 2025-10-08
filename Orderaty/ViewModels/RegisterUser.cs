@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Teamspace.Attributes;
 
 namespace Orderaty.ViewModels
 {
@@ -25,6 +26,8 @@ namespace Orderaty.ViewModels
 
         [Compare("Password", ErrorMessage = "The passwords do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png" })]
         public IFormFile? Image { get; set; }
 
         [StringLength(11)]

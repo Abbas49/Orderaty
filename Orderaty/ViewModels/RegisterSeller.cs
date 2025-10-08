@@ -1,5 +1,6 @@
 ﻿using Orderaty.Models;
 using System.ComponentModel.DataAnnotations;
+using Teamspace.Attributes;
 
 namespace Orderaty.ViewModels
 {
@@ -14,6 +15,8 @@ namespace Orderaty.ViewModels
         public string? Description { get; set; }
         public SellerCategory Category { get; set; }
         public SellerStatus Status { get; set; } = SellerStatus.Coming_Soon;
+
+        [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png" })]
         public IFormFile? Image { get; set; }
 
         [StringLength(11)]
