@@ -60,6 +60,7 @@ namespace Orderaty.Controllers
         {
             if (ModelState.IsValid) 
             {
+                var folderPath = Path.Combine(hostingEnvironment.WebRootPath, "images", "users");
                 var user = new User
                 {
                     UserName = _user.UserName,
@@ -72,8 +73,14 @@ namespace Orderaty.Controllers
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, UserRole.Client.ToString());
-                    if(_user.Image != null && user.Image != null)
+                    if (_user.Image != null && user.Image != null)
+                    {
+                        if (!Directory.Exists(folderPath))
+                        {
+                            Directory.CreateDirectory(folderPath);
+                        }
                         _user.Image.CopyTo(new FileStream(user.Image, FileMode.Create));
+                    }
 
                     var client = new Client
                     {
@@ -104,6 +111,7 @@ namespace Orderaty.Controllers
         {
             if (ModelState.IsValid)
             {
+                var folderPath = Path.Combine(hostingEnvironment.WebRootPath, "images", "users");
                 var user = new User
                 {
                     UserName = _user.UserName,
@@ -117,7 +125,13 @@ namespace Orderaty.Controllers
                 {
                     await userManager.AddToRoleAsync(user, UserRole.Seller.ToString());
                     if (_user.Image != null && user.Image != null)
+                    {
+                        if (!Directory.Exists(folderPath))
+                        {
+                            Directory.CreateDirectory(folderPath);
+                        }
                         _user.Image.CopyTo(new FileStream(user.Image, FileMode.Create));
+                    }
 
                     var seller = new Seller
                     {

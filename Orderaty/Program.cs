@@ -60,7 +60,7 @@ namespace Orderaty
             app.Run();
         }
 
-        /*private static async Task SeedData(IServiceProvider serviceProvider)
+        private static async Task SeedData(IServiceProvider serviceProvider)
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -95,7 +95,7 @@ namespace Orderaty
 
                 await userManager.AddToRoleAsync(user, "Admin");
             }
-        }*/
+        }
 
     }
 }
