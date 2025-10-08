@@ -11,31 +11,31 @@
 
         <form asp-action="Register" method="post" enctype="multipart/form-data" novalidate>
             <div class="form-floating mb-3">
-                <input asp-for="FullName" class="form-control" value="@Model.FullName" placeholder="Full Name" />
+                <input asp-for="FullName" class="form-control" value="@Model?.FullName" placeholder="Full Name" />
                 <label asp-for="FullName"></label>
                 <span asp-validation-for="FullName" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
-                <input asp-for="UserName" class="form-control" value="@Model.UserName" placeholder="User Name" />
+                <input asp-for="UserName" class="form-control" value="@Model?.UserName" placeholder="User Name" />
                 <label asp-for="UserName"></label>
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Email" class="form-control" value="@Model.Email" placeholder="Email" />
+                <input asp-for="Email" class="form-control" value="@Model?.Email" placeholder="Email" />
                 <label asp-for="Email"></label>
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Phone" class="form-control" value="@Model.Phone" placeholder="Phone Number" />
+                <input asp-for="Phone" class="form-control" value="@Model?.Phone" placeholder="Phone Number" />
                 <label asp-for="Phone"></label>
                 <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Address" class="form-control" value="@Model.Address" placeholder="Address" />
+                <input asp-for="Address" class="form-control" value="@Model?.Address" placeholder="Address" />
                 <label asp-for="Address"></label>
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
@@ -62,7 +62,7 @@
 
             <div class="mb-3">
                 <label asp-for="Image" class="form-label">Profile Picture</label>
-                <input asp-for="Image" type="file" value="@Model.Image" class="form-control" />
+                <input asp-for="Image" type="file" value="@Model?.Image" class="form-control" />
                 <span asp-validation-for="Image" class="text-danger"></span>
             </div>
 

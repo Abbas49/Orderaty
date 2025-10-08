@@ -23,7 +23,7 @@ namespace Orderaty.Controllers
 
         public IActionResult Login()
         {
-            return View(new LoginUser());
+            return View();
         }
 
         [HttpPost]
@@ -32,27 +32,29 @@ namespace Orderaty.Controllers
             if (ModelState.IsValid)
             {
                 var userData = await userManager.FindByEmailAsync(user.Email);
-                if (userData != null && userData.UserName != null)
+                if(userData == null)
                 {
-                    var result = await signInManager.PasswordSignInAsync(userData.UserName, user.Password, user.RememberMe, false);
-                    if (result.Succeeded)
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, "Invalid Login Attempt Try Again");
-                        return View(user);
-                    }
+                    ModelState.AddModelError(string.Empty, "Invalid email or password.");
+                    return View(user);
                 }
-                
+                var result = await signInManager.PasswordSignInAsync(
+                    userData.UserName,
+                    user.Password,
+                    user.RememberMe,
+                    false
+                );
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                ModelState.AddModelError(string.Empty, "Invalid Login Attempt Try Again");
             }
             return View(user);
         }
 
         public IActionResult Register()
         {
-            return View(new RegisterUser());
+            return View();
         }
 
         [HttpPost]
@@ -60,7 +62,6 @@ namespace Orderaty.Controllers
         {
             if (ModelState.IsValid) 
             {
-                var folderPath = Path.Combine(hostingEnvironment.WebRootPath, "images", "users");
                 var user = new User
                 {
                     UserName = _user.UserName,
@@ -73,15 +74,6 @@ namespace Orderaty.Controllers
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, UserRole.Client.ToString());
-                    if (_user.Image != null && user.Image != null)
-                    {
-                        if (!Directory.Exists(folderPath))
-                        {
-                            Directory.CreateDirectory(folderPath);
-                        }
-                        _user.Image.CopyTo(new FileStream(user.Image, FileMode.Create));
-                    }
-
                     var client = new Client
                     {
                         Id = user.Id,
@@ -89,11 +81,18 @@ namespace Orderaty.Controllers
                     };
                     await db.Clients.AddAsync(client);
                     await db.SaveChangesAsync();
+                    if (_user.Image != null && user.Image != null)
+                    {
+                        await SaveImage(_user.Image, user.Image);
+                    }
                     return RedirectToAction("Login");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid Register Attempt Try Again");
+                    foreach(var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                     return View(_user);
                 }
             }
@@ -103,7 +102,7 @@ namespace Orderaty.Controllers
 
         public IActionResult AddSeller()
         {
-            return View(new RegisterSeller());
+            return View();
         }
 
         [HttpPost]
@@ -111,7 +110,6 @@ namespace Orderaty.Controllers
         {
             if (ModelState.IsValid)
             {
-                var folderPath = Path.Combine(hostingEnvironment.WebRootPath, "images", "users");
                 var user = new User
                 {
                     UserName = _user.UserName,
@@ -124,15 +122,6 @@ namespace Orderaty.Controllers
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, UserRole.Seller.ToString());
-                    if (_user.Image != null && user.Image != null)
-                    {
-                        if (!Directory.Exists(folderPath))
-                        {
-                            Directory.CreateDirectory(folderPath);
-                        }
-                        _user.Image.CopyTo(new FileStream(user.Image, FileMode.Create));
-                    }
-
                     var seller = new Seller
                     {
                         Id = user.Id,
@@ -144,6 +133,10 @@ namespace Orderaty.Controllers
                     };
                     await db.Sellers.AddAsync(seller);
                     await db.SaveChangesAsync();
+                    if (_user.Image != null && user.Image != null)
+                    {
+                        await SaveImage(_user.Image, user.Image);
+                    }
                     return RedirectToAction("Login");
                 }
                 else
@@ -159,6 +152,23 @@ namespace Orderaty.Controllers
         {
             await signInManager.SignOutAsync();
             return RedirectToAction("Login");
+        }
+
+
+
+
+
+        private async Task SaveImage(IFormFile image, string path)
+        {
+            var folderPath = Path.Combine(hostingEnvironment.WebRootPath, "images", "users");
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+            using(var fileStream = new FileStream(path, FileMode.Create))
+            {
+                await image.CopyToAsync(fileStream);
+            }
         }
     }
 }

@@ -11,7 +11,7 @@
         <form method="post" action="/User/Login">
             <div class="input-group">
                 <label for="Email">Email</label>
-                <input type="email" id="Email" name="Email" value="@Model.Email" required />
+                <input type="email" id="Email" name="Email" value="@Model?.Email" required />
             </div>
 
             <div class="input-group">
@@ -22,7 +22,7 @@
             <button type="submit" class="btn">Sign In</button>
 
             <p class="switch-text">
-                Don't have an account? <a href="/Account/Register">Create one</a>
+                Don't have an account? <a href="/User/Register">Create one</a>
             </p>
         </form>
     </div>
