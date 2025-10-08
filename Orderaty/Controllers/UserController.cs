@@ -151,6 +151,49 @@ namespace Orderaty.Controllers
             return View(_user);
         }
 
+
+        public IActionResult AddDelivery()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddDelivery(RegisterDelivery _user)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new User
+                {
+                    UserName = _user.UserName,
+                    FullName = _user.FullName,
+                    Email = _user.Email,
+                    PhoneNumber = _user.Phone,
+                };
+                var result = await userManager.CreateAsync(user, _user.Password);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, UserRole.Delivery.ToString());
+                    await userManager.AddClaimAsync(user, new Claim("FullName", user.FullName));
+                    var delivery = new Delivery
+                    {
+                        Id = user.Id
+                    };
+
+                    if (_user.Image != null)
+                        user.Image = await SaveImage(_user.Image);
+
+                    await db.Deliveries.AddAsync(delivery);
+                    await db.SaveChangesAsync();
+                    return RedirectToAction("Login");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid Register Attempt Try Again");
+                    return View(_user);
+                }
+            }
+            return View(_user);
+        }
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
