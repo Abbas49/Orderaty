@@ -68,7 +68,6 @@ namespace Orderaty.Controllers
                     FullName = _user.FullName,
                     Email = _user.Email,
                     PhoneNumber = _user.Phone,
-                    Image = _user.Image != null ? Path.Combine(hostingEnvironment.WebRootPath, "images", "users", _user.Image.FileName) : null
                 };
                 var result = await userManager.CreateAsync(user, _user.Password);
                 if (result.Succeeded)
@@ -79,12 +78,15 @@ namespace Orderaty.Controllers
                         Id = user.Id,
                         Address = _user.Address
                     };
+
+                    
+                    if (_user.Image != null)
+                    {
+                        user.Image = _user.Image.FileName;
+                        await SaveImage(_user.Image);
+                    }
                     await db.Clients.AddAsync(client);
                     await db.SaveChangesAsync();
-                    if (_user.Image != null && user.Image != null)
-                    {
-                        await SaveImage(_user.Image, user.Image);
-                    }
                     return RedirectToAction("Login");
                 }
                 else
@@ -116,7 +118,6 @@ namespace Orderaty.Controllers
                     FullName = _user.FullName,
                     Email = _user.Email,
                     PhoneNumber = _user.Phone,
-                    Image = _user.Image != null ? Path.Combine(hostingEnvironment.WebRootPath, "images", "users", _user.Image.FileName) : null
                 };
                 var result = await userManager.CreateAsync(user, _user.Password);
                 if (result.Succeeded)
@@ -131,12 +132,13 @@ namespace Orderaty.Controllers
                         Status = _user.Status,
                         Rating = _user.Rating
                     };
+                    if (_user.Image != null)
+                    {
+                        user.Image = _user.Image.FileName;
+                        await SaveImage(_user.Image);
+                    }
                     await db.Sellers.AddAsync(seller);
                     await db.SaveChangesAsync();
-                    if (_user.Image != null && user.Image != null)
-                    {
-                        await SaveImage(_user.Image, user.Image);
-                    }
                     return RedirectToAction("Login");
                 }
                 else
@@ -158,14 +160,15 @@ namespace Orderaty.Controllers
 
 
 
-        private async Task SaveImage(IFormFile image, string path)
+        private async Task SaveImage(IFormFile image)
         {
-            var folderPath = Path.Combine(hostingEnvironment.WebRootPath, "images", "users");
-            if (!Directory.Exists(folderPath))
+            var imgPath = Path.Combine(hostingEnvironment.WebRootPath, "images", "users");
+            if (!Directory.Exists(imgPath))
             {
-                Directory.CreateDirectory(folderPath);
+                Directory.CreateDirectory(imgPath);
             }
-            using(var fileStream = new FileStream(path, FileMode.Create))
+            imgPath = Path.Combine(imgPath, image.FileName);
+            using (var fileStream = new FileStream(imgPath, FileMode.Create))
             {
                 await image.CopyToAsync(fileStream);
             }
