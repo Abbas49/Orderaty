@@ -12,3 +12,5 @@
 # Other
 *.log
 *.vsidx
+
+Migrations/
