@@ -9,6 +9,8 @@
         public decimal Rating { get; set; }
         public decimal Price { get; set; }
 
+        public int Available_Amount { get; set; }
+
         // Relationships
         public string SellerId { get; set; }
         public Seller Seller { get; set; }

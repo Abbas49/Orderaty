@@ -1,0 +1,47 @@
+﻿@model Orderaty.Models.Product
+
+<h2>Edit Product</h2>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label>Name</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Price</label>
+        <input asp-for="Price" class="form-control" type="number" step="0.01" />
+    </div>
+
+    <div class="form-group">
+        <label>Available Amount</label>
+        <input asp-for="Available_Amount" class="form-control" type="number" />
+    </div>
+
+    <div class="form-group mt-3">
+        <label>Current Image:</label><br />
+        @if (!string.IsNullOrEmpty(Model.Image))
+        {
+            <img src="~/images/products/@Model.Image" style="width:120px;border-radius:10px" />
+        }
+        else
+        {
+            <img src="~/images/default-product.png" style="width:120px;border-radius:10px" />
+        }
+    </div>
+
+    <div class="form-group mt-2">
+        <label>Upload New Image</label>
+        <input type="file" name="imageFile" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Save Changes</button>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary mt-3">Cancel</a>
+</form>
