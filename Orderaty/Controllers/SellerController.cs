@@ -96,7 +96,7 @@ namespace Orderaty.Controllers
                     await imageFile.CopyToAsync(stream);
                 }
 
-                seller.User.Image = fileName; // نخزن الاسم فقط زي ما عملت في التسجيل
+                seller.User.Image = fileName; 
             }
 
             await db.SaveChangesAsync();
