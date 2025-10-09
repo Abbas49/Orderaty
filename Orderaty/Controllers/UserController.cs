@@ -37,6 +37,11 @@ namespace Orderaty.Controllers
                     var result = await signInManager.PasswordSignInAsync(userData.UserName, user.Password, user.RememberMe, false);
                     if (result.Succeeded)
                     {
+                        if (await userManager.IsInRoleAsync(userData, "Seller"))
+                        {
+                            return RedirectToAction("Home", "Seller");
+                        }
+                            
                         return RedirectToAction("Index", "Home");
                     }
                     else

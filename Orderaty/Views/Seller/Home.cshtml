@@ -1,0 +1,9 @@
+﻿@model Orderaty.Models.Seller
+
+<h2>Welcome, @Model.User.FullName 👋</h2>
+<img src="~/@Model.User.Image" alt="Seller Image" style="width:150px;border-radius:10px" />
+
+<p>Your store status: <strong>@Model.Status</strong></p>
+<p>Category: <strong>@Model.Category</strong></p>
+
+<a asp-action="Profile" asp-controller="Seller" class="btn btn-primary">View Profile</a>

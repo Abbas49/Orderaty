@@ -1,0 +1,17 @@
+﻿@model Orderaty.Models.Seller
+
+<h2>@Model.User.FullName's Profile</h2>
+
+
+<img src="~/@Model.User.Image" alt="Seller Image" style="width:150px;border-radius:10px" />
+
+<ul>
+    <li><strong>Full Name:</strong> @Model.User.FullName</li>
+    <li><strong>Description:</strong> @Model.Description</li>
+    <li><strong>Address:</strong> @Model.Address</li>
+    <li><strong>Status:</strong> @Model.Status</li>
+    <li><strong>Category:</strong> @Model.Category</li>
+</ul>
+
+<a asp-action="Edit" class="btn btn-warning">Edit Profile</a>
+<a asp-action="Home" class="btn btn-secondary">Back to Home</a>
