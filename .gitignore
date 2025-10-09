@@ -14,3 +14,4 @@
 *.vsidx
 
 Migrations/
+Orderaty/wwwroot/images/users/

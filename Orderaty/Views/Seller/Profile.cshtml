@@ -2,16 +2,24 @@
 
 <h2>@Model.User.FullName's Profile</h2>
 
+@if (!string.IsNullOrEmpty(Model.User.Image))
+{
+    <img src="~/images/users/@Model.User.Image" alt="Seller Image" style="width:150px;border-radius:10px;margin-bottom:10px" />
+}
+else
+{
+    <img src="~/images/default-user.png" alt="Default Image" style="width:150px;border-radius:10px;margin-bottom:10px" />
+}
 
-<img src="~/@Model.User.Image" alt="Seller Image" style="width:150px;border-radius:10px" />
-
-<ul>
-    <li><strong>Full Name:</strong> @Model.User.FullName</li>
-    <li><strong>Description:</strong> @Model.Description</li>
-    <li><strong>Address:</strong> @Model.Address</li>
-    <li><strong>Status:</strong> @Model.Status</li>
-    <li><strong>Category:</strong> @Model.Category</li>
+<ul class="list-group">
+    <li class="list-group-item"><strong>Full Name:</strong> @Model.User.FullName</li>
+    <li class="list-group-item"><strong>Description:</strong> @Model.Description</li>
+    <li class="list-group-item"><strong>Address:</strong> @Model.Address</li>
+    <li class="list-group-item"><strong>Status:</strong> @Model.Status</li>
+    <li class="list-group-item"><strong>Category:</strong> @Model.Category</li>
 </ul>
 
-<a asp-action="Edit" class="btn btn-warning">Edit Profile</a>
-<a asp-action="Home" class="btn btn-secondary">Back to Home</a>
+<div class="mt-3">
+    <a asp-action="Edit" class="btn btn-warning">Edit Profile</a>
+    <a asp-action="Home" class="btn btn-secondary">Back to Home</a>
+</div>

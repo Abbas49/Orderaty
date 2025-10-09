@@ -87,6 +87,7 @@ namespace Orderaty
             {
                 var user = new User
                 {
+                    FullName = "System Administrator",
                     UserName = "Admin",
                     Email = "admin@orderaty.com",
                 };
