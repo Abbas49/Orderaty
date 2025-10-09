@@ -101,7 +101,6 @@ namespace Orderaty.Controllers
 
             await db.SaveChangesAsync();
 
-            // نرجع للـ Profile
             return RedirectToAction("Profile");
         }
 
