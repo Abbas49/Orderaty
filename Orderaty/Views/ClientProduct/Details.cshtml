@@ -1,0 +1,35 @@
+﻿@model Orderaty.Models.Product
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<h2>@Model.Name</h2>
+
+<div class="card mb-4 shadow-sm" style="max-width: 750px;">
+    <div class="row g-0">
+        <div class="col-md-5">
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <img src="~/images/products/@Model.Image" class="img-fluid rounded-start" alt="@Model.Name" />
+            }
+            else
+            {
+                <img src="~/images/default-product.png" class="img-fluid rounded-start" alt="No Image" />
+            }
+        </div>
+        <div class="col-md-7">
+            <div class="card-body">
+                <h4 class="card-title">@Model.Name</h4>
+                <p class="card-text">@Model.Description</p>
+                <p><strong>💰 Price:</strong> @Model.Price.ToString("C")</p>
+                <p><strong>📦 Available:</strong> @Model.Available_Amount</p>
+                <p><strong>⭐ Rating:</strong> @Model.Rating</p>
+                <p><strong>🏪 Seller:</strong> @Model.Seller.User.FullName</p>
+                <p><strong>📍 Category:</strong> @Model.Seller.Category.ToString().Replace("_", " ")</p>
+
+                <a asp-action="Index" class="btn btn-secondary mt-3">Back to Products</a>
+            </div>
+        </div>
+    </div>
+</div>
