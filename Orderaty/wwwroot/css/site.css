@@ -1,3 +1,75 @@
+/* ================================================================
+   CSS THEME CUSTOMIZATION - Color Variables
+   ================================================================
+   
+   To change the website's theme, simply modify the color values
+   in the :root section below. All colors throughout the site will
+   automatically update.
+   
+   Example themes:
+   
+   Blue Theme:
+   --primary-color: #1e40af;
+   --primary-light: #3b82f6;
+   --primary-lighter: #60a5fa;
+   
+   Purple Theme:
+   --primary-color: #7c3aed;
+   --primary-light: #8b5cf6;
+   --primary-lighter: #a78bfa;
+   
+   Red Theme:
+   --primary-color: #dc2626;
+   --primary-light: #ef4444;
+   --primary-lighter: #f87171;
+   
+   ================================================================ */
+
+/* CSS Variables - Theme Colors */
+:root {
+    /* Primary Colors */
+    --primary-color: #1f9a3a;
+    --primary-light: #2db34a;
+    --primary-lighter: #38c172;
+    --primary-bg: #f0faf2;
+    --primary-bg-light: #f3f9f5;
+    
+    /* Text Colors */
+    --text-primary: #1f2d3d;
+    --text-secondary: #6b7280;
+    --text-white: #ffffff;
+    --text-white-soft: rgba(255, 255, 255, 0.95);
+    
+    /* Background Colors */
+    --bg-white: #ffffff;
+    --bg-gray-light: #f7f7f7;
+    --bg-gray-lighter: #f0f0f0;
+    
+    /* Border Colors */
+    --border-color: #e6e9ee;
+    --border-light: rgba(30, 41, 59, 0.04);
+    
+    /* Shadow Colors */
+    --shadow-sm: rgba(0, 0, 0, 0.1);
+    --shadow-md: rgba(15, 23, 42, 0.06);
+    --shadow-lg: rgba(15, 23, 42, 0.1);
+    --shadow-input: rgba(3, 10, 18, 0.06);
+    
+    /* Category Colors */
+    --category-groceries-bg: #f0faf2;
+    --category-groceries-text: #1f9a3a;
+    --category-food-bg: #fff8eb;
+    --category-food-text: #ffb33a;
+    --category-pharmacy-bg: #f6f8ff;
+    --category-pharmacy-text: #2b6ee6;
+    --category-electronics-bg: #fff8f2;
+    --category-electronics-text: #f59e0b;
+    --category-fashion-bg: #f0faf2;
+    --category-fashion-text: #10b981;
+    --category-home-bg: #fff8eb;
+    --category-home-text: #f59e0b;
+}
+
 /* Reset and Base Styles */
 * {
     margin: 0;
@@ -7,8 +79,8 @@
 
 body {
     font-family: 'Poppins', 'Inter', 'Helvetica Neue', Arial, sans-serif;
-    color: #1f2d3d;
-    background: #ffffff;
+    color: var(--text-primary);
+    background: var(--bg-white);
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
@@ -45,30 +117,30 @@ main {
 
 .btn-ghost {
     background: transparent;
-    color: #6b7280;
+    color: var(--text-secondary);
     padding: 8px;
     border-radius: 8px;
 }
 
 .btn-ghost:hover {
-    background: #f7f7f7;
-    color: #1f2d3d;
+    background: var(--bg-gray-light);
+    color: var(--text-primary);
 }
 
 /* Card Styles */
 .card {
-    background: #fff;
+    background: var(--bg-white);
     border-radius: 10px;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-    border: 1px solid #e6e9ee;
+    box-shadow: 0 6px 18px var(--shadow-md);
+    border: 1px solid var(--border-color);
 }
 
 /* Header Styles */
 .header {
-    background: #ffffff;
+    background: var(--bg-white);
     height: 64px;
     padding: 12px 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px var(--shadow-sm);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -87,7 +159,7 @@ main {
     gap: 8px;
     font-size: 20px;
     font-weight: 700;
-    color: #1f9a3a;
+    color: var(--primary-color);
 }
 
 .logo i {
@@ -102,7 +174,7 @@ main {
 
 .nav-link {
     text-decoration: none;
-    color: #6b7280;
+    color: var(--text-secondary);
     font-weight: 500;
     font-size: 14px;
     position: relative;
@@ -113,11 +185,11 @@ main {
 }
 
 .nav-link:hover {
-    color: #1f2d3d;
+    color: var(--text-primary);
 }
 
 .nav-link.active {
-    color: #1f9a3a;
+    color: var(--primary-color);
 }
 
 .nav-link i {
@@ -133,11 +205,11 @@ main {
     left: 0;
     right: 0;
     height: 2px;
-    background: #1f9a3a;
+    background: var(--primary-color);
 }
 
 .badge {
-    background: #1f9a3a;
+    background: var(--primary-color);
     color: white;
     font-size: 10px;
     padding: 2px 6px;
@@ -158,7 +230,7 @@ main {
 /* Hero Section */
 .hero {
     height: 340px;
-    background: linear-gradient(to right, #2db34a, #38c172);
+    background: linear-gradient(to right, var(--primary-light), var(--primary-lighter));
     display: flex;
     align-items: center;
     position: relative;
@@ -175,7 +247,7 @@ main {
 .hero-title {
     font-size: 36px;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--text-white);
     margin-bottom: 8px;
     line-height: 1.2;
 }
@@ -183,7 +255,7 @@ main {
 .hero-subtitle {
   font-size: 14px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--text-white-soft);
     margin-bottom: 22px;
 }
 
@@ -203,14 +275,14 @@ main {
     position: relative;
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--text-white-soft);
     border-radius: 30px;
     padding: 12px 20px;
-    box-shadow: 0 4px 12px rgba(3, 10, 18, 0.06);
+    box-shadow: 0 4px 12px var(--shadow-input);
 }
 
 .search-input i {
-    color: #6b7280;
+    color: var(--text-secondary);
     margin-right: 12px;
     font-size: 16px;
 }
@@ -221,16 +293,16 @@ main {
     background: transparent;
     outline: none;
     font-size: 14px;
-    color: #1f2d3d;
+    color: var(--text-primary);
 }
 
 .search-input input::placeholder {
-    color: #6b7280;
+    color: var(--text-secondary);
 }
 
 .search-btn {
-    background: #ffffff;
-    color: #2db34a;
+    background: var(--bg-white);
+    color: var(--primary-light);
     border: none;
     border-radius: 22px;
     padding: 10px 18px;
@@ -242,14 +314,14 @@ main {
 }
 
 .search-btn:hover {
-    background: #f7f7f7;
+    background: var(--bg-gray-light);
 }
 
 /* Section Styles */
 .section-title {
     font-size: 16px;
     font-weight: 600;
-    color: #1f2d3d;
+    color: var(--text-primary);
     margin: 28px 0 16px 0;
 }
 
@@ -266,17 +338,17 @@ main {
 }
 
 .store-card {
-    background: #fff;
+    background: var(--bg-white);
     border-radius: 10px;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-    border: 1px solid #e6e9ee;
+    box-shadow: 0 6px 18px var(--shadow-md);
+    border: 1px solid var(--border-color);
     overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .store-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.1);
+    box-shadow: 0 8px 25px var(--shadow-lg);
 }
 
 .store-image {
@@ -295,8 +367,8 @@ main {
 }
 
 .store-badge {
-    background: #f3f9f5;
-    color: #1f9a3a;
+    background: var(--primary-bg-light);
+    color: var(--primary-color);
     border-radius: 8px;
     padding: 4px 8px;
     font-size: 12px;
@@ -308,7 +380,7 @@ main {
 .store-title {
     font-size: 14px;
     font-weight: 600;
-    color: #1f2d3d;
+    color: var(--text-primary);
     margin-bottom: 8px;
 }
 
@@ -317,7 +389,7 @@ main {
     align-items: center;
     gap: 12px;
     font-size: 12px;
-    color: #6b7280;
+    color: var(--text-secondary);
 }
 
 .rating {
@@ -359,7 +431,7 @@ main {
     align-items: center;
     justify-content: center;
     margin-bottom: 8px;
-    border: 1px solid rgba(30, 41, 59, 0.04);
+    border: 1px solid var(--border-light);
     transition: all 0.2s ease;
 }
 
@@ -374,45 +446,45 @@ main {
 .category-label {
     font-size: 12px;
     font-weight: 500;
-    color: #1f2d3d;
+    color: var(--text-primary);
 }
 
 /* Category icon color variants */
 .category-icon.groceries {
-    background-color: #f0faf2;
-    color: #1f9a3a;
+    background-color: var(--category-groceries-bg);
+    color: var(--category-groceries-text);
 }
 
 .category-icon.food {
-    background-color: #fff8eb;
-    color: #ffb33a;
+    background-color: var(--category-food-bg);
+    color: var(--category-food-text);
 }
 
 .category-icon.pharmacy {
-    background-color: #f6f8ff;
-    color: #2b6ee6;
+    background-color: var(--category-pharmacy-bg);
+    color: var(--category-pharmacy-text);
 }
 
 .category-icon.packages {
-    background-color: #fff8f2;
-    color: #f59e0b;
+    background-color: var(--category-electronics-bg);
+    color: var(--category-electronics-text);
 }
 
 .category-icon.restaurants {
-    background-color: #f0faf2;
-    color: #10b981;
+    background-color: var(--category-fashion-bg);
+    color: var(--category-fashion-text);
 }
 
 .category-icon.coffee {
-    background-color: #fff8eb;
-    color: #f59e0b;
+    background-color: var(--category-home-bg);
+    color: var(--category-home-text);
 }
 
 /* Footer */
 .footer {
-    background: #ffffff;
+    background: var(--bg-white);
     padding: 20px 20px 16px 20px;
-    border-top: 1px solid #e6e9ee;
+    border-top: 1px solid var(--border-color);
     margin-top: 32px;
     position: relative;
     width: 100%;
@@ -429,7 +501,7 @@ main {
 .footer-column h3 {
     font-size: 14px;
     font-weight: 600;
-    color: #1f2d3d;
+    color: var(--text-primary);
     margin-bottom: 8px;
 }
 
@@ -444,24 +516,24 @@ main {
 }
 
 .footer-column a {
-    color: #6b7280;
+    color: var(--text-secondary);
     text-decoration: none;
     font-size: 13px;
     transition: color 0.2s ease;
 }
 
 .footer-column a:hover {
-    color: #1f2d3d;
+    color: var(--text-primary);
 }
 
 .footer-bottom {
     text-align: center;
     padding-top: 12px;
-    border-top: 1px solid #e6e9ee;
+    border-top: 1px solid var(--border-color);
 }
 
 .footer-bottom p {
-    color: #6b7280;
+    color: var(--text-secondary);
     font-size: 12px;
     margin: 0;
 }
@@ -482,7 +554,7 @@ main {
         left: -100%;
         width: 100%;
         height: calc(100vh - 64px);
-        background: #ffffff;
+        background: var(--bg-white);
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
@@ -490,7 +562,7 @@ main {
         gap: 20px;
         transition: left 0.3s ease;
         z-index: 999;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 12px var(--shadow-sm);
     }
     
     .nav.active {
@@ -502,12 +574,12 @@ main {
         padding: 12px 20px;
         width: 100%;
         text-align: center;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid var(--bg-gray-lighter);
     }
     
     .nav-link.mobile-logout,
     .nav-link.mobile-auth {
-        border-top: 2px solid #e6e9ee;
+        border-top: 2px solid var(--border-color);
         margin-top: 10px;
         padding-top: 16px;
     }
@@ -517,7 +589,7 @@ main {
         background: none;
         border: none;
         font-size: 20px;
-        color: #6b7280;
+        color: var(--text-secondary);
         cursor: pointer;
         padding: 8px;
         border-radius: 4px;
@@ -525,8 +597,8 @@ main {
     }
     
     .mobile-menu-btn:hover {
-        background: #f7f7f7;
-        color: #1f2d3d;
+        background: var(--bg-gray-light);
+        color: var(--text-primary);
     }
     
     .mobile-menu-btn.active i::before {
@@ -651,7 +723,7 @@ html {
 .btn:focus,
 .search-input input:focus,
 .nav-link:focus {
-    outline: 2px solid #1f9a3a;
+    outline: 2px solid var(--primary-color);
     outline-offset: 2px;
 }
 
