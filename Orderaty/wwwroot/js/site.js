@@ -83,6 +83,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         navLinks.forEach(link => {
             link.addEventListener('click', function(e) {
+                // Allow links with actual URLs to navigate normally
+                const href = this.getAttribute('href');
+                if (href && href !== '#' && !href.startsWith('javascript:')) {
+                    // Let the link navigate normally
+                    return;
+                }
+                
                 e.preventDefault();
                 
                 // Remove active class from all links

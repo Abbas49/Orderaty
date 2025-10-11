@@ -84,27 +84,6 @@
                     }
                 </nav>
                 
-                <!-- Actions -->
-                <div class="header-actions">
-                    <button class="btn btn-ghost">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <button class="btn btn-ghost">
-                        <i class="fas fa-bell"></i>
-                    </button>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <span class="nav-link" style="color: #1f9a3a; font-weight: 500;">Welcome, @User.FindFirst("FullName")?.Value</span>
-                        <form asp-action="Logout" asp-controller="User" method="post" style="display: inline;">
-                            <button type="submit" class="btn btn-ghost">Logout</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <a asp-controller="User" asp-action="Login" class="btn btn-ghost">Login</a>
-                        <a asp-controller="User" asp-action="Register" class="btn btn-ghost">Sign Up</a>
-                    }
-                </div>
             </div>
         </div>
     </header>
