@@ -36,6 +36,6 @@ namespace Orderaty.Models
         // Relationships
         public User User { get; set; }
         public List<Product> Products { get; set; }
-        public List<OrderedItem> OrderedItems { get; set; }
+        public List<Order> Orders { get; set; }
     }
 }

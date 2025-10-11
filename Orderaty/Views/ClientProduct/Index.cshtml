@@ -57,40 +57,108 @@
 }
 else
 {
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="row row-cols-1 row-cols-md-3 g-4" >
         @foreach (var item in Model)
         {
-            <div class="col">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-img-top text-center p-2" style="height: 200px; overflow: hidden;">
-                        @if (!string.IsNullOrEmpty(item.Image))
-                        {
-                            <img src="~/images/products/@item.Image"
-                                 alt="@item.Name"
-                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" />
-                        }
-                        else
-                        {
-                            <img src="~/images/default-product.png"
-                                 alt="No Image"
-                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" />
-                        }
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Name</h5>
-                        <p class="card-text text-muted">@item.Description</p>
-                        <p><strong>💰 Price:</strong> @item.Price.ToString("C")</p>
-                        <p><strong>📦 Available:</strong> @item.Available_Amount</p>
-                        <p><strong>⭐ Rating:</strong> @item.Rating</p>
-                        <p><strong>🏪 Seller:</strong> @item.Seller.User.FullName</p>
-                    </div>
-                    <div class="card-footer bg-transparent border-0 text-center mb-2">
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm px-3">
-                            <i class="bi bi-eye"></i> View Details
-                        </a>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-img-top text-center p-2" style="height: 200px; overflow: hidden;">
+                            @if (!string.IsNullOrEmpty(item.Image))
+                            {
+                                <img src="~/images/products/@item.Image"
+                                alt="@item.Name"
+                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" />
+                            }
+                            else
+                            {
+                                <img src="~/images/default-product.png"
+                                alt="No Image"
+                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" />
+                            }
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Name</h5>
+                            <p class="card-text text-muted">@item.Description</p>
+                            <p><strong>💰 Price:</strong> @item.Price.ToString("C")</p>
+                            <p><strong>📦 Available:</strong> @item.Available_Amount</p>
+                            <p><strong>⭐ Rating:</strong> @item.Rating</p>
+                            <p><strong>🏪 Seller:</strong> @item.Seller.User.FullName</p>
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center mb-3">
+                            <button type="button" class="btn btn-outline-secondary btn-sm me-2 decrease-btn">−</button>
+                            <input type="number" class="form-control text-center quantity-input" value="1" min="1" max="@item.Available_Amount"
+                                   style="width:60px;" />
+                            <button type="button" class="btn btn-outline-secondary btn-sm ms-2 increase-btn">+</button>
+                        </div>
+
+                        <form asp-action="Add" asp-controller="Cart" method="post" class="add-to-cart-form">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <input type="hidden" name="quantity" value="1" class="quantity-hidden" />
+                            <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
+                        </form>
                     </div>
                 </div>
-            </div>
         }
     </div>
+}
+@section Scripts {
+    <script>
+        document.querySelectorAll(".card").forEach(card => {
+            const input = card.querySelector(".quantity-input");
+            const hiddenInput = card.querySelector(".quantity-hidden");
+            const increaseBtn = card.querySelector(".increase-btn");
+            const decreaseBtn = card.querySelector(".decrease-btn");
+
+            const max = parseInt(input.getAttribute("max"));
+            const min = parseInt(input.getAttribute("min")) || 1;
+
+            function updateButtons() {
+                const value = parseInt(input.value);
+                increaseBtn.disabled = value >= max;
+                decreaseBtn.disabled = value <= min;
+                if (parseInt(input.value) >= max) {
+                    input.classList.add("border-danger");
+                } else {
+                    input.classList.remove("border-danger");
+                }
+            }
+
+            increaseBtn.addEventListener("click", () => {
+                let val = parseInt(input.value);
+                if (val < max) {
+                    val++;
+                    input.value = val;
+                    hiddenInput.value = val;
+                }
+                updateButtons();
+            });
+
+            decreaseBtn.addEventListener("click", () => {
+                let val = parseInt(input.value);
+                if (val > min) {
+                    val--;
+                    input.value = val;
+                    hiddenInput.value = val;
+                }
+                updateButtons();
+            });
+
+            input.addEventListener("input", () => {
+                let val = parseInt(input.value);
+                if (isNaN(val) || val < min) val = min;
+                if (val > max) val = max;
+                input.value = val;
+                hiddenInput.value = val;
+                updateButtons();
+            });
+            updateButtons();
+        });
+        document.querySelectorAll(".add-to-cart-form").forEach(form => {
+            form.addEventListener("submit", function (e) {
+                const input = form.closest(".card").querySelector(".quantity-input");
+                const hiddenInput = form.querySelector(".quantity-hidden");
+                hiddenInput.value = input.value;
+            });
+        });
+    </script>
 }

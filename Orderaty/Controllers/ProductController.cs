@@ -64,6 +64,7 @@ namespace Orderaty.Controllers
             ModelState.Remove("Seller");
             ModelState.Remove("SellerId");
             ModelState.Remove("OrderedItems");
+            ModelState.Remove("CartItems");
 
             if (ModelState.IsValid)
             {
@@ -122,6 +123,7 @@ namespace Orderaty.Controllers
             ModelState.Remove("Seller");
             ModelState.Remove("SellerId");
             ModelState.Remove("OrderedItems");
+            ModelState.Remove("CartItems");
 
             if (ModelState.IsValid)
             {
