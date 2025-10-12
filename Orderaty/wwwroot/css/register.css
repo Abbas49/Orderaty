@@ -93,6 +93,12 @@
     font-family: inherit;
 }
 
+textarea.form-input {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.5;
+}
+
 .form-input:focus {
     outline: none;
     border-color: var(--primary-color);

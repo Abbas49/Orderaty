@@ -70,7 +70,7 @@
                         <i class="fas fa-align-left"></i>
                         Store Description
                     </label>
-                    <input asp-for="Description" class="form-input" value="@Model?.Description" placeholder="Describe your store and products" />
+                    <textarea asp-for="Description" class="form-input" rows="4" placeholder="Describe your store and products...">@Model?.Description</textarea>
                     <span asp-validation-for="Description" class="validation-error"></span>
                 </div>
 
