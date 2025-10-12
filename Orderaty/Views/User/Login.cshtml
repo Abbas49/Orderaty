@@ -4,99 +4,55 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @model LoginUser
-<div class="auth-container">
-    <div class="auth-box">
-        <h2>Login</h2>
 
-        <form method="post" action="/User/Login">
-            <div class="input-group">
-                <label for="Email">Email</label>
-                <input type="email" id="Email" name="Email" value="@Model?.Email" required />
+@section Styles {
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+}
+
+<!-- Login Section -->
+<section class="login-section">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fas fa-sign-in-alt"></i>
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Sign in to continue to Orderaty</p>
             </div>
 
-            <div class="input-group">
-                <label for="Password">Password</label>
-                <input type="password" id="Password" name="Password" required />
-            </div>
+            <form method="post" action="/User/Login" class="login-form">
+                <div class="form-group">
+                    <label for="Email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </label>
+                    <input type="email" id="Email" name="Email" value="@Model?.Email" class="form-input" placeholder="your.email@example.com" required />
+                </div>
 
-            <button type="submit" class="btn">Sign In</button>
+                <div class="form-group">
+                    <label for="Password" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Password
+                    </label>
+                    <input type="password" id="Password" name="Password" class="form-input" placeholder="Enter your password" required />
+                </div>
 
-            <p class="switch-text">
-                Don't have an account? <a href="/User/Register">Create one</a>
-            </p>
-        </form>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+
+                <div class="login-footer">
+                    <p class="footer-text">
+                        Don't have an account?
+                        <a href="/User/Register" class="footer-link">Create one</a>
+                    </p>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+</section>
 
-<style>
-    body {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        font-family: "Poppins", sans-serif;
-    }
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
 
-    .auth-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-
-    .auth-box {
-        background: #fff;
-        padding: 30px;
-        border-radius: 20px;
-        width: 350px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        text-align: center;
-    }
-
-    .auth-box h2 {
-        margin-bottom: 20px;
-        color: #333;
-    }
-
-    .input-group {
-        text-align: left;
-        margin-bottom: 15px;
-    }
-
-    .input-group label {
-        font-weight: bold;
-        display: block;
-        margin-bottom: 5px;
-        color: #444;
-    }
-
-    .input-group input {
-        width: 100%;
-        padding: 10px;
-        border-radius: 10px;
-        border: 1px solid #ccc;
-        font-size: 14px;
-    }
-
-    .btn {
-        background: #667eea;
-        color: white;
-        padding: 10px 0;
-        width: 100%;
-        border: none;
-        border-radius: 10px;
-        font-size: 16px;
-        transition: 0.3s;
-    }
-
-    .btn:hover {
-        background: #5a67d8;
-    }
-
-    .switch-text {
-        margin-top: 15px;
-        font-size: 14px;
-    }
-
-    .switch-text a {
-        color: #667eea;
-        text-decoration: none;
-    }
-</style>
