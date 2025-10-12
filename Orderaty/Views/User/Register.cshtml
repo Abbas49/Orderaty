@@ -18,6 +18,8 @@
             </div>
 
             <form asp-action="Register" method="post" enctype="multipart/form-data" class="register-form" novalidate>
+                <div asp-validation-summary="All" class="validation-summary"></div>
+                
                 <div class="form-group">
                     <label asp-for="FullName" class="form-label">
                         <i class="fas fa-user"></i>
