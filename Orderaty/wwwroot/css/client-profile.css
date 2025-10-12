@@ -251,6 +251,14 @@
     margin-bottom: 20px;
 }
 
+/* Hide validation summary if it's empty or has only hidden/empty li elements */
+.validation-summary:has(ul > li:only-child:empty),
+.validation-summary:has(ul > li:only-child[style*="display: none"]),
+.validation-summary:has(ul > li:only-child[style*="display:none"]),
+.validation-summary.validation-summary-valid {
+    display: none !important;
+}
+
 .validation-summary ul {
     margin: 0;
     padding-left: 20px;

@@ -18,7 +18,6 @@
             </div>
 
             <form asp-action="Register" method="post" enctype="multipart/form-data" class="register-form" novalidate>
-                <div asp-validation-summary="All" class="validation-summary"></div>
                 
                 <div class="form-group">
                     <label asp-for="FullName" class="form-label">
@@ -98,6 +97,8 @@
                     <span asp-validation-for="Image" class="validation-error"></span>
                 </div>
 
+                <div asp-validation-summary="All" class="validation-summary"></div>
+
                 <button type="submit" class="register-btn">
                     <i class="fas fa-user-plus"></i>
                     Create Account
@@ -117,10 +118,19 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // File input display name
-        document.getElementById('profile-image').addEventListener('change', function(e) {
-            var fileName = e.target.files[0]?.name || 'Choose a file';
-            document.querySelector('.file-input-text').textContent = fileName;
+        document.addEventListener('DOMContentLoaded', function() {
+            // File input display name
+            const fileInput = document.getElementById('profile-image');
+            const fileInputText = document.querySelector('.file-input-text');
+            if (fileInput && fileInputText) {
+                fileInput.addEventListener('change', function(e) {
+                    if (e.target.files && e.target.files.length > 0) {
+                        fileInputText.textContent = e.target.files[0].name;
+                    } else {
+                        fileInputText.textContent = 'Choose a file';
+                    }
+                });
+            }
         });
     </script>
 }
