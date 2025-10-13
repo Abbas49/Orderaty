@@ -36,7 +36,7 @@ namespace Orderaty
             });
 
             var app = builder.Build();
-            //SeedData(app.Services.CreateScope().ServiceProvider).Wait();
+            SeedData(app.Services.CreateScope().ServiceProvider).Wait();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

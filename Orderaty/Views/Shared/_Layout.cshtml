@@ -4,106 +4,186 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Orderaty</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Orderaty.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-bxK5yM8aPcA44zXVRwH6J3+kQkgO+NRiFk1O7ZJb+05LCPWwD4KfFJt3w0b2yP7pX2JpQ5R0yDx2gdA9r2aZlA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     @RenderSection("Styles", required: false)
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Orderaty</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <!-- Logo -->
+                <div class="logo">
+                    <i class="fas fa-box"></i>
+                    <span>Orderaty</span>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" id="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        @if(User.Identity.IsAuthenticated && User.IsInRole("Client"))
+                
+                <!-- Navigation -->
+                <nav class="nav" id="nav-menu">
+                    <a href="/" class="nav-link active">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-th-large"></i>
+                        Browse
+                    </a>
+                    @if(User.Identity.IsAuthenticated && User.IsInRole("Client"))
+                    {
+                        <a href="/Cart/Index" class="nav-link">
+                            <i class="fas fa-shopping-cart"></i>
+                            Cart
+                            <span class="badge" id="cart-count">0</span>
+                        </a>
+                    }
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-receipt"></i>
+                        Orders
+                    </a>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        @if (User.IsInRole("Client"))
                         {
-                            <li class="nav-item position-relative ms-3">
-                                <a class="nav-link text-dark position-relative" href="/Cart/Index" style="font-size: 1.3rem;">
-                                    <i class="fa-solid fa-cart-shopping"></i>
-                                    <span id="cart-count"
-                                          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                                          style="font-size: 0.7rem;">
-                                        0
-                                    </span>
-                                </a>
-                            </li>
-
+                            <a href="/Client/Profile" class="nav-link">
+                                <i class="fas fa-user"></i>
+                                Profile
+                            </a>
                         }
+                        else if (User.IsInRole("Seller"))
+                        {
+                            <a href="/Seller/Profile" class="nav-link">
+                                <i class="fas fa-store"></i>
+                                Profile
+                            </a>
+                        }
+                        <a asp-controller="User" asp-action="Logout" class="nav-link mobile-logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="User" asp-action="Login" class="nav-link mobile-auth">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Login
+                        </a>
+                        <a asp-controller="User" asp-action="Register" class="nav-link mobile-auth">
+                            <i class="fas fa-user-plus"></i>
+                            Register
+                        </a>
+                    }
+                </nav>
+                
+                <!-- Theme Switcher -->
+                <div class="theme-switcher">
+                    <button class="theme-toggle-btn" id="theme-toggle">
+                        <i class="fas fa-palette"></i>
+                        <span>Theme</span>
+                    </button>
+                    <div class="theme-dropdown" id="theme-dropdown">
+                        <div class="theme-dropdown-header">Choose Theme</div>
+                        <button class="theme-option active" data-theme="green-fresh">
+                            <div class="theme-icon">
+                                <i class="fas fa-leaf"></i>
+                            </div>
+                            <div class="theme-details">
+                                <div class="theme-name">Green Fresh</div>
+                                <div class="theme-description">Natural & vibrant</div>
+                            </div>
+                            <i class="fas fa-check theme-checkmark"></i>
+                        </button>
+                        <button class="theme-option" data-theme="ocean-blue">
+                            <div class="theme-icon">
+                                <i class="fas fa-water"></i>
+                            </div>
+                            <div class="theme-details">
+                                <div class="theme-name">Ocean Blue</div>
+                                <div class="theme-description">Professional & calm</div>
+                            </div>
+                            <i class="fas fa-check theme-checkmark"></i>
+                        </button>
+                        <button class="theme-option" data-theme="sunset-purple">
+                            <div class="theme-icon">
+                                <i class="fas fa-moon"></i>
+                            </div>
+                            <div class="theme-details">
+                                <div class="theme-name">Sunset Purple</div>
+                                <div class="theme-description">Creative & elegant</div>
+                            </div>
+                            <i class="fas fa-check theme-checkmark"></i>
+                        </button>
+                        <button class="theme-option" data-theme="dark">
+                            <div class="theme-icon">
+                                <i class="fas fa-moon"></i>
+                            </div>
+                            <div class="theme-details">
+                                <div class="theme-name">Dark Mode</div>
+                                <div class="theme-description">Easy on the eyes</div>
+                            </div>
+                            <i class="fas fa-check theme-checkmark"></i>
+                        </button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </header>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Orderaty</h3>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
                     </ul>
-                    <ul class="navbar-nav ms-auto">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            @if (User.IsInRole("Client"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-success" href="/Client/Profile">Welcome, @User.FindFirst("FullName")?.Value</a>
-                                </li>
-
-                            }
-                            else if (User.IsInRole("Seller"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-success" href="/Seller/Profile">Welcome, @User.FindFirst("FullName")?.Value</a>
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="nav-item">
-                                    <span class="nav-link text-success" >Welcome, @User.FindFirst("FullName")?.Value</span>
-                                </li>
-                            }
-                            <li class="nav-item">
-                                <form asp-action="Logout" asp-controller="User" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-link nav-link">Logout</button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="User" asp-action="Login">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="User" asp-action="Register">Sign Up</a>
-                            </li>
-                        }
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Safety</a></li>
                     </ul>
-
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                        <li><a href="#">Terms</a></li>
+                    </ul>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Orderaty - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Orderaty. All rights reserved.</p>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
-
 
     @await RenderSectionAsync("Scripts", required: false)
 
