@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Orderaty.Data;
 using Orderaty.Models;
 
 namespace Orderaty.Controllers
 {
+    [Authorize(Roles = "Client")]
     public class ClientProductController : Controller
     {
         private readonly AppDbContext db;
