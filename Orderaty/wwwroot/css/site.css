@@ -1,31 +1,19 @@
 /* ================================================================
-   CSS THEME CUSTOMIZATION - Color Variables
+   CSS THEME CUSTOMIZATION - Multi-Theme Support
    ================================================================
    
-   To change the website's theme, simply modify the color values
-   in the :root section below. All colors throughout the site will
-   automatically update.
+   This website supports multiple themes that can be switched dynamically.
+   All color values are managed through CSS variables for easy customization.
    
-   Example themes:
-   
-   Blue Theme:
-   --primary-color: #1e40af;
-   --primary-light: #3b82f6;
-   --primary-lighter: #60a5fa;
-   
-   Purple Theme:
-   --primary-color: #7c3aed;
-   --primary-light: #8b5cf6;
-   --primary-lighter: #a78bfa;
-   
-   Red Theme:
-   --primary-color: #dc2626;
-   --primary-light: #ef4444;
-   --primary-lighter: #f87171;
+   Available Themes:
+   1. Green Fresh (Default) - Fresh green theme with natural vibes
+   2. Ocean Blue - Professional blue theme
+   3. Sunset Purple - Creative purple theme
+   4. Dark Mode - Modern dark theme for reduced eye strain
    
    ================================================================ */
 
-/* CSS Variables - Theme Colors */
+/* CSS Variables - Default Theme (Green Fresh) */
 :root {
     /* Primary Colors */
     --primary-color: #1f9a3a;
@@ -37,13 +25,16 @@
     /* Text Colors */
     --text-primary: #1f2d3d;
     --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
     --text-white: #ffffff;
     --text-white-soft: rgba(255, 255, 255, 0.95);
     
     /* Background Colors */
+    --bg-body: #ffffff;
     --bg-white: #ffffff;
     --bg-gray-light: #f7f7f7;
     --bg-gray-lighter: #f0f0f0;
+    --bg-section: #fafafa;
     
     /* Border Colors */
     --border-color: #e6e9ee;
@@ -54,6 +45,14 @@
     --shadow-md: rgba(15, 23, 42, 0.06);
     --shadow-lg: rgba(15, 23, 42, 0.1);
     --shadow-input: rgba(3, 10, 18, 0.06);
+    
+    /* Alert/Error Colors */
+    --error-color: #dc2626;
+    --error-bg: #fee2e2;
+    --success-color: #16a34a;
+    --success-bg: #dcfce7;
+    --warning-color: #d97706;
+    --warning-bg: #fef3c7;
     
     /* Category Colors */
     --category-groceries-bg: #f0faf2;
@@ -70,6 +69,102 @@
     --category-home-text: #f59e0b;
 }
 
+/* Ocean Blue Theme */
+[data-theme="ocean-blue"] {
+    /* Primary Colors */
+    --primary-color: #1e40af;
+    --primary-light: #3b82f6;
+    --primary-lighter: #60a5fa;
+    --primary-bg: #eff6ff;
+    --primary-bg-light: #dbeafe;
+    
+    /* Category Colors */
+    --category-groceries-bg: #eff6ff;
+    --category-groceries-text: #1e40af;
+    --category-pharmacy-bg: #f0f9ff;
+    --category-pharmacy-text: #0284c7;
+    --category-electronics-bg: #fef3c7;
+    --category-electronics-text: #d97706;
+}
+
+/* Sunset Purple Theme */
+[data-theme="sunset-purple"] {
+    /* Primary Colors */
+    --primary-color: #7c3aed;
+    --primary-light: #8b5cf6;
+    --primary-lighter: #a78bfa;
+    --primary-bg: #f5f3ff;
+    --primary-bg-light: #ede9fe;
+    
+    /* Category Colors */
+    --category-groceries-bg: #fef3c7;
+    --category-groceries-text: #d97706;
+    --category-food-bg: #fce7f3;
+    --category-food-text: #db2777;
+    --category-pharmacy-bg: #f5f3ff;
+    --category-pharmacy-text: #7c3aed;
+    --category-electronics-bg: #e0e7ff;
+    --category-electronics-text: #4f46e5;
+    --category-fashion-bg: #fce7f3;
+    --category-fashion-text: #be185d;
+}
+
+/* Dark Mode Theme */
+[data-theme="dark"] {
+    /* Primary Colors - Modern Cyan/Blue accent */
+    --primary-color: #06b6d4;
+    --primary-light: #22d3ee;
+    --primary-lighter: #67e8f9;
+    --primary-bg: #164e63;
+    --primary-bg-light: #0e7490;
+    
+    /* Text Colors - High contrast for readability */
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --text-white: #ffffff;
+    --text-white-soft: rgba(255, 255, 255, 0.95);
+    
+    /* Background Colors - Rich dark slate */
+    --bg-body: #0a0e1a;
+    --bg-white: #1a1f2e;
+    --bg-gray-light: #1f2937;
+    --bg-gray-lighter: #374151;
+    --bg-section: #131720;
+    
+    /* Border Colors - Subtle but visible */
+    --border-color: #2d3748;
+    --border-light: rgba(148, 163, 184, 0.12);
+    
+    /* Shadow Colors - Deeper shadows for depth */
+    --shadow-sm: rgba(0, 0, 0, 0.5);
+    --shadow-md: rgba(0, 0, 0, 0.6);
+    --shadow-lg: rgba(0, 0, 0, 0.7);
+    --shadow-input: rgba(0, 0, 0, 0.3);
+    
+    /* Alert/Error Colors - Vibrant but not harsh */
+    --error-color: #fb7185;
+    --error-bg: #4c0519;
+    --success-color: #34d399;
+    --success-bg: #064e3b;
+    --warning-color: #fbbf24;
+    --warning-bg: #451a03;
+    
+    /* Category Colors - Diverse and vibrant */
+    --category-groceries-bg: #064e3b;
+    --category-groceries-text: #34d399;
+    --category-food-bg: #7c2d12;
+    --category-food-text: #fdba74;
+    --category-pharmacy-bg: #1e3a8a;
+    --category-pharmacy-text: #93c5fd;
+    --category-electronics-bg: #581c87;
+    --category-electronics-text: #e9d5ff;
+    --category-fashion-bg: #831843;
+    --category-fashion-text: #f9a8d4;
+    --category-home-bg: #422006;
+    --category-home-text: #fcd34d;
+}
+
 /* Reset and Base Styles */
 * {
     margin: 0;
@@ -80,11 +175,12 @@
 body {
     font-family: 'Poppins', 'Inter', 'Helvetica Neue', Arial, sans-serif;
     color: var(--text-primary);
-    background: var(--bg-white);
+    background: var(--bg-body);
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -755,4 +851,184 @@ section {
 
 .mt-0 {
     margin-top: 0;
+}
+
+/* ================================================================
+   Theme Switcher Styles
+   ================================================================ */
+
+.theme-switcher {
+    position: relative;
+    display: inline-block;
+}
+
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--bg-gray-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--bg-gray-lighter);
+    border-color: var(--primary-color);
+}
+
+.theme-toggle-btn i {
+    font-size: 16px;
+    color: var(--primary-color);
+}
+
+.theme-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px var(--shadow-md);
+    min-width: 220px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.theme-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.theme-dropdown-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.theme-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+}
+
+.theme-option:hover {
+    background: var(--bg-gray-light);
+}
+
+.theme-option.active {
+    background: var(--primary-bg);
+    color: var(--primary-color);
+}
+
+.theme-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.theme-option[data-theme="green-fresh"] .theme-icon {
+    background: #f0faf2;
+    color: #1f9a3a;
+}
+
+.theme-option[data-theme="ocean-blue"] .theme-icon {
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+.theme-option[data-theme="sunset-purple"] .theme-icon {
+    background: #f5f3ff;
+    color: #7c3aed;
+}
+
+.theme-option[data-theme="dark"] .theme-icon {
+    background: #0a0e1a;
+    color: #06b6d4;
+}
+
+.theme-details {
+    flex: 1;
+}
+
+.theme-name {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.theme-description {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.theme-checkmark {
+    margin-left: auto;
+    color: var(--primary-color);
+    font-size: 16px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.theme-option.active .theme-checkmark {
+    opacity: 1;
+}
+
+/* Mobile theme switcher */
+@media (max-width: 768px) {
+    .theme-toggle-btn span {
+        display: none;
+    }
+    
+    .theme-toggle-btn {
+        padding: 8px;
+    }
+    
+    .theme-dropdown {
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%) translateY(-10px);
+    }
+    
+    .theme-dropdown.show {
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Smooth transitions for theme changes */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Exclude specific elements from theme transition */
+.hero,
+.search-btn,
+.store-card,
+.category-item,
+.theme-dropdown {
+    transition: all 0.3s ease;
 }

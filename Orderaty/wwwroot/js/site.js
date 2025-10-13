@@ -5,12 +5,77 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize all functionality
+    initThemeSwitcher();
     initSearchFunctionality();
     initNavigation();
     initStoreCards();
     initCategoryItems();
     initResponsiveBehavior();
     initMobileMenu();
+    
+    // Theme Switcher Functionality
+    function initThemeSwitcher() {
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeDropdown = document.getElementById('theme-dropdown');
+        const themeOptions = document.querySelectorAll('.theme-option');
+        
+        // Load saved theme or use default
+        const savedTheme = localStorage.getItem('orderaty-theme') || 'green-fresh';
+        applyTheme(savedTheme);
+        
+        // Toggle dropdown
+        if (themeToggle) {
+            themeToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                themeDropdown.classList.toggle('show');
+            });
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (themeDropdown && !themeDropdown.contains(e.target) && e.target !== themeToggle) {
+                themeDropdown.classList.remove('show');
+            }
+        });
+        
+        // Handle theme selection
+        themeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const selectedTheme = this.getAttribute('data-theme');
+                applyTheme(selectedTheme);
+                localStorage.setItem('orderaty-theme', selectedTheme);
+                
+                // Update active state
+                themeOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Close dropdown
+                themeDropdown.classList.remove('show');
+                
+                // Show notification
+                showNotification(`Theme changed to ${this.querySelector('.theme-name').textContent}`, 'success');
+            });
+        });
+        
+        function applyTheme(themeName) {
+            // Remove all theme attributes
+            document.documentElement.removeAttribute('data-theme');
+            
+            // Apply selected theme
+            if (themeName !== 'green-fresh') {
+                document.documentElement.setAttribute('data-theme', themeName);
+            }
+            
+            // Update active state in dropdown
+            themeOptions.forEach(option => {
+                if (option.getAttribute('data-theme') === themeName) {
+                    option.classList.add('active');
+                } else {
+                    option.classList.remove('active');
+                }
+            });
+        }
+    }
     
     // Search functionality
     function initSearchFunctionality() {
@@ -170,11 +235,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const currentScrollY = window.scrollY;
             
             if (currentScrollY > 100) {
-                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                // Use semi-transparent background that respects theme colors
+                header.style.background = 'var(--bg-white)';
                 header.style.backdropFilter = 'blur(10px)';
+                header.style.boxShadow = '0 2px 8px var(--shadow-md)';
             } else {
-                header.style.background = '#ffffff';
+                header.style.background = 'var(--bg-white)';
                 header.style.backdropFilter = 'none';
+                header.style.boxShadow = '0 1px 3px var(--shadow-sm)';
             }
             
             lastScrollY = currentScrollY;
