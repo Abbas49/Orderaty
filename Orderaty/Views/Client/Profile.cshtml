@@ -25,18 +25,21 @@
                     </div>
                 </form>
                 
-                <div class="editable-name">
-                    <h2 id="displayName" class="profile-name">@Model.FullName</h2>
-                    <input asp-for="FullName" type="text" id="editName" value="@Model.FullName" class="name-input" style="display:none;" />
-                    <button type="button" id="editBtn" class="edit-btn" title="Edit Name">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                </div>
+                <h2 class="profile-name">@Model.FullName</h2>
                 <span class="profile-role">Client</span>
             </div>
 
             <form asp-action="Update" method="post" enctype="multipart/form-data" class="profile-form">
                 <div asp-validation-summary="All" class="validation-summary"></div>
+                
+                <div class="form-group">
+                    <label asp-for="FullName" class="form-label">
+                        <i class="fas fa-user"></i>
+                        Full Name
+                    </label>
+                    <input asp-for="FullName" class="form-input" placeholder="Enter your full name" />
+                    <span asp-validation-for="FullName" class="validation-error"></span>
+                </div>
                 
                 <div class="form-group">
                     <label asp-for="Email" class="form-label">
@@ -85,33 +88,4 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        // Edit name functionality
-        const editBtn = document.getElementById("editBtn");
-        const displayName = document.getElementById("displayName");
-        const editName = document.getElementById("editName");
-
-        editBtn.addEventListener("click", () => {
-            displayName.style.display = "none";
-            editName.style.display = "inline-block";
-            editName.focus();
-        });
-
-        // Save name on blur or Enter key
-        editName.addEventListener("blur", saveName);
-        editName.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                saveName();
-            }
-        });
-
-        function saveName() {
-            const newName = editName.value.trim();
-            if (newName) displayName.textContent = newName;
-
-            displayName.style.display = "inline-block";
-            editName.style.display = "none";
-        }
-    </script>
 }
