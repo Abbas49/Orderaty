@@ -104,35 +104,35 @@ namespace Orderaty.Controllers
             return RedirectToAction("Profile");
         }
 
-        // --------------------- ✏️ View All Sellers for clients ---------------------
-        public async Task<IActionResult> Browse(string? sellerName, string? category, string? sort)
+        // --------------------- ✏️ View All Stores for clients ---------------------
+        public async Task<IActionResult> Browse(string? sellerName/*, string? category, string? sort*/)
         {
-            var products = db.Sellers
-                .Include(p => p.User)
+            var sellers = db.Sellers
+                .Include(p => p.User).Include(p => p.SellerReviews)
                 .AsQueryable();
 
             // البحث بالاسم
             if (!string.IsNullOrEmpty(sellerName))
-                products = products.Where(p => p.User.FullName.Contains(sellerName));
+                sellers = sellers.Where(p => p.User.FullName.Contains(sellerName));
 
             // فلترة بالفئة (Category)
-            if (!string.IsNullOrEmpty(category))
+            /*if (!string.IsNullOrEmpty(category))
             {
                 if (Enum.TryParse<SellerCategory>(category, out var categoryEnum))
                 {
                     products = products.Where(p => p.Category == categoryEnum);
                 }
-            }
+            }*/
 
             // الترتيب
-            products = sort switch
+            /*products = sort switch
             {
                 "rating_desc" => products.OrderByDescending(p => p.Rating),
                 "rating_asc" => products.OrderBy(p => p.Rating),
                 _ => products.OrderByDescending(p => p.Id)
-            };
+            };*/
 
-            var result = await products.ToListAsync();
+            var result = await sellers.ToListAsync();
             return View(result);
         }
 
