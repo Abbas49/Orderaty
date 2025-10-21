@@ -1,0 +1,29 @@
+﻿@model List<Orderaty.Models.Order>
+@{
+    ViewData["Title"] = "All Orders";
+}
+<div>
+    <table width="1000px" style="background-color:aquamarine">
+        <thead>
+            <tr>
+                <td>Store</td>
+                <td>Created at</td>
+                <td>Status</td>
+                <td>Total Price</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model)
+            {
+                <tr>
+                    <td>@item?.Seller.User.FullName</td>
+                    <td>@item?.CreatedAt</td>
+                    <td>@item?.Status.ToString()</td>
+                    <td>@item?.TotalPrice</td>
+                    <td><a href="/Order/Details/@item?.Id">Details</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -37,5 +37,6 @@ namespace Orderaty.Models
         public User User { get; set; }
         public List<Product> Products { get; set; }
         public List<Order> Orders { get; set; }
+        public List<SellerReview> SellerReviews { get; set; }
     }
 }

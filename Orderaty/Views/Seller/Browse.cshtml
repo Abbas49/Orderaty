@@ -1,0 +1,182 @@
+﻿@model List<Orderaty.Models.Seller>
+@{
+    ViewData["Title"] = "Browse Stores";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/browse-stores.css" asp-append-version="true" />
+}
+
+<!-- Page Header -->
+<section class="stores-header">
+    <div class="container">
+        <div class="header-content-wrapper">
+            <div class="header-text">
+                <h1 class="page-title">Browse Stores</h1>
+                <p class="page-subtitle">Discover and order from your favorite stores</p>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="header-search">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search for stores, categories, or cuisines..." id="store-search">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filters Section -->
+<section class="filters-section">
+    <div class="container">
+        <div class="filters-wrapper">
+            <!-- Category Filters -->
+            <div class="filter-group">
+                <label class="filter-label">
+                    <i class="fas fa-filter"></i>
+                    Category
+                </label>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-category="all">
+                        All Stores
+                    </button>
+                    <button class="filter-btn" data-category="restaurants">
+                        <i class="fas fa-utensils"></i>
+                        Restaurants
+                    </button>
+                    <button class="filter-btn" data-category="groceries">
+                        <i class="fas fa-shopping-bag"></i>
+                        Groceries
+                    </button>
+                    <button class="filter-btn" data-category="pharmacy">
+                        <i class="fas fa-prescription-bottle"></i>
+                        Pharmacy
+                    </button>
+                    <button class="filter-btn" data-category="bakery">
+                        <i class="fas fa-bread-slice"></i>
+                        Bakery
+                    </button>
+                    <button class="filter-btn" data-category="coffee">
+                        <i class="fas fa-coffee"></i>
+                        Coffee Shops
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sort Options -->
+            <div class="sort-group">
+                <label class="filter-label">
+                    <i class="fas fa-sort"></i>
+                    Sort By
+                </label>
+                <div class="sort-dropdown">
+                    <button class="sort-btn" id="sort-trigger">
+                        <span id="selected-sort">Rating</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="sort-menu" id="sort-menu">
+                        <button class="sort-option active" data-sort="rating">
+                            <i class="fas fa-star"></i>
+                            Rating
+                        </button>
+                        <button class="sort-option" data-sort="delivery-time">
+                            <i class="fas fa-clock"></i>
+                            Delivery Time
+                        </button>
+                        <button class="sort-option" data-sort="delivery-fee">
+                            <i class="fas fa-dollar-sign"></i>
+                            Delivery Fee
+                        </button>
+                        <button class="sort-option" data-sort="popular">
+                            <i class="fas fa-fire"></i>
+                            Most Popular
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Filters Display -->
+        <div class="active-filters" id="active-filters">
+            <span class="filter-tag">
+                All Stores
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+    </div>
+</section>
+
+<!-- Stores Grid Section -->
+<section class="stores-section">
+    <div class="container">
+        <div class="stores-info">
+            <h2 class="section-heading">All Stores</h2>
+            <p class="stores-count">Showing <span class="count-number">@Model.Count()</span> stores</p>
+        </div>
+
+        <div class="stores-grid">
+            @foreach(var store in Model)
+            {
+                <div class="store-card" data-category="restaurants">
+                    <div class="store-image-wrapper">
+                        <img src="~/images/users/@store.User.Image" alt="The Italian Kitchen restaurant interior" class="store-image">
+                        <div class="store-badges">
+                            <span class="badge badge-featured">
+                                <i class="fas fa-star"></i>
+                                Featured
+                            </span>
+                        </div>
+                    </div>
+                    <div class="store-content">
+                        <div class="store-header">
+                            <h3 class="store-name">@store.User.FullName</h3>
+                            <p class="store-category">
+                                <i class="fas fa-tag"></i>
+                                @store.Category.ToString()
+                            </p>
+                        </div>
+
+                        <div class="store-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-star"></i>
+                                <span class="meta-value">4.8</span>
+                                <span class="meta-label">(@store.SellerReviews.Count() + ratings)</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-clock"></i>
+                                <span class="meta-value">25-35 min</span>
+                            </div>
+                        </div>
+
+                        <div class="store-footer">
+                            <div class="delivery-info">
+                                <i class="fas fa-motorcycle"></i>
+                                <span class="delivery-fee">$2.99 delivery</span>
+                            </div>
+                            <a href="/Seller/Details/@store.Id" class="view-store-btn">
+                                View Store
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Empty State (Hidden by default) -->
+<section class="empty-state" style="display: none;">
+    <div class="container">
+        <div class="empty-content">
+            <i class="fas fa-store-slash"></i>
+            <h2 class="empty-title">No stores found</h2>
+            <p class="empty-text">Try adjusting your filters or search terms</p>
+            <button class="reset-btn">
+                <i class="fas fa-redo"></i>
+                Reset Filters
+            </button>
+        </div>
+    </div>
+</section>

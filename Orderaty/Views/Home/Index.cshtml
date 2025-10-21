@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Orderaty.ViewModels.StoresProducts
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -12,7 +13,7 @@
         <div class="hero-content">
             <h1 class="hero-title">Fast Delivery to Your Door</h1>
             <p class="hero-subtitle">Order from your favorite stores and get it delivered instantly</p>
-            
+
             <div class="search-container">
                 <div class="search-input-group">
                     <div class="search-input">
@@ -35,47 +36,22 @@
     <div class="container">
         <h2 class="section-title">Featured Stores</h2>
         <div class="stores-grid">
-            <div class="store-card">
-                <div class="store-image">
-                    <img src="https://images.unsplash.com/photo-1754398006556-bedbc3b74bf5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxncm9jZXJ5JTIwc3RvcmUlMjBpbnRlcmlvcnxlbnwxfHx8fDE3NTkzNDQ4NTB8MA&ixlib=rb-4.1.0&q=80&w=1080" alt="Fresh Market grocery store interior with fresh produce">
-                </div>
-                <div class="store-info">
-                    <div class="store-badge">Groceries</div>
-                    <h3 class="store-title">Fresh Market</h3>
-                    <div class="store-meta">
-                        <span class="rating">⭐ 4.8</span>
-                        <span class="eta">20-30 min</span>
+            @foreach(var store in Model.Sellers)
+            {
+                <div class="store-card">
+                    <div class="store-image">
+                        <img src="~/images/users/@store.User.Image" alt="Fresh Market grocery store interior with fresh produce">
+                    </div>
+                    <div class="store-info">
+                        <div class="store-badge">@store.Category.ToString()</div>
+                        <h3 class="store-title">@store.User.FullName</h3>
+                        <div class="store-meta">
+                            <span class="rating">⭐ @store.Rating</span>
+                            <span class="eta">20-30 min</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="store-card">
-                <div class="store-image">
-                    <img src="https://images.unsplash.com/photo-1644946763226-22c60fcb6635?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmb29kJTIwZGVsaXZlcnklMjByZXN0YXVyYW50fGVufDF8fHx8MTc1OTQyNjIwNHww&ixlib=rb-4.1.0&q=80&w=1080" alt="Pizza Paradise restaurant with delicious pizza on display">
-                </div>
-                <div class="store-info">
-                    <div class="store-badge">Food</div>
-                    <h3 class="store-title">Pizza Paradise</h3>
-                    <div class="store-meta">
-                        <span class="rating">⭐ 4.6</span>
-                        <span class="eta">25-35 min</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="store-card">
-                <div class="store-image">
-                    <img src="https://images.unsplash.com/photo-1644946763226-22c60fcb6635?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmb29kJTIwZGVsaXZlcnklMjByZXN0YXVyYW50fGVufDF8fHx8MTc1OTQyNjIwNHww&ixlib=rb-4.1.0&q=80&w=1080" alt="HealthPlus Pharmacy storefront with medical supplies and medications">
-                </div>
-                <div class="store-info">
-                    <div class="store-badge">Pharmacy</div>
-                    <h3 class="store-title">HealthPlus Pharmacy</h3>
-                    <div class="store-meta">
-                        <span class="rating">⭐ 4.9</span>
-                        <span class="eta">15-25 min</span>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </section>
@@ -85,74 +61,30 @@
     <div class="container">
         <h2 class="section-title">Trending Items</h2>
         <div class="products-grid">
-            <div class="product-card">
-                <div class="product-image">
-                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" alt="Fresh Organic Salad">
-                    <button class="add-to-favorites">
-                        <i class="far fa-heart"></i>
-                    </button>
-                </div>
-                <div class="product-info">
-                    <div class="product-category">Groceries</div>
-                    <h3 class="product-title">Fresh Organic Salad</h3>
-                    <p class="product-store">Fresh Market</p>
-                    <div class="product-footer">
-                        <div class="product-price">
-                            <span class="price">$12.99</span>
-                        </div>
-                        <button class="add-to-cart-btn">
-                            <i class="fas fa-plus"></i>
+            @foreach(var product in Model.Products)
+            {
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="~/images/products/@product.Image" alt="Fresh Organic Salad">
+                        <button class="add-to-favorites">
+                            <i class="far fa-heart"></i>
                         </button>
                     </div>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <div class="product-image">
-                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400" alt="Margherita Pizza">
-                    <button class="add-to-favorites">
-                        <i class="far fa-heart"></i>
-                    </button>
-                    <div class="product-badge hot">Hot Deal</div>
-                </div>
-                <div class="product-info">
-                    <div class="product-category">Food</div>
-                    <h3 class="product-title">Margherita Pizza</h3>
-                    <p class="product-store">Pizza Paradise</p>
-                    <div class="product-footer">
-                        <div class="product-price">
-                            <span class="price-old">$18.99</span>
-                            <span class="price">$14.99</span>
+                    <div class="product-info">
+                        @*<div class="product-category">@product</div>*@
+                        <h3 class="product-title">@product.Name</h3>
+                        <p class="product-store">@product.Seller.User.FullName</p>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="price">@product.Price EGP</span>
+                            </div>
+                            <button class="add-to-cart-btn">
+                                <i class="fas fa-plus"></i>
+                            </button>
                         </div>
-                        <button class="add-to-cart-btn">
-                            <i class="fas fa-plus"></i>
-                        </button>
                     </div>
                 </div>
-            </div>
-
-            <div class="product-card">
-                <div class="product-image">
-                    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400" alt="Gourmet Burger">
-                    <button class="add-to-favorites">
-                        <i class="far fa-heart"></i>
-                    </button>
-                    <div class="product-badge new">New</div>
-                </div>
-                <div class="product-info">
-                    <div class="product-category">Food</div>
-                    <h3 class="product-title">Gourmet Burger</h3>
-                    <p class="product-store">Burger House</p>
-                    <div class="product-footer">
-                        <div class="product-price">
-                            <span class="price">$16.50</span>
-                        </div>
-                        <button class="add-to-cart-btn">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </section>
@@ -164,7 +96,7 @@
         <div class="categories-grid">
             <div class="category-item">
                 <div class="category-icon groceries">
-                    <i class="fas fa-shopping-bag"></i>
+                    <i class="fas fa-shopping-bag" ></i>
                 </div>
                 <span class="category-label">Groceries</span>
             </div>

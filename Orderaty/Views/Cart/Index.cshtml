@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Orderaty.Models.CartItem>
+﻿@model List<Orderaty.Models.CartItem>
 
 @{
     ViewData["Title"] = "Shopping Cart";
@@ -51,9 +51,9 @@
                                     <h3 class="cart-item-name">@item.Product.Name</h3>
                                     <p class="cart-item-store">
                                         <i class="fas fa-store"></i>
-                                        Fresh Market
+                                        @item.Product.Seller.User.FullName
                                     </p>
-                                    <p class="cart-item-price">$@item.Product.Price.ToString("0.00")</p>
+                                    <p class="cart-item-price">@item.Product.Price.ToString("0.00") EGP</p>
                                 </div>
 
                                 <!-- Actions -->
@@ -71,7 +71,7 @@
 
                                     <!-- Item Total -->
                                     <span class="item-total" id="total-@item.Id">
-                                        $@((item.Product.Price * item.Quantity).ToString("0.00"))
+                                        @((item.Product.Price * item.Quantity).ToString("0.00")) EGP
                                     </span>
 
                                     <!-- Remove Button -->
@@ -114,7 +114,7 @@
                                         <span class="delivery-type">Standard (20-30 min)</span>
                                     </div>
                                 </div>
-                                <span class="delivery-price">$2.99</span>
+                                <span class="delivery-price">2.99 EGP</span>
                             </div>
                             <div class="delivery-option" onclick="selectDelivery(this, 5.99)">
                                 <div class="delivery-option-content">
@@ -123,7 +123,7 @@
                                         <span class="delivery-type">Express (10-15 min)</span>
                                     </div>
                                 </div>
-                                <span class="delivery-price">$5.99</span>
+                                <span class="delivery-price">5.99 EGP</span>
                             </div>
                         </div>
                     </div>
@@ -133,12 +133,12 @@
                         <div class="summary-row">
                             <span class="summary-label">Subtotal</span>
                             <span class="summary-value" id="subtotal">
-                                $@Model.Sum(x => x.Product.Price * x.Quantity).ToString("0.00")
+                                @Model.Sum(x => x.Product.Price * x.Quantity).ToString("0.00") EGP
                             </span>
                         </div>
                         <div class="summary-row">
                             <span class="summary-label">Delivery Fee</span>
-                            <span class="summary-value" id="delivery-fee">$2.99</span>
+                            <span class="summary-value" id="delivery-fee">2.99 EGP</span>
                         </div>
                     </div>
 
@@ -146,7 +146,7 @@
                     <div class="summary-total">
                         <span class="total-label">Total</span>
                         <span class="total-value" id="total-amount">
-                            $@((Model.Sum(x => x.Product.Price * x.Quantity) + 2.99m).ToString("0.00"))
+                            @((Model.Sum(x => x.Product.Price * x.Quantity) + 2.99m).ToString("0.00")) EGP
                         </span>
                     </div>
 
