@@ -5,35 +5,80 @@
 }
 
 @section Styles {
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/client-product.css" asp-append-version="true" />
 }
 
-<h2>@Model.Name</h2>
-
-<div class="card mb-4 shadow-sm" style="max-width: 750px;">
-    <div class="row g-0">
-        <div class="col-md-5">
-            @if (!string.IsNullOrEmpty(Model.Image))
-            {
-                <img src="~/images/products/@Model.Image" class="img-fluid rounded-start" alt="@Model.Name" />
-            }
-            else
-            {
-                <img src="~/images/default-product.png" class="img-fluid rounded-start" alt="No Image" />
-            }
-        </div>
-        <div class="col-md-7">
-            <div class="card-body">
-                <h4 class="card-title">@Model.Name</h4>
-                <p class="card-text">@Model.Description</p>
-                <p><strong>💰 Price:</strong> @Model.Price.ToString("C")</p>
-                <p><strong>📦 Available:</strong> @Model.Available_Amount</p>
-                <p><strong>⭐ Rating:</strong> @Model.Rating</p>
-                <p><strong>🏪 Seller:</strong> @Model.Seller.User.FullName</p>
-                <p><strong>📍 Category:</strong> @Model.Seller.Category.ToString().Replace("_", " ")</p>
-
-                <a asp-action="Index" class="btn btn-secondary mt-3">Back to Products</a>
+<!-- Product Details Section -->
+<section class="product-details-section">
+    <div class="container">
+        <div class="product-details-card">
+            <div class="row g-0">
+                <div class="col-md-6">
+                    <div class="product-details-image">
+                        @if (!string.IsNullOrEmpty(Model.Image))
+                        {
+                            <img src="~/images/products/@Model.Image" alt="@Model.Name" />
+                        }
+                        else
+                        {
+                            <img src="~/images/default-product.png" alt="No Image" />
+                        }
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="product-details-content">
+                        <h1 class="product-details-title">@Model.Name</h1>
+                        <p class="product-details-description">@Model.Description</p>
+                        
+                        <div class="product-details-meta">
+                            <div class="details-meta-item">
+                                <i class="fas fa-dollar-sign"></i>
+                                <div class="details-meta-content">
+                                    <div class="details-meta-label">Price</div>
+                                    <div class="details-meta-value price">@Model.Price.ToString("C")</div>
+                                </div>
+                            </div>
+                            
+                            <div class="details-meta-item">
+                                <i class="fas fa-box"></i>
+                                <div class="details-meta-content">
+                                    <div class="details-meta-label">Available Stock</div>
+                                    <div class="details-meta-value">@Model.Available_Amount units</div>
+                                </div>
+                            </div>
+                            
+                            <div class="details-meta-item">
+                                <i class="fas fa-star"></i>
+                                <div class="details-meta-content">
+                                    <div class="details-meta-label">Rating</div>
+                                    <div class="details-meta-value rating">@Model.Rating</div>
+                                </div>
+                            </div>
+                            
+                            <div class="details-meta-item">
+                                <i class="fas fa-store"></i>
+                                <div class="details-meta-content">
+                                    <div class="details-meta-label">Seller</div>
+                                    <div class="details-meta-value">@Model.Seller.User.FullName</div>
+                                </div>
+                            </div>
+                            
+                            <div class="details-meta-item">
+                                <i class="fas fa-tag"></i>
+                                <div class="details-meta-content">
+                                    <div class="details-meta-label">Category</div>
+                                    <div class="details-meta-value">@Model.Seller.Category.ToString().Replace("_", " ")</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <a asp-action="Index" class="back-btn">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Products
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</section>

@@ -15,4 +15,6 @@
 
 Migrations/
 Orderaty/wwwroot/images/users/
+Orderaty/wwwroot/images/products/
 testing/
+appsettings.Development.json

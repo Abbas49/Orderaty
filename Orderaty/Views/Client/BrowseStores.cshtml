@@ -1,0 +1,482 @@
+@{
+    ViewData["Title"] = "Browse Stores";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/browse-stores.css" asp-append-version="true" />
+}
+
+<!-- Page Header -->
+<section class="stores-header">
+    <div class="container">
+        <div class="header-content-wrapper">
+            <div class="header-text">
+                <h1 class="page-title">Browse Stores</h1>
+                <p class="page-subtitle">Discover and order from your favorite stores</p>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="header-search">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Search for stores, categories, or cuisines..." id="store-search">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filters Section -->
+<section class="filters-section">
+    <div class="container">
+        <div class="filters-wrapper">
+            <!-- Category Filters -->
+            <div class="filter-group">
+                <label class="filter-label">
+                    <i class="fas fa-filter"></i>
+                    Category
+                </label>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-category="all">
+                        All Stores
+                    </button>
+                    <button class="filter-btn" data-category="restaurants">
+                        <i class="fas fa-utensils"></i>
+                        Restaurants
+                    </button>
+                    <button class="filter-btn" data-category="groceries">
+                        <i class="fas fa-shopping-bag"></i>
+                        Groceries
+                    </button>
+                    <button class="filter-btn" data-category="pharmacy">
+                        <i class="fas fa-prescription-bottle"></i>
+                        Pharmacy
+                    </button>
+                    <button class="filter-btn" data-category="bakery">
+                        <i class="fas fa-bread-slice"></i>
+                        Bakery
+                    </button>
+                    <button class="filter-btn" data-category="coffee">
+                        <i class="fas fa-coffee"></i>
+                        Coffee Shops
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Sort Options -->
+            <div class="sort-group">
+                <label class="filter-label">
+                    <i class="fas fa-sort"></i>
+                    Sort By
+                </label>
+                <div class="sort-dropdown">
+                    <button class="sort-btn" id="sort-trigger">
+                        <span id="selected-sort">Rating</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="sort-menu" id="sort-menu">
+                        <button class="sort-option active" data-sort="rating">
+                            <i class="fas fa-star"></i>
+                            Rating
+                        </button>
+                        <button class="sort-option" data-sort="delivery-time">
+                            <i class="fas fa-clock"></i>
+                            Delivery Time
+                        </button>
+                        <button class="sort-option" data-sort="delivery-fee">
+                            <i class="fas fa-dollar-sign"></i>
+                            Delivery Fee
+                        </button>
+                        <button class="sort-option" data-sort="popular">
+                            <i class="fas fa-fire"></i>
+                            Most Popular
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Active Filters Display -->
+        <div class="active-filters" id="active-filters">
+            <span class="filter-tag">
+                All Stores
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+    </div>
+</section>
+
+<!-- Stores Grid Section -->
+<section class="stores-section">
+    <div class="container">
+        <div class="stores-info">
+            <h2 class="section-heading">All Stores</h2>
+            <p class="stores-count">Showing <span class="count-number">8</span> stores</p>
+        </div>
+        
+        <div class="stores-grid">
+            <!-- Store Card 1 -->
+            <div class="store-card" data-category="restaurants">
+                <div class="store-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600" alt="The Italian Kitchen restaurant interior" class="store-image">
+                    <div class="store-badges">
+                        <span class="badge badge-featured">
+                            <i class="fas fa-star"></i>
+                            Featured
+                        </span>
+                    </div>
+                </div>
+                <div class="store-content">
+                    <div class="store-header">
+                        <h3 class="store-name">The Italian Kitchen</h3>
+                        <p class="store-category">
+                            <i class="fas fa-tag"></i>
+                            Italian Restaurant
+                        </p>
+                    </div>
+                    
+                    <div class="store-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-star"></i>
+                            <span class="meta-value">4.8</span>
+                            <span class="meta-label">(500+ ratings)</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="meta-value">25-35 min</span>
+                        </div>
+                    </div>
+                    
+                    <div class="store-footer">
+                        <div class="delivery-info">
+                            <i class="fas fa-motorcycle"></i>
+                            <span class="delivery-fee">$2.99 delivery</span>
+                        </div>
+                        <a href="#" class="view-store-btn">
+                            View Store
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Store Card 2 -->
+            <div class="store-card" data-category="groceries">
+                <div class="store-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1754398006556-bedbc3b74bf5?w=600" alt="Fresh Market grocery store" class="store-image">
+                    <div class="store-badges">
+                        <span class="badge badge-free-delivery">
+                            <i class="fas fa-truck"></i>
+                            Free Delivery
+                        </span>
+                    </div>
+                </div>
+                <div class="store-content">
+                    <div class="store-header">
+                        <h3 class="store-name">Fresh Market</h3>
+                        <p class="store-category">
+                            <i class="fas fa-tag"></i>
+                            Grocery Store
+                        </p>
+                    </div>
+                    
+                    <div class="store-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-star"></i>
+                            <span class="meta-value">4.9</span>
+                            <span class="meta-label">(850+ ratings)</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="meta-value">20-30 min</span>
+                        </div>
+                    </div>
+                    
+                    <div class="store-footer">
+                        <div class="delivery-info free">
+                            <i class="fas fa-truck"></i>
+                            <span class="delivery-fee">Free delivery</span>
+                        </div>
+                        <a href="#" class="view-store-btn">
+                            View Store
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Store Card 3 -->
+            <div class="store-card" data-category="pharmacy">
+                <div class="store-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=600" alt="HealthPlus Pharmacy storefront" class="store-image">
+                </div>
+                <div class="store-content">
+                    <div class="store-header">
+                        <h3 class="store-name">HealthPlus Pharmacy</h3>
+                        <p class="store-category">
+                            <i class="fas fa-tag"></i>
+                            Pharmacy & Health
+                        </p>
+                    </div>
+                    
+                    <div class="store-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-star"></i>
+                            <span class="meta-value">4.7</span>
+                            <span class="meta-label">(320+ ratings)</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="meta-value">15-25 min</span>
+                        </div>
+                    </div>
+                    
+                    <div class="store-footer">
+                        <div class="delivery-info">
+                            <i class="fas fa-motorcycle"></i>
+                            <span class="delivery-fee">$1.99 delivery</span>
+                        </div>
+                        <a href="#" class="view-store-btn">
+                            View Store
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Store Card 4 -->
+            <div class="store-card" data-category="restaurants">
+                <div class="store-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600" alt="Burger House restaurant" class="store-image">
+                    <div class="store-badges">
+                        <span class="badge badge-new">
+                            <i class="fas fa-sparkles"></i>
+                            New
+                        </span>
+                    </div>
+                </div>
+                <div class="store-content">
+                    <div class="store-header">
+                        <h3 class="store-name">Burger House</h3>
+                        <p class="store-category">
+                            <i class="fas fa-tag"></i>
+                            Fast Food
+                        </p>
+                    </div>
+                    
+                    <div class="store-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-star"></i>
+                            <span class="meta-value">4.6</span>
+                            <span class="meta-label">(280+ ratings)</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="meta-value">15-20 min</span>
+                        </div>
+                    </div>
+                    
+                    <div class="store-footer">
+                        <div class="delivery-info">
+                            <i class="fas fa-motorcycle"></i>
+                            <span class="delivery-fee">$2.49 delivery</span>
+                        </div>
+                        <a href="#" class="view-store-btn">
+                            View Store
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Store Card 5 -->
+            <div class="store-card" data-category="bakery">
+                <div class="store-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600" alt="Sweet Delights Bakery" class="store-image">
+                    <div class="store-badges">
+                        <span class="badge badge-featured">
+                            <i class="fas fa-star"></i>
+                            Featured
+                        </span>
+                    </div>
+                </div>
+                <div class="store-content">
+                    <div class="store-header">
+                        <h3 class="store-name">Sweet Delights Bakery</h3>
+                        <p class="store-category">
+                            <i class="fas fa-tag"></i>
+                            Bakery & Pastry
+                        </p>
+                    </div>
+                    
+                    <div class="store-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-star"></i>
+                            <span class="meta-value">4.9</span>
+                            <span class="meta-label">(620+ ratings)</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="meta-value">10-20 min</span>
+                        </div>
+                    </div>
+                    
+                    <div class="store-footer">
+                        <div class="delivery-info free">
+                            <i class="fas fa-truck"></i>
+                            <span class="delivery-fee">Free delivery</span>
+                        </div>
+                        <a href="#" class="view-store-btn">
+                            View Store
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Store Card 6 -->
+            <div class="store-card" data-category="coffee">
+                <div class="store-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=600" alt="Coffee Corner cafe" class="store-image">
+                </div>
+                <div class="store-content">
+                    <div class="store-header">
+                        <h3 class="store-name">Coffee Corner</h3>
+                        <p class="store-category">
+                            <i class="fas fa-tag"></i>
+                            Coffee Shop
+                        </p>
+                    </div>
+                    
+                    <div class="store-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-star"></i>
+                            <span class="meta-value">4.8</span>
+                            <span class="meta-label">(440+ ratings)</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="meta-value">10-15 min</span>
+                        </div>
+                    </div>
+                    
+                    <div class="store-footer">
+                        <div class="delivery-info">
+                            <i class="fas fa-motorcycle"></i>
+                            <span class="delivery-fee">$1.49 delivery</span>
+                        </div>
+                        <a href="#" class="view-store-btn">
+                            View Store
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Store Card 7 -->
+            <div class="store-card" data-category="restaurants">
+                <div class="store-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1579027989536-b7b1f875659b?w=600" alt="Sushi Master Japanese restaurant" class="store-image">
+                    <div class="store-badges">
+                        <span class="badge badge-featured">
+                            <i class="fas fa-star"></i>
+                            Featured
+                        </span>
+                    </div>
+                </div>
+                <div class="store-content">
+                    <div class="store-header">
+                        <h3 class="store-name">Sushi Master</h3>
+                        <p class="store-category">
+                            <i class="fas fa-tag"></i>
+                            Japanese Cuisine
+                        </p>
+                    </div>
+                    
+                    <div class="store-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-star"></i>
+                            <span class="meta-value">4.9</span>
+                            <span class="meta-label">(720+ ratings)</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="meta-value">30-40 min</span>
+                        </div>
+                    </div>
+                    
+                    <div class="store-footer">
+                        <div class="delivery-info">
+                            <i class="fas fa-motorcycle"></i>
+                            <span class="delivery-fee">$3.49 delivery</span>
+                        </div>
+                        <a href="#" class="view-store-btn">
+                            View Store
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Store Card 8 -->
+            <div class="store-card" data-category="groceries">
+                <div class="store-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=600" alt="Organic Market fresh produce" class="store-image">
+                    <div class="store-badges">
+                        <span class="badge badge-free-delivery">
+                            <i class="fas fa-truck"></i>
+                            Free Delivery
+                        </span>
+                    </div>
+                </div>
+                <div class="store-content">
+                    <div class="store-header">
+                        <h3 class="store-name">Organic Market</h3>
+                        <p class="store-category">
+                            <i class="fas fa-tag"></i>
+                            Organic Groceries
+                        </p>
+                    </div>
+                    
+                    <div class="store-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-star"></i>
+                            <span class="meta-value">4.8</span>
+                            <span class="meta-label">(390+ ratings)</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="meta-value">25-35 min</span>
+                        </div>
+                    </div>
+                    
+                    <div class="store-footer">
+                        <div class="delivery-info free">
+                            <i class="fas fa-truck"></i>
+                            <span class="delivery-fee">Free delivery</span>
+                        </div>
+                        <a href="#" class="view-store-btn">
+                            View Store
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Empty State (Hidden by default) -->
+<section class="empty-state" style="display: none;">
+    <div class="container">
+        <div class="empty-content">
+            <i class="fas fa-store-slash"></i>
+            <h2 class="empty-title">No stores found</h2>
+            <p class="empty-text">Try adjusting your filters or search terms</p>
+            <button class="reset-btn">
+                <i class="fas fa-redo"></i>
+                Reset Filters
+            </button>
+        </div>
+    </div>
+</section>
