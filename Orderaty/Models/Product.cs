@@ -16,5 +16,7 @@
         public Seller Seller { get; set; }
         public List<OrderedItem> OrderedItems { get; set; }
         public List<CartItem> CartItems { get; set; }
+        public List<ProductReview>? ProductReviews { get; set; }
+        public List<SellerReview> SellerReviews { get; set; }
     }
 }

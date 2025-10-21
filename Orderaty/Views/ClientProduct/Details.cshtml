@@ -1,188 +1,112 @@
 ﻿@model Orderaty.Models.Product
-
 @{
-    ViewData["Title"] = "Product Details";
+    ViewData["Title"] = Model.Name;
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/client-product.css" asp-append-version="true" />
-}
+<link rel="stylesheet" href="~/css/client-product-details.css" />
 
-<h2>@Model.Name</h2>
-
-<div class="card mb-4 shadow-sm" style="max-width: 750px;">
-    <div class="row g-0">
+<div class="product-details container py-5">
+    <div class="row g-5">
+        <!-- Product Image -->
         <div class="col-md-5">
-            @if (!string.IsNullOrEmpty(Model.Image))
-            {
-                <img src="~/images/products/@Model.Image" class="img-fluid rounded-start" alt="@Model.Name" />
-            }
-            else
-            {
-                <img src="~/images/default-product.png" class="img-fluid rounded-start" alt="No Image" />
-            }
-        </div>
-        <div class="col-md-7">
-            <div class="card-body">
-                <h4 class="card-title">@Model.Name</h4>
-                <p class="card-text">@Model.Description</p>
-                <p><strong>💰 Price:</strong> @Model.Price.ToString("C")</p>
-                <p><strong>📦 Available:</strong> @Model.Available_Amount</p>
-                <p><strong>⭐ Rating:</strong> @Model.Rating</p>
-                <p><strong>🏪 Seller:</strong> @Model.Seller.User.FullName</p>
-                <p><strong>📍 Category:</strong> @Model.Seller.Category.ToString().Replace("_", " ")</p>
+            <div class="product-image shadow rounded-4 overflow-hidden">
+                <img src="@(string.IsNullOrEmpty(Model.Image) ? "/images/no-image.png" : Model.Image)"
+                     alt="@Model.Name" class="img-fluid w-100" style="object-fit: cover; height: 400px;" />
             </div>
         </div>
-        <!-- Product Details Section -->
-        <section class="product-details-section">
-            <div class="container">
-                <div class="product-details-card">
-                    <div class="row g-0">
-                        <div class="col-md-6">
-                            <div class="product-details-image">
-                                @if (!string.IsNullOrEmpty(Model.Image))
-                                {
-                                    <img src="~/images/products/@Model.Image" alt="@Model.Name" />
-                                }
-                                else
-                                {
-                                    <img src="~/images/default-product.png" alt="No Image" />
-                                }
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="product-details-content">
-                                <h1 class="product-details-title">@Model.Name</h1>
-                                <p class="product-details-description">@Model.Description</p>
-        
-                                <div class="product-details-meta">
-                                    <div class="details-meta-item">
-                                        <i class="fas fa-dollar-sign"></i>
-                                        <div class="details-meta-content">
-                                            <div class="details-meta-label">Price</div>
-                                            <div class="details-meta-value price">@Model.Price.ToString("C")</div>
-                                        </div>
-                                    </div>
-        
-                                    <div class="details-meta-item">
-                                        <i class="fas fa-box"></i>
-                                        <div class="details-meta-content">
-                                            <div class="details-meta-label">Available Stock</div>
-                                            <div class="details-meta-value">@Model.Available_Amount units</div>
-                                        </div>
-                                    </div>
-        
-                                    <div class="details-meta-item">
-                                        <i class="fas fa-star"></i>
-                                        <div class="details-meta-content">
-                                            <div class="details-meta-label">Rating</div>
-                                            <div class="details-meta-value rating">@Model.Rating</div>
-                                        </div>
-                                    </div>
-        
-                                    <div class="details-meta-item">
-                                        <i class="fas fa-store"></i>
-                                        <div class="details-meta-content">
-                                            <div class="details-meta-label">Seller</div>
-                                            <div class="details-meta-value">@Model.Seller.User.FullName</div>
-                                        </div>
-                                    </div>
-        
-                                    <div class="details-meta-item">
-                                        <i class="fas fa-tag"></i>
-                                        <div class="details-meta-content">
-                                            <div class="details-meta-label">Category</div>
-                                            <div class="details-meta-value">@Model.Seller.Category.ToString().Replace("_", " ")</div>
-                                        </div>
-                                    </div>
-                                </div>
-        
-                                <a asp-action="Index" class="back-btn">
-                                    <i class="fas fa-arrow-left"></i>
-                                    Back to Products
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center mb-3">
-                        <button type="button" class="btn btn-outline-secondary btn-sm me-2 decrease-btn">−</button>
-                        <input type="number" class="form-control text-center quantity-input" value="1" min="1" max="@Model.Available_Amount"
-                               style="width:60px;" />
-                        <button type="button" class="btn btn-outline-secondary btn-sm ms-2 increase-btn">+</button>
-                    </div>
-                    <form asp-action="Add" asp-controller="Cart" method="post" class="add-to-cart-form">
-                        <input type="hidden" name="id" value="@Model.Id" />
-                        <input type="hidden" name="quantity" value="1" class="quantity-hidden" />
-                        <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
-                    </form>
-                    <a asp-action="Index" class="btn btn-secondary mt-3">Back to Products</a>
+
+        <!-- Product Info -->
+        <div class="col-md-7">
+            <h2 class="fw-bold mb-3">@Model.Name</h2>
+
+            <!-- Rating -->
+            <div class="d-flex align-items-center mb-3">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (i <= Model.Rating)
+                    {
+                        <i class="fas fa-star text-warning me-1"></i>
+                    }
+                    else
+                    {
+                        <i class="far fa-star text-muted me-1"></i>
+                    }
+                }
+                <span class="text-muted ms-2 small">(@Model.Rating.ToString("0.0"))</span>
+            </div>
+
+            <!-- Price -->
+            <h4 class="text-primary fw-bold mb-3">$@Model.Price.ToString("0.00")</h4>
+
+            <!-- Description -->
+            <p class="text-muted mb-4">@Model.Description</p>
+
+            <!-- Quantity -->
+            <div class="mb-3">
+                <span class="fw-semibold">Available Quantity:</span>
+                <span class="text-success fw-bold">@Model.Available_Amount</span>
+            </div>
+
+            <!-- Add to cart -->
+            <div class="d-flex align-items-center gap-3">
+                <input type="number" id="quantity" class="form-control w-auto rounded-pill"
+                       min="1" value="1" max="@Model.Available_Amount" />
+                <button class="btn btn-primary rounded-pill px-4" onclick="addToCart(@Model.Id)">
+                    <i class="fas fa-cart-plus me-2"></i> Add to Cart
+                </button>
+            </div>
+
+            <hr class="my-4" />
+
+            <!-- Seller Info -->
+            <div class="seller-info d-flex align-items-center">
+                <img src="@(string.IsNullOrEmpty(Model.Seller?.User?.Image) ? "/images/default-user.png" : Model.Seller.User.Image)"
+                     alt="@Model.Seller?.User?.FullName"
+                     class="rounded-circle border shadow-sm me-3"
+                     style="width: 60px; height: 60px; object-fit: cover;" />
+                <div>
+                    <h6 class="mb-1 fw-semibold">@Model.Seller?.User?.FullName</h6>
+                    <small class="text-muted">@Model.Seller?.Category.ToString().Replace("_", " ")</small>
                 </div>
-           </div>
-        </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="reviews-section mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h4">Customer Reviews</h2>
+            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">
+                <i class="fas fa-pen me-1"></i> Write a Review
+            </a>
+        </div>
+
+        <p class="text-muted fst-italic">
+            No reviews yet. Be the first to review this product.
+        </p>
     </div>
 </div>
 
-            @section Scripts {
-                <script>
-                    document.querySelectorAll(".card").forEach(card => {
-                        const input = card.querySelector(".quantity-input");
-                        const hiddenInput = card.querySelector(".quantity-hidden");
-                        const increaseBtn = card.querySelector(".increase-btn");
-                        const decreaseBtn = card.querySelector(".decrease-btn");
-
-                        const max = parseInt(input.getAttribute("max"));
-                        const min = parseInt(input.getAttribute("min")) || 1;
-
-                        function updateButtons() {
-                            const value = parseInt(input.value);
-                            increaseBtn.disabled = value >= max;
-                            decreaseBtn.disabled = value <= min;
-                            if (parseInt(input.value) >= max) {
-                                input.classList.add("border-danger");
-                            } else {
-                                input.classList.remove("border-danger");
-                            }
-                        }
-
-                        increaseBtn.addEventListener("click", () => {
-                            let val = parseInt(input.value);
-                            if (val < max) {
-                                val++;
-                                input.value = val;
-                                hiddenInput.value = val;
-                            }
-                            updateButtons();
-                        });
-
-                        decreaseBtn.addEventListener("click", () => {
-                            let val = parseInt(input.value);
-                            if (val > min) {
-                                val--;
-                                input.value = val;
-                                hiddenInput.value = val;
-                            }
-                            updateButtons();
-                        });
-
-                        input.addEventListener("input", () => {
-                            let val = parseInt(input.value);
-                            if (isNaN(val) || val < min) val = min;
-                            if (val > max) val = max;
-                            input.value = val;
-                            hiddenInput.value = val;
-                            updateButtons();
-                        });
-                        updateButtons();
-                    });
-                    document.querySelectorAll(".add-to-cart-form").forEach(form => {
-                        form.addEventListener("submit", function (e) {
-                            const input = form.closest(".card").querySelector(".quantity-input");
-                            const hiddenInput = form.querySelector(".quantity-hidden");
-                            hiddenInput.value = input.value;
-                        });
-                    });
-                </script>
+@section Scripts {
+    <script>
+        function addToCart(productId) {
+            const quantity = parseInt(document.getElementById("quantity").value);
+            if (quantity <= 0 || isNaN(quantity)) {
+                alert("Please enter a valid quantity.");
+                return;
             }
-            =======
-            </section>
-            >>>>>>> 6f605e5a4c76a16ca6bfd521b1c4267e89e824ac
+
+            fetch(`/Cart/AddToCart?id=${productId}&quantity=${quantity}`, {
+                method: 'POST'
+            })
+                .then(res => {
+                    if (res.ok) {
+                        alert("✅ Product added to cart successfully!");
+                    } else {
+                        alert("❌ Failed to add product to cart.");
+                    }
+                })
+                .catch(() => alert("⚠️ Something went wrong."));
+        }
+    </script>
+}
