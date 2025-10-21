@@ -1,0 +1,151 @@
+﻿@model IEnumerable<Orderaty.Models.Seller>
+@using Orderaty.Models
+
+@{
+    ViewData["Title"] = "All Stores";
+}
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+}
+
+<h2 class="mb-4">🛒 Explore Stores</h2>
+
+<form method="get" class="mb-4">
+    <div class="row g-2">
+        <div class="col-md-3">
+            <input type="text" name="sellerName" class="form-control" placeholder="Search by store name..." value="@Context.Request.Query["sellerName"]" />
+        </div>
+        <div class="col-md-2">
+            <select name="category" class="form-select">
+                <option value="">All Categories</option>
+                @foreach (var cat in Enum.GetValues(typeof(SellerCategory)))
+                {
+                    <option value="@cat" selected="@(Context.Request.Query["category"] == cat.ToString())">@cat.ToString().Replace("_", " ")</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row g-2 mt-2">
+        <div class="col-md-3">
+            <select name="sort" class="form-select">
+                <option value="">Sort by</option>
+                <option value="rating_desc" selected="@(Context.Request.Query["sort"] == "rating_desc")">Rating (High → Low)</option>
+                <option value="rating_asc" selected="@(Context.Request.Query["sort"] == "rating_asc")">Rating (Low → High)</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+        </div>
+        <div class="col-md-2">
+            <a asp-action="Browse" class="btn btn-secondary w-100">Reset</a>
+        </div>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info mt-4">No products found matching your search.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <a href="/Seller/Details/@item.Id">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-img-top text-center p-2" style="height: 200px; overflow: hidden;">
+                            @if (!string.IsNullOrEmpty(item.User.Image))
+                            {
+                                <img src="~/images/products/@item.User.Image"
+                                     alt="@item.User.FullName"
+                                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" />
+                            }
+                            else
+                            {
+                                <img src="~/images/default-product.png"
+                                     alt="No Image"
+                                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" />
+                            }
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@item.User.FullName</h5>
+                            <p class="card-text text-muted">@item.Description</p>
+                            <p><strong>📦 Status:</strong> @item.Status.ToString()</p>
+                            <p><strong>⭐ Rating:</strong> @item.Rating</p>
+                            <p><strong>🏪 Category:</strong> @item.Category.ToString()</p>
+                        </div>
+                        @* <form asp-action="Add" asp-controller="Cart" method="post" class="add-to-cart-form">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <input type="hidden" name="quantity" value="1" class="quantity-hidden" />
+                            <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
+                        </form> *@
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+}
+@section Scripts {
+    <script>
+        document.querySelectorAll(".card").forEach(card => {
+            const input = card.querySelector(".quantity-input");
+            const hiddenInput = card.querySelector(".quantity-hidden");
+            const increaseBtn = card.querySelector(".increase-btn");
+            const decreaseBtn = card.querySelector(".decrease-btn");
+
+            const max = parseInt(input.getAttribute("max"));
+            const min = parseInt(input.getAttribute("min")) || 1;
+
+            function updateButtons() {
+                const value = parseInt(input.value);
+                increaseBtn.disabled = value >= max;
+                decreaseBtn.disabled = value <= min;
+                if (parseInt(input.value) >= max) {
+                    input.classList.add("border-danger");
+                } else {
+                    input.classList.remove("border-danger");
+                }
+            }
+
+            increaseBtn.addEventListener("click", () => {
+                let val = parseInt(input.value);
+                if (val < max) {
+                    val++;
+                    input.value = val;
+                    hiddenInput.value = val;
+                }
+                updateButtons();
+            });
+
+            decreaseBtn.addEventListener("click", () => {
+                let val = parseInt(input.value);
+                if (val > min) {
+                    val--;
+                    input.value = val;
+                    hiddenInput.value = val;
+                }
+                updateButtons();
+            });
+
+            input.addEventListener("input", () => {
+                let val = parseInt(input.value);
+                if (isNaN(val) || val < min) val = min;
+                if (val > max) val = max;
+                input.value = val;
+                hiddenInput.value = val;
+                updateButtons();
+            });
+            updateButtons();
+        });
+        document.querySelectorAll(".add-to-cart-form").forEach(form => {
+            form.addEventListener("submit", function (e) {
+                const input = form.closest(".card").querySelector(".quantity-input");
+                const hiddenInput = form.querySelector(".quantity-hidden");
+                hiddenInput.value = input.value;
+            });
+        });
+    </script>
+}

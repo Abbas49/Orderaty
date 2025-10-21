@@ -52,7 +52,7 @@ namespace Orderaty.Controllers
                     db.SaveChanges();
                 }  
             }
-            return RedirectToAction("Index", "ClientProduct");
+            return RedirectToAction("Details", "ClientProduct", new {Id = id});
         }
 
         [HttpPost]
@@ -65,40 +65,6 @@ namespace Orderaty.Controllers
                 db.SaveChanges();
             }
             return RedirectToAction("Index");
-        }
-
-        public IActionResult Checkout()
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                var clientId = db.Users.FirstOrDefault(c => c.UserName == User.Identity.Name)?.Id;
-                var cartItems = db.CartItems.Include(t => t.Product).Where(ci => ci.ClientId == clientId).ToList();
-                var order = new Order
-                {
-                    ClientId = clientId,
-                    CreatedAt = DateTime.Now,
-                    Status = OrderStatus.PendingDelivery,
-                    TotalPrice = cartItems.Sum(ci => ci.Product.Price * ci.Quantity),
-                    SellerId = cartItems.FirstOrDefault()?.Product.SellerId,
-                };
-                db.Orders.Add(order);
-                db.SaveChanges();
-                List<OrderedItem> orderItems = new List<OrderedItem>();
-                foreach(var item in cartItems)
-                {
-                    orderItems.Add(new OrderedItem
-                    {
-                        OrderId = order.Id,
-                        ProductId = item.ProductId,
-                        Quantity = item.Quantity,
-                        Subtotal = item.Product.Price
-                    });
-                }
-                db.OrderedItems.AddRange(orderItems);
-                db.CartItems.RemoveRange(cartItems);
-                db.SaveChanges();
-            }
-            return RedirectToAction("Index", "ClientProduct");
         }
     }
 }

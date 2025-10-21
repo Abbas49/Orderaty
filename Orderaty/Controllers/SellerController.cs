@@ -7,7 +7,7 @@ using Orderaty.Models;
 
 namespace Orderaty.Controllers
 {
-    [Authorize(Roles = "Seller")]
+    //[Authorize(Roles = "Seller")]
     public class SellerController : Controller
     {
         private readonly AppDbContext db;
@@ -104,5 +104,50 @@ namespace Orderaty.Controllers
             return RedirectToAction("Profile");
         }
 
+        // --------------------- ✏️ View All Sellers for clients ---------------------
+        public async Task<IActionResult> Browse(string? sellerName, string? category, string? sort)
+        {
+            var products = db.Sellers
+                .Include(p => p.User)
+                .AsQueryable();
+
+            // البحث بالاسم
+            if (!string.IsNullOrEmpty(sellerName))
+                products = products.Where(p => p.User.FullName.Contains(sellerName));
+
+            // فلترة بالفئة (Category)
+            if (!string.IsNullOrEmpty(category))
+            {
+                if (Enum.TryParse<SellerCategory>(category, out var categoryEnum))
+                {
+                    products = products.Where(p => p.Category == categoryEnum);
+                }
+            }
+
+            // الترتيب
+            products = sort switch
+            {
+                "rating_desc" => products.OrderByDescending(p => p.Rating),
+                "rating_asc" => products.OrderBy(p => p.Rating),
+                _ => products.OrderByDescending(p => p.Id)
+            };
+
+            var result = await products.ToListAsync();
+            return View(result);
+        }
+
+        // --------------------- ✏️ details about store and his products ---------------------
+        public IActionResult Details(string id)
+        {
+            var seller = db.Sellers.Include(s => s.Products).Include(s => s.User)
+                .Where(s => s.Id == id).FirstOrDefault();
+
+            if(seller != null)
+            {
+                return View(seller);
+            }
+
+            return NotFound();
+        }
     }
 }

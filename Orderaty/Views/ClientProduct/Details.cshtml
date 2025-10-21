@@ -31,9 +31,81 @@
                 <p><strong>⭐ Rating:</strong> @Model.Rating</p>
                 <p><strong>🏪 Seller:</strong> @Model.Seller.User.FullName</p>
                 <p><strong>📍 Category:</strong> @Model.Seller.Category.ToString().Replace("_", " ")</p>
-
-                <a asp-action="Index" class="btn btn-secondary mt-3">Back to Products</a>
             </div>
+            <div class="d-flex justify-content-center align-items-center mb-3">
+                <button type="button" class="btn btn-outline-secondary btn-sm me-2 decrease-btn">−</button>
+                <input type="number" class="form-control text-center quantity-input" value="1" min="1" max="@Model.Available_Amount"
+                       style="width:60px;" />
+                <button type="button" class="btn btn-outline-secondary btn-sm ms-2 increase-btn">+</button>
+            </div>
+            <form asp-action="Add" asp-controller="Cart" method="post" class="add-to-cart-form">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="quantity" value="1" class="quantity-hidden" />
+                <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
+            </form>
+            <a asp-action="Index" class="btn btn-secondary mt-3">Back to Products</a>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll(".card").forEach(card => {
+            const input = card.querySelector(".quantity-input");
+            const hiddenInput = card.querySelector(".quantity-hidden");
+            const increaseBtn = card.querySelector(".increase-btn");
+            const decreaseBtn = card.querySelector(".decrease-btn");
+
+            const max = parseInt(input.getAttribute("max"));
+            const min = parseInt(input.getAttribute("min")) || 1;
+
+            function updateButtons() {
+                const value = parseInt(input.value);
+                increaseBtn.disabled = value >= max;
+                decreaseBtn.disabled = value <= min;
+                if (parseInt(input.value) >= max) {
+                    input.classList.add("border-danger");
+                } else {
+                    input.classList.remove("border-danger");
+                }
+            }
+
+            increaseBtn.addEventListener("click", () => {
+                let val = parseInt(input.value);
+                if (val < max) {
+                    val++;
+                    input.value = val;
+                    hiddenInput.value = val;
+                }
+                updateButtons();
+            });
+
+            decreaseBtn.addEventListener("click", () => {
+                let val = parseInt(input.value);
+                if (val > min) {
+                    val--;
+                    input.value = val;
+                    hiddenInput.value = val;
+                }
+                updateButtons();
+            });
+
+            input.addEventListener("input", () => {
+                let val = parseInt(input.value);
+                if (isNaN(val) || val < min) val = min;
+                if (val > max) val = max;
+                input.value = val;
+                hiddenInput.value = val;
+                updateButtons();
+            });
+            updateButtons();
+        });
+        document.querySelectorAll(".add-to-cart-form").forEach(form => {
+            form.addEventListener("submit", function (e) {
+                const input = form.closest(".card").querySelector(".quantity-input");
+                const hiddenInput = form.querySelector(".quantity-hidden");
+                hiddenInput.value = input.value;
+            });
+        });
+    </script>
+}
