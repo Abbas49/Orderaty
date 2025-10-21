@@ -6,92 +6,267 @@
 }
 
 @section Styles {
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/client-product.css" asp-append-version="true" />
 }
 
-<h2 class="mb-4">🛒 Explore Products</h2>
-
-<form method="get" class="mb-4">
-    <div class="row g-2">
-        <div class="col-md-3">
-            <input type="text" name="search" class="form-control" placeholder="Search by product name..." value="@Context.Request.Query["search"]" />
-        </div>
-        <div class="col-md-3">
-            <input type="text" name="sellerName" class="form-control" placeholder="Search by seller name..." value="@Context.Request.Query["sellerName"]" />
-        </div>
-        <div class="col-md-2">
-            <select name="category" class="form-select">
-                <option value="">All Categories</option>
-                @foreach (var cat in Enum.GetValues(typeof(SellerCategory)))
-                {
-                    <option value="@cat" selected="@(Context.Request.Query["category"] == cat.ToString())">@cat.ToString().Replace("_", " ")</option>
-                }
-            </select>
-        </div>
-        <div class="col-md-2">
-            <input type="number" name="minPrice" class="form-control" placeholder="Min price" value="@Context.Request.Query["minPrice"]" />
-        </div>
-        <div class="col-md-2">
-            <input type="number" name="maxPrice" class="form-control" placeholder="Max price" value="@Context.Request.Query["maxPrice"]" />
+<!-- Page Header -->
+<section class="products-header">
+    <div class="container">
+        <div class="header-content-wrapper">
+            <div class="header-text">
+                <h1 class="page-title">🛒 Explore Products</h1>
+                <p class="page-subtitle">Discover amazing products from trusted sellers</p>
+            </div>
         </div>
     </div>
+</section>
 
-    <div class="row g-2 mt-2">
-        <div class="col-md-3">
-            <select name="sort" class="form-select">
-                <option value="">Sort by</option>
-                <option value="rating_desc" selected="@(Context.Request.Query["sort"] == "rating_desc")">Rating (High → Low)</option>
-                <option value="rating_asc" selected="@(Context.Request.Query["sort"] == "rating_asc")">Rating (Low → High)</option>
-                <option value="price_asc" selected="@(Context.Request.Query["sort"] == "price_asc")">Price (Low → High)</option>
-                <option value="price_desc" selected="@(Context.Request.Query["sort"] == "price_desc")">Price (High → Low)</option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary w-100">Filter</button>
-        </div>
-        <div class="col-md-2">
-            <a asp-action="Index" class="btn btn-secondary w-100">Reset</a>
-        </div>
+<!-- Filters Section -->
+<section class="filters-section">
+    <div class="container">
+        <form method="get" class="filters-wrapper">
+            <div class="filter-group">
+                <label class="filter-label">
+                    <i class="fas fa-search"></i>
+                    Search Products
+                </label>
+                <input type="text" name="search" class="form-input" placeholder="Search by product name..." value="@Context.Request.Query["search"]" />
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">
+                    <i class="fas fa-store"></i>
+                    Seller Name
+                </label>
+                <input type="text" name="sellerName" class="form-input" placeholder="Search by seller name..." value="@Context.Request.Query["sellerName"]" />
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">
+                    <i class="fas fa-tag"></i>
+                    Category
+                </label>
+                <select name="category" class="form-select">
+                    <option value="">All Categories</option>
+                    @foreach (var cat in Enum.GetValues(typeof(SellerCategory)))
+                    {
+                        <option value="@cat" selected="@(Context.Request.Query["category"] == cat.ToString())">@cat.ToString().Replace("_", " ")</option>
+                    }
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">
+                    <i class="fas fa-dollar-sign"></i>
+                    Price Range
+                </label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="number" name="minPrice" class="form-input" placeholder="Min price" value="@Context.Request.Query["minPrice"]" style="flex: 1;" />
+                    <input type="number" name="maxPrice" class="form-input" placeholder="Max price" value="@Context.Request.Query["maxPrice"]" style="flex: 1;" />
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">
+                    <i class="fas fa-sort"></i>
+                    Sort By
+                </label>
+                <select name="sort" class="form-select">
+                    <option value="">Sort by</option>
+                    <option value="rating_desc" selected="@(Context.Request.Query["sort"] == "rating_desc")">Rating (High → Low)</option>
+                    <option value="rating_asc" selected="@(Context.Request.Query["sort"] == "rating_asc")">Rating (Low → High)</option>
+                    <option value="price_asc" selected="@(Context.Request.Query["sort"] == "price_asc")">Price (Low → High)</option>
+                    <option value="price_desc" selected="@(Context.Request.Query["sort"] == "price_desc")">Price (High → Low)</option>
+                </select>
+            </div>
+
+            <div class="filter-group" style="display: flex; align-items: end; gap: 12px;">
+                <button type="submit" class="filter-btn">
+                    <i class="fas fa-filter"></i>
+                    Filter
+                </button>
+                <a asp-action="Index" class="filter-btn secondary">
+                    <i class="fas fa-redo"></i>
+                    Reset
+                </a>
+            </div>
+        </form>
     </div>
-</form>
+</section>
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info mt-4">No products found matching your search.</div>
-}
-else
-{
-    <div class="row row-cols-1 row-cols-md-3 g-4" >
-        @foreach (var item in Model)
+<!-- Products Section -->
+<section class="products-section">
+    <div class="container">
+        @if (TempData["Message"] != null)
         {
-            <div class="col">
-                <a href="/ClientProduct/Details/@item.Id">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-img-top text-center p-2" style="height: 200px; overflow: hidden;">
+            <div class="notification notification-success">
+                <div class="notification-content">
+                    <i class="fas fa-check-circle notification-icon"></i>
+                    <span class="notification-text">@TempData["Message"]</span>
+                </div>
+                <div class="notification-progress"></div>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="notification notification-error">
+                <div class="notification-content">
+                    <i class="fas fa-exclamation-circle notification-icon"></i>
+                    <span class="notification-text">@TempData["Error"]</span>
+                </div>
+                <div class="notification-progress"></div>
+            </div>
+        }
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-content">
+                    <i class="fas fa-search"></i>
+                    <h2 class="empty-title">No products found</h2>
+                    <p class="empty-text">Try adjusting your search criteria or filters</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="products-info">
+                <h2 class="section-heading">All Products</h2>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <p class="products-count">Showing <span class="count-number">@Model.Count()</span> products</p>
+                    @if (Model.Count() == 0)
+                    {
+                        <a asp-action="AddTestProducts" class="filter-btn" style="padding: 8px 16px; font-size: 13px;">
+                            <i class="fas fa-plus"></i>
+                            Add Test Products
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <div class="products-grid">
+                @foreach (var item in Model)
+                {
+                    <div class="product-card">
+                        <div class="product-image-wrapper">
                             @if (!string.IsNullOrEmpty(item.Image))
                             {
-                                <img src="~/images/products/@item.Image"
-                                alt="@item.Name"
-                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" />
+                                <img src="~/images/products/@item.Image" alt="@item.Name" class="product-image" />
                             }
                             else
                             {
-                                <img src="~/images/default-product.png"
-                                alt="No Image"
-                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" />
+                                <img src="~/images/default-product.png" alt="No Image" class="product-image" />
                             }
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title">@item.Name</h5>
-                            <p class="card-text text-muted">@item.Description</p>
-                            <p><strong>💰 Price:</strong> @item.Price.ToString("C")</p>
-                            <p><strong>📦 Available:</strong> @item.Available_Amount</p>
-                            <p><strong>⭐ Rating:</strong> @item.Rating</p>
-                            <p><strong>🏪 Seller:</strong> @item.Seller.User.FullName</p>
+
+                        <div class="product-content">
+                            <div class="product-header">
+                                <h3 class="product-title">@item.Name</h3>
+                                <p class="product-description">@item.Description</p>
+                            </div>
+
+                            <div class="product-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <span class="meta-label">Price:</span>
+                                    <span class="meta-value price">@item.Price.ToString("C")</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-box"></i>
+                                    <span class="meta-label">Available:</span>
+                                    <span class="meta-value">@item.Available_Amount</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-star"></i>
+                                    <span class="meta-label">Rating:</span>
+                                    <span class="meta-value rating">@item.Rating</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-store"></i>
+                                    <span class="meta-label">Seller:</span>
+                                    <span class="meta-value">@item.Seller.User.FullName</span>
+                                </div>
+                            </div>
+
+                            <div class="quantity-controls">
+                                <button type="button" class="quantity-btn decrease-btn">−</button>
+                                <input type="number" class="quantity-input" value="1" min="1" max="@item.Available_Amount" />
+                                <button type="button" class="quantity-btn increase-btn">+</button>
+                            </div>
+
+                            <form asp-action="Add" asp-controller="Cart" method="post" class="add-to-cart-form">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <input type="hidden" name="quantity" value="1" class="quantity-hidden" />
+                                <button type="submit" class="add-to-cart-btn">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Add to Cart
+                                </button>
+                            </form>
                         </div>
                     </div>
-                </a>
+                }
             </div>
         }
     </div>
+</section>
+@section Scripts {
+    <script>
+        document.querySelectorAll(".product-card").forEach(card => {
+            const input = card.querySelector(".quantity-input");
+            const hiddenInput = card.querySelector(".quantity-hidden");
+            const increaseBtn = card.querySelector(".increase-btn");
+            const decreaseBtn = card.querySelector(".decrease-btn");
+
+            const max = parseInt(input.getAttribute("max"));
+            const min = parseInt(input.getAttribute("min")) || 1;
+
+            function updateButtons() {
+                const value = parseInt(input.value);
+                increaseBtn.disabled = value >= max;
+                decreaseBtn.disabled = value <= min;
+                if (parseInt(input.value) >= max) {
+                    input.classList.add("border-danger");
+                } else {
+                    input.classList.remove("border-danger");
+                }
+            }
+
+            increaseBtn.addEventListener("click", () => {
+                let val = parseInt(input.value);
+                if (val < max) {
+                    val++;
+                    input.value = val;
+                    hiddenInput.value = val;
+                }
+                updateButtons();
+            });
+
+            decreaseBtn.addEventListener("click", () => {
+                let val = parseInt(input.value);
+                if (val > min) {
+                    val--;
+                    input.value = val;
+                    hiddenInput.value = val;
+                }
+                updateButtons();
+            });
+
+            input.addEventListener("input", () => {
+                let val = parseInt(input.value);
+                if (isNaN(val) || val < min) val = min;
+                if (val > max) val = max;
+                input.value = val;
+                hiddenInput.value = val;
+                updateButtons();
+            });
+            updateButtons();
+        });
+
+        document.querySelectorAll(".add-to-cart-form").forEach(form => {
+            form.addEventListener("submit", function (e) {
+                const input = form.closest(".product-card").querySelector(".quantity-input");
+                const hiddenInput = form.querySelector(".quantity-hidden");
+                hiddenInput.value = input.value;
+            });
+        });
+    </script>
 }
