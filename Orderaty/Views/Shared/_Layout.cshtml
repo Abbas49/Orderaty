@@ -34,16 +34,23 @@
                         <i class="fas fa-home"></i>
                         Home
                     </a>
-                    <a href="#" class="nav-link">
+                    <a asp-controller="Seller" asp-action="Browse" class="nav-link">
                         <i class="fas fa-th-large"></i>
                         Browse
                     </a>
                     @if(User.Identity.IsAuthenticated && User.IsInRole("Client"))
                     {
+                        @inject Orderaty.Data.AppDbContext DbContext
+                        var currentUserId = DbContext.Users.FirstOrDefault(c => c.UserName == User.Identity.Name)?.Id;
+                        var cartCount = DbContext.CartItems.Count(c => c.ClientId == currentUserId);
+                        
                         <a href="/Cart/Index" class="nav-link">
                             <i class="fas fa-shopping-cart"></i>
                             Cart
-                            <span class="badge" id="cart-count">0</span>
+                            @if(cartCount > 0)
+                            {
+                                <span class="badge" id="cart-count">@cartCount</span>
+                            }
                         </a>
                     }
                     <a href="#" class="nav-link">

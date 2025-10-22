@@ -50,6 +50,7 @@ namespace Orderaty.Controllers
             return RedirectToAction("Logout", "User");
         }
 
+
         [HttpPost]
         public async Task<IActionResult> Update(ClientProfile _profile)
         {

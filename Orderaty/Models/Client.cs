@@ -12,5 +12,6 @@ namespace Orderaty.Models
         public User User { get; set; }
         public List<Order> Orders { get; set; }
         public List<CartItem> CartItems { get; set; }
+        public List<SellerReview> SellerReviews { get; set; }
     }
 }
