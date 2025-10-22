@@ -1,0 +1,18 @@
+﻿@model Orderaty.Models.Delivery
+
+@{
+    ViewData["Title"] = "Delivery Profile";
+}
+
+<h2 class="mb-4">🚴 Delivery Profile</h2>
+
+<div class="card shadow-sm" style="max-width: 600px;">
+    <div class="card-body text-center">
+        <img src="~/images/users/@Model.User.Image" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;" />
+        <h4>@Model.User.FullName</h4>
+        <p class="text-muted">@Model.User.Email</p>
+        <p>📞 @Model.User.PhoneNumber</p>
+
+        <a asp-action="EditProfile" class="btn btn-outline-primary mt-3">Edit Profile</a>
+    </div>
+</div>

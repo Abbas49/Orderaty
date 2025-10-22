@@ -1,0 +1,62 @@
+﻿@model Orderaty.ViewModels.EditDeliveryVM
+
+@{
+    ViewData["Title"] = "Edit Delivery Profile";
+}
+
+<h2 class="mb-4">✏️ Edit Profile</h2>
+
+<form asp-action="EditProfile" method="post" enctype="multipart/form-data" style="max-width: 600px;">
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-center">
+            <div class="mb-3">
+                <img id="profilePreview"
+                     src="@(string.IsNullOrEmpty(Model.CurrentImage) ? Url.Content("~/images/default-user.png") : Url.Content("~/images/users/" + Model.CurrentImage))"
+                     class="rounded-circle mb-3"
+                     style="width: 140px; height: 140px; object-fit: cover; border: 2px solid #ddd;" />
+
+                <div>
+                    <label for="NewImage" class="btn btn-outline-primary btn-sm mt-2">
+                        <i class="bi bi-camera"></i> Change Photo
+                    </label>
+                    <input asp-for="NewImage" type="file" id="NewImage" class="d-none" accept="image/*" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label fw-bold"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PhoneNumber" class="form-label fw-bold"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success px-4">Save Changes</button>
+            <a asp-action="Profile" class="btn btn-secondary ms-2">Cancel</a>
+        </div>
+    </div>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // ✅ عند اختيار صورة جديدة من الجهاز
+        document.getElementById('NewImage').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (x) {
+                    document.getElementById('profilePreview').src = x.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}

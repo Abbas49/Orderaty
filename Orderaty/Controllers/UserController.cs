@@ -50,6 +50,11 @@ namespace Orderaty.Controllers
                     {
                         return RedirectToAction("Home", "Seller");
                     }
+                    if (await userManager.IsInRoleAsync(userData, "Delivery"))
+                    {
+                        return RedirectToAction("Home", "Delivery");
+                    }
+
                     return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt Try Again");
