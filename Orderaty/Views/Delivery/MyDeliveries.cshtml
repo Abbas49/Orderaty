@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Orderaty.Models.Order>
+
+@{
+    ViewData["Title"] = "My Active Deliveries";
+}
+
+<h2 class="mb-4">🚚 My Active Deliveries</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">You have no active deliveries at the moment.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        @foreach (var order in Model)
+        {
+            <div class="col">
+                <div class="card shadow-sm border-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Order #@order.Id</h5>
+                        <p><strong>Seller:</strong> @order.Seller.User.FullName</p>
+                        <p><strong>Client:</strong> @order.Client.User.FullName</p>
+                        <p><strong>Total Price:</strong> @order.TotalPrice.ToString("C")</p>
+                        <p><strong>Status:</strong> <span class="badge bg-info text-dark">@order.Status</span></p>
+                        <p><small>Created: @order.CreatedAt.ToString("g")</small></p>
+
+                        <a asp-action="OrderDetails" asp-route-id="@order.Id" class="btn btn-outline-primary btn-sm">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

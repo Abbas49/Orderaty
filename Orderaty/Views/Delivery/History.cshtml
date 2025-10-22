@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Orderaty.Models.Order>
+
+@{
+    ViewData["Title"] = "Delivery History";
+}
+
+<h2 class="mb-4">📜 Delivery History (Completed Orders)</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No delivered orders yet.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Seller</th>
+                    <th>Client</th>
+                    <th>Total Price</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td>@order.Seller.User.FullName</td>
+                        <td>@order.Client.User.FullName</td>
+                        <td>@order.TotalPrice.ToString("C")</td>
+                        <td>@order.CreatedAt.ToString("g")</td>
+                        <td><span class="badge bg-success">@order.Status</span></td>
+                        <td>
+                            <a asp-action="OrderDetails" asp-route-id="@order.Id" class="btn btn-outline-primary btn-sm">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

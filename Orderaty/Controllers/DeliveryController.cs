@@ -103,6 +103,99 @@ namespace Orderaty.Controllers
             return fileName;
         }
 
+        // ✅ عرض الطلبات اللي مستنية دليفري
+        public async Task<IActionResult> Orders()
+        {
+            var pendingOrders = await db.Orders
+                .Include(o => o.Seller).ThenInclude(s => s.User)
+                .Include(o => o.Client).ThenInclude(c => c.User)
+                .Where(o => o.Status == OrderStatus.PendingDelivery)
+                .ToListAsync();
+
+            return View(pendingOrders);
+        }
+
+        // ✅ عرض تفاصيل الطلب
+        public async Task<IActionResult> OrderDetails(int id)
+        {
+            var order = await db.Orders
+                .Include(o => o.Seller).ThenInclude(s => s.User)
+                .Include(o => o.Client).ThenInclude(c => c.User)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+                return NotFound();
+
+            return View(order);
+        }
+
+        // ✅ تحديث الحالة (Step by Step)
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatus(int id)
+        {
+            var user = await userManager.GetUserAsync(User);
+            var order = await db.Orders.FindAsync(id);
+            if (order == null)
+                return NotFound();
+
+            switch (order.Status)
+            {
+                case OrderStatus.PendingDelivery:
+                    order.Status = OrderStatus.Processing;
+                    order.DeliveryId = user.Id; // ✅ يسجل الدليفري الحالي
+                    break;
+                case OrderStatus.Processing:
+                    order.Status = OrderStatus.Shipped;
+                    break;
+                case OrderStatus.Shipped:
+                    order.Status = OrderStatus.Delivered;
+                    break;
+            }
+
+            await db.SaveChangesAsync();
+            return RedirectToAction("OrderDetails", new { id });
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> MyDeliveries()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction("Login", "User");
+
+            var myOrders = await db.Orders
+                .Include(o => o.Seller).ThenInclude(s => s.User)
+                .Include(o => o.Client).ThenInclude(c => c.User)
+                .Where(o =>
+                    o.DeliveryId == user.Id ||
+                    (o.Status == OrderStatus.Processing || o.Status == OrderStatus.Shipped))
+                .ToListAsync();
+
+            return View(myOrders);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> History()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction("Login", "User");
+
+            var completedOrders = await db.Orders
+                .Include(o => o.Seller).ThenInclude(s => s.User)
+                .Include(o => o.Client).ThenInclude(c => c.User)
+                .Where(o => o.DeliveryId == user.Id && o.Status == OrderStatus.Delivered)
+                .OrderByDescending(o => o.CreatedAt)
+                .ToListAsync();
+
+            return View(completedOrders);
+        }
 
     }
+
+
 }
+

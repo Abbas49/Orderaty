@@ -1,0 +1,37 @@
+﻿@model Orderaty.Models.Order
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h2 class="mb-4">📦 Order #@Model.Id</h2>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <p><strong>Status:</strong> <span class="badge bg-info text-dark">@Model.Status</span></p>
+        <p><strong>Created At:</strong> @Model.CreatedAt.ToString("g")</p>
+        <p><strong>Total Price:</strong> @Model.TotalPrice.ToString("C")</p>
+        <hr />
+        <p><strong>Client Address:</strong> @Model.Client.User?.Email ?? "N/A"</p>
+        <p><strong>Seller Address:</strong> @Model.Seller.Address</p>
+    </div>
+</div>
+
+<form asp-action="UpdateStatus" method="post" class="text-center">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    @if (Model.Status != Orderaty.Models.OrderStatus.Delivered)
+    {
+        <button type="submit" class="btn btn-success px-4">
+            Advance to Next Status →
+        </button>
+    }
+    else
+    {
+        <button type="button" class="btn btn-secondary px-4" disabled>
+            ✅ Delivered
+        </button>
+    }
+
+    <a asp-action="Orders" class="btn btn-outline-dark ms-3">Back to Orders</a>
+</form>
