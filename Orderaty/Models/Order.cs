@@ -18,9 +18,11 @@
         // Relationships
         public string ClientId { get; set; }
         public Client Client { get; set; }
-        public string DeliveryId { get; set; }
+        public string SellerId { get; set; }
+        public Seller Seller { get; set; }
+        public string? DeliveryId { get; set; }
         public Delivery Delivery { get; set; }
-        public int CouponId { get; set; }
+        public int? CouponId { get; set; }
         public Coupon Coupon { get; set; }
         public List<OrderedItem> OrderedItems { get; set; }
     }

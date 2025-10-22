@@ -1,90 +1,156 @@
 ﻿@model Orderaty.ViewModels.RegisterSeller
 @{
-    ViewData["Title"] = "AddSeller";
+    ViewData["Title"] = "Register as Seller";
 }
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+@section Styles {
+    <link rel="stylesheet" href="~/css/register.css" asp-append-version="true" />
+}
 
-<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
-    <div class="card shadow-lg p-4 rounded-4" style="width: 420px; background: white;">
-        <h3 class="text-center mb-4 fw-bold text-primary">Create an Account</h3>
-
-        <form asp-action="AddSeller" method="post" enctype="multipart/form-data" novalidate>
-            <div class="form-floating mb-3">
-                <input asp-for="FullName" class="form-control" value="@Model?.FullName" placeholder="Full Name" />
-                <label asp-for="FullName"></label>
-                <span asp-validation-for="FullName" class="text-danger"></span>
+<!-- Register Section -->
+<section class="register-section">
+    <div class="register-container">
+        <div class="register-card">
+            <div class="register-header">
+                <i class="fas fa-store"></i>
+                <h1 class="register-title">Become a Seller</h1>
+                <p class="register-subtitle">Join Orderaty and start selling your products today</p>
             </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="UserName" class="form-control" value="@Model?.UserName" placeholder="User Name" />
-                <label asp-for="UserName"></label>
-                <span asp-validation-for="UserName" class="text-danger"></span>
-            </div>
+            <form asp-action="AddSeller" method="post" enctype="multipart/form-data" class="register-form" novalidate>
+                
+                <div class="form-group">
+                    <label asp-for="FullName" class="form-label">
+                        <i class="fas fa-user"></i>
+                        Full Name
+                    </label>
+                    <input asp-for="FullName" class="form-input" value="@Model?.FullName" placeholder="Enter your full name" />
+                    <span asp-validation-for="FullName" class="validation-error"></span>
+                </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Email" class="form-control" value="@Model?.Email" placeholder="Email" />
-                <label asp-for="Email"></label>
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="UserName" class="form-label">
+                        <i class="fas fa-at"></i>
+                        Username
+                    </label>
+                    <input asp-for="UserName" class="form-input" value="@Model?.UserName" placeholder="Choose a username" />
+                    <span asp-validation-for="UserName" class="validation-error"></span>
+                </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Description" class="form-control" value="@Model?.Description" placeholder="Description" />
-                <label asp-for="Description"></label>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </label>
+                    <input asp-for="Email" class="form-input" value="@Model?.Email" placeholder="your.email@example.com" />
+                    <span asp-validation-for="Email" class="validation-error"></span>
+                </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Phone" class="form-control" value="@Model?.Phone" placeholder="Phone Number" />
-                <label asp-for="Phone"></label>
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Phone" class="form-label">
+                        <i class="fas fa-phone"></i>
+                        Phone Number
+                    </label>
+                    <input asp-for="Phone" class="form-input" value="@Model?.Phone" placeholder="(123) 456-7890" />
+                    <span asp-validation-for="Phone" class="validation-error"></span>
+                </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Address" class="form-control" value="@Model?.Address" placeholder="Address" />
-                <label asp-for="Address"></label>
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Address" class="form-label">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Address
+                    </label>
+                    <input asp-for="Address" class="form-input" value="@Model?.Address" placeholder="123 Main St, New York" />
+                    <span asp-validation-for="Address" class="validation-error"></span>
+                </div>
 
-            <div class="form-floating mb-3">
-                <select asp-for="Category" class="form-select" asp-items="Html.GetEnumSelectList<Orderaty.Models.SellerCategory>()">
-                    <option value="">Select Category</option>
-                </select>
-                <label asp-for="Category"></label>
-                <span asp-validation-for="Category" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="form-label">
+                        <i class="fas fa-align-left"></i>
+                        Store Description
+                    </label>
+                    <textarea asp-for="Description" class="form-input" rows="4" placeholder="Describe your store and products...">@Model?.Description</textarea>
+                    <span asp-validation-for="Description" class="validation-error"></span>
+                </div>
 
+                <div class="form-group">
+                    <label asp-for="Category" class="form-label">
+                        <i class="fas fa-tags"></i>
+                        Store Category
+                    </label>
+                    <select asp-for="Category" class="form-input" asp-items="Html.GetEnumSelectList<Orderaty.Models.SellerCategory>()">
+                        <option value="">Select a category</option>
+                    </select>
+                    <span asp-validation-for="Category" class="validation-error"></span>
+                </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
-                <label asp-for="Password"></label>
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Password
+                    </label>
+                    <input asp-for="Password" type="password" class="form-input" placeholder="Create a strong password" />
+                    <span asp-validation-for="Password" class="validation-error"></span>
+                </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password" />
-                <label asp-for="ConfirmPassword"></label>
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Confirm Password
+                    </label>
+                    <input asp-for="ConfirmPassword" type="password" class="form-input" placeholder="Re-enter your password" />
+                    <span asp-validation-for="ConfirmPassword" class="validation-error"></span>
+                </div>
 
-            <div class="mb-3">
-                <label asp-for="Image" class="form-label">Profile Picture</label>
-                <input asp-for="Image" type="file" value="@Model?.Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Image" class="form-label">
+                        <i class="fas fa-image"></i>
+                        Store Logo / Profile Picture
+                    </label>
+                    <div class="file-input-wrapper">
+                        <input asp-for="Image" type="file" value="@Model?.Image" class="file-input" id="profile-image" />
+                        <label for="profile-image" class="file-input-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span class="file-input-text">Choose a file</span>
+                        </label>
+                    </div>
+                    <span asp-validation-for="Image" class="validation-error"></span>
+                </div>
 
-            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold rounded-3">Register</button>
+                <div asp-validation-summary="All" class="validation-summary"></div>
 
-            <div class="text-center mt-3">
-                <p class="text-muted">
-                    Already have an account?
-                    <a asp-action="Login" class="text-decoration-none text-primary fw-semibold">Login</a>
-                </p>
-            </div>
-        </form>
+                <button type="submit" class="register-btn">
+                    <i class="fas fa-store"></i>
+                    Register as Seller
+                </button>
+
+                <div class="register-footer">
+                    <p class="footer-text">
+                        Already have an account?
+                        <a asp-action="Login" class="footer-link">Login here</a>
+                    </p>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // File input display name
+            const fileInput = document.getElementById('profile-image');
+            const fileInputText = document.querySelector('.file-input-text');
+            if (fileInput && fileInputText) {
+                fileInput.addEventListener('change', function(e) {
+                    if (e.target.files && e.target.files.length > 0) {
+                        fileInputText.textContent = e.target.files[0].name;
+                    } else {
+                        fileInputText.textContent = 'Choose a file';
+                    }
+                });
+            }
+        });
+    </script>
 }

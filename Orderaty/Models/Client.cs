@@ -11,5 +11,6 @@ namespace Orderaty.Models
         // Relationships
         public User User { get; set; }
         public List<Order> Orders { get; set; }
+        public List<CartItem> CartItems { get; set; }
     }
 }

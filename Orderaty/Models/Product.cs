@@ -15,5 +15,6 @@
         public string SellerId { get; set; }
         public Seller Seller { get; set; }
         public List<OrderedItem> OrderedItems { get; set; }
+        public List<CartItem> CartItems { get; set; }
     }
 }

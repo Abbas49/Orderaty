@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orderaty Theme Preview</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+        }
+        
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .theme-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .theme-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        
+        .theme-header {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+        
+        .green-fresh .theme-header {
+            background: linear-gradient(135deg, #1f9a3a, #38c172);
+            color: white;
+        }
+        
+        .ocean-blue .theme-header {
+            background: linear-gradient(135deg, #1e40af, #60a5fa);
+            color: white;
+        }
+        
+        .sunset-purple .theme-header {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            color: white;
+        }
+        
+        .dark-mode .theme-header {
+            background: linear-gradient(135deg, #0a0e1a, #1a1f2e);
+            color: #06b6d4;
+        }
+        
+        .theme-body {
+            padding: 20px;
+        }
+        
+        .theme-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .theme-description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        .color-palette {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .color-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .features {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .features ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        
+        .features li {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .usage-instructions {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .usage-instructions h2 {
+            color: #333;
+            margin-bottom: 16px;
+        }
+        
+        .usage-instructions ol {
+            padding-left: 20px;
+        }
+        
+        .usage-instructions li {
+            margin-bottom: 12px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .code-block {
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 12px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Orderaty Theme System</h1>
+        
+        <div class="theme-grid">
+            <!-- Green Fresh Theme -->
+            <div class="theme-card green-fresh">
+                <div class="theme-header">🌿</div>
+                <div class="theme-body">
+                    <div class="theme-name">Green Fresh</div>
+                    <div class="theme-description">Natural & vibrant - Default theme</div>
+                    <div class="color-palette">
+                        <div class="color-box" style="background: #1f9a3a;"></div>
+                        <div class="color-box" style="background: #2db34a;"></div>
+                        <div class="color-box" style="background: #38c172;"></div>
+                        <div class="color-box" style="background: #f0faf2;"></div>
+                    </div>
+                    <div class="features">
+                        <strong>Best For:</strong>
+                        <ul>
+                            <li>General use</li>
+                            <li>Eco-friendly aesthetic</li>
+                            <li>Fresh, natural look</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ocean Blue Theme -->
+            <div class="theme-card ocean-blue">
+                <div class="theme-header">💧</div>
+                <div class="theme-body">
+                    <div class="theme-name">Ocean Blue</div>
+                    <div class="theme-description">Professional & calm</div>
+                    <div class="color-palette">
+                        <div class="color-box" style="background: #1e40af;"></div>
+                        <div class="color-box" style="background: #3b82f6;"></div>
+                        <div class="color-box" style="background: #60a5fa;"></div>
+                        <div class="color-box" style="background: #eff6ff;"></div>
+                    </div>
+                    <div class="features">
+                        <strong>Best For:</strong>
+                        <ul>
+                            <li>Business & corporate</li>
+                            <li>Professional look</li>
+                            <li>Trustworthy appearance</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sunset Purple Theme -->
+            <div class="theme-card sunset-purple">
+                <div class="theme-header">🌆</div>
+                <div class="theme-body">
+                    <div class="theme-name">Sunset Purple</div>
+                    <div class="theme-description">Creative & elegant</div>
+                    <div class="color-palette">
+                        <div class="color-box" style="background: #7c3aed;"></div>
+                        <div class="color-box" style="background: #8b5cf6;"></div>
+                        <div class="color-box" style="background: #a78bfa;"></div>
+                        <div class="color-box" style="background: #f5f3ff;"></div>
+                    </div>
+                    <div class="features">
+                        <strong>Best For:</strong>
+                        <ul>
+                            <li>Creative projects</li>
+                            <li>Modern & artistic</li>
+                            <li>Unique presentation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dark Mode Theme -->
+            <div class="theme-card dark-mode">
+                <div class="theme-header">🌙</div>
+                <div class="theme-body">
+                    <div class="theme-name">Dark Mode</div>
+                    <div class="theme-description">Modern cyan accent - Easy on the eyes</div>
+                    <div class="color-palette">
+                        <div class="color-box" style="background: #0a0e1a;"></div>
+                        <div class="color-box" style="background: #1a1f2e;"></div>
+                        <div class="color-box" style="background: #06b6d4;"></div>
+                        <div class="color-box" style="background: #22d3ee;"></div>
+                    </div>
+                    <div class="features">
+                        <strong>Best For:</strong>
+                        <ul>
+                            <li>Night time use</li>
+                            <li>Reduced eye strain</li>
+                            <li>Battery saving (OLED)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="usage-instructions">
+            <h2>📖 How to Use Themes</h2>
+            <ol>
+                <li><strong>Access Theme Switcher:</strong> Look for the palette icon (🎨) in the navigation bar</li>
+                <li><strong>Click to Open:</strong> Click the "Theme" button to reveal the theme dropdown menu</li>
+                <li><strong>Select Theme:</strong> Choose your preferred theme from the 4 available options</li>
+                <li><strong>Instant Apply:</strong> The theme applies immediately with smooth transitions</li>
+                <li><strong>Auto-Save:</strong> Your choice is saved automatically and persists across sessions</li>
+            </ol>
+            
+            <h2>💻 For Developers</h2>
+            <p>Themes are implemented using CSS custom properties:</p>
+            <div class="code-block">
+/* Access theme colors in your CSS */
+.my-element {
+    background: var(--primary-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+            </div>
+            
+            <p><strong>Key CSS Variables:</strong></p>
+            <ul>
+                <li><code>--primary-color</code> - Main theme color</li>
+                <li><code>--bg-body</code> - Body background</li>
+                <li><code>--text-primary</code> - Primary text color</li>
+                <li><code>--border-color</code> - Border colors</li>
+                <li><code>--error-color</code> - Error/validation messages</li>
+            </ul>
+            
+            <p>See <code>THEMES.md</code> for complete documentation.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -2,7 +2,130 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+}
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Fast Delivery to Your Door</h1>
+            <p class="hero-subtitle">Order from your favorite stores and get it delivered instantly</p>
+            
+            <div class="search-container">
+                <div class="search-input-group">
+                    <div class="search-input">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" placeholder="Enter address (e.g. 123 Main St, New York)">
+                    </div>
+                    <div class="search-input">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search for stores, items, or categories">
+                        <button class="search-btn">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Stores Section -->
+<section class="featured-stores">
+    <div class="container">
+        <h2 class="section-title">Featured Stores</h2>
+        <div class="stores-grid">
+            <div class="store-card">
+                <div class="store-image">
+                    <img src="https://images.unsplash.com/photo-1542831371-d531d36971e6?auto=format&fit=crop&w=800&q=60" alt="Fresh Market grocery store interior with fresh produce">
+                </div>
+                <div class="store-info">
+                    <div class="store-badge">Groceries</div>
+                    <h3 class="store-title">Fresh Market</h3>
+                    <div class="store-meta">
+                        <span class="rating">⭐ 4.8</span>
+                        <span class="eta">20-30 min</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="store-card">
+                <div class="store-image">
+                    <img src="https://images.unsplash.com/photo-1541542684-1b0f136f8d36?auto=format&fit=crop&w=800&q=60" alt="Pizza Paradise restaurant with delicious pizza on display">
+                </div>
+                <div class="store-info">
+                    <div class="store-badge">Food</div>
+                    <h3 class="store-title">Pizza Paradise</h3>
+                    <div class="store-meta">
+                        <span class="rating">⭐ 4.6</span>
+                        <span class="eta">25-35 min</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="store-card">
+                <div class="store-image">
+                    <img src="https://images.unsplash.com/photo-1580281657526-4f2e6d9f3f8f?auto=format&fit=crop&w=800&q=60" alt="HealthPlus Pharmacy storefront with medical supplies and medications">
+                </div>
+                <div class="store-info">
+                    <div class="store-badge">Pharmacy</div>
+                    <h3 class="store-title">HealthPlus Pharmacy</h3>
+                    <div class="store-meta">
+                        <span class="rating">⭐ 4.9</span>
+                        <span class="eta">15-25 min</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Browse Categories Section -->
+<section class="browse-categories">
+    <div class="container">
+        <h2 class="section-title">Browse Categories</h2>
+        <div class="categories-grid">
+            <div class="category-item">
+                <div class="category-icon groceries">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <span class="category-label">Groceries</span>
+            </div>
+            
+            <div class="category-item">
+                <div class="category-icon food">
+                    <i class="fas fa-pizza-slice"></i>
+                </div>
+                <span class="category-label">Food</span>
+            </div>
+            
+            <div class="category-item">
+                <div class="category-icon pharmacy">
+                    <i class="fas fa-prescription-bottle"></i>
+                </div>
+                <span class="category-label">Pharmacy</span>
+            </div>
+            
+            <div class="category-item">
+                <div class="category-icon packages">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <span class="category-label">Packages</span>
+            </div>
+            
+            <div class="category-item">
+                <div class="category-icon restaurants">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <span class="category-label">Restaurants</span>
+            </div>
+            
+            <div class="category-item">
+                <div class="category-icon coffee">
+                    <i class="fas fa-coffee"></i>
+                </div>
+                <span class="category-label">Coffee</span>
+            </div>
+        </div>
+    </div>
+</section>

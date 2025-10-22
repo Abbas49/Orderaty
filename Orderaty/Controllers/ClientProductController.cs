@@ -73,6 +73,6 @@ namespace Orderaty.Controllers
                 return NotFound();
 
             return View(product);
-        }
+        } 
     }
 }

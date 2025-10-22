@@ -12,6 +12,7 @@ namespace Orderaty.Data
             
         }
 
+        public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<Delivery> Deliveries { get; set; }
