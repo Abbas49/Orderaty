@@ -3,6 +3,7 @@
     public class Favourite
     {
         public int Id { get; set; }
+        public bool IsFavourite { get; set; }
 
         // Relationships
         public string ClientId { get; set; }

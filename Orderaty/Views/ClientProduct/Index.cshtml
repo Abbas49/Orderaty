@@ -189,18 +189,16 @@
 
                             <div class="quantity-controls">
                                 <button type="button" class="quantity-btn decrease-btn">−</button>
-                                <input type="number" class="quantity-input" value="1" min="1" max="@item.Available_Amount" />
+                                <input type="number" id="quantity-@item.Id" class="quantity-input" value="1" min="1" max="@item.Available_Amount" />
                                 <button type="button" class="quantity-btn increase-btn">+</button>
                             </div>
 
-                            <form asp-action="Add" asp-controller="Cart" method="post" class="add-to-cart-form">
-                                <input type="hidden" name="id" value="@item.Id" />
-                                <input type="hidden" name="quantity" value="1" class="quantity-hidden" />
-                                <button type="submit" class="add-to-cart-btn">
-                                    <i class="fas fa-shopping-cart"></i>
-                                    Add to Cart
-                                </button>
-                            </form>
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <input type="hidden" name="quantity" value="1" class="quantity-hidden" />
+                            <button type="submit" class="add-to-cart-btn" onclick="AddToCart(@item.Id)">
+                                <i class="fas fa-shopping-cart"></i>
+                                Add to Cart
+                            </button>
                         </div>
                     </div>
                 }
@@ -268,5 +266,28 @@
                 hiddenInput.value = input.value;
             });
         });
+
+                function AddToCart(itemId) {
+            const quantityInput = document.getElementById(`quantity-${itemId}`);
+            if (!quantityInput) {
+                console.error(`Quantity input not found for item ${itemId}`);
+                return;
+            }
+
+            const quantity = parseInt(quantityInput.value) || 1;
+
+            $.ajax({
+                url: "/Cart/Add",
+                type: "POST",
+                data: { id: itemId, quantity: quantity },
+                success: function (result) {
+                    console.log("Product added successfully:", result);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error adding to cart:", error);
+                }
+            });
+        }
+
     </script>
 }

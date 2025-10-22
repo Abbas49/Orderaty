@@ -60,7 +60,8 @@ namespace Orderaty.Controllers
             {
                 var clientId = db.Users.Where(c => c.UserName == User.Identity.Name)
                     .FirstOrDefault()?.Id;
-                var orders = db.Orders.Include(o => o.Seller).ThenInclude(o => o.User)
+                var orders = db.Orders.Include(o => o.OrderedItems)
+                    .Include(o => o.Seller).ThenInclude(o => o.User)
                     .Where(c => c.ClientId == clientId).ToList();
 
                 if(orders != null)

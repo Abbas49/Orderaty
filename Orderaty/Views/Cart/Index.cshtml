@@ -86,6 +86,12 @@
                             </div>
                         }
                     </div>
+                    <form asp-action="Clear" asp-controller="Cart" method="post" style="margin: 0;">
+                        <button type="submit" class="remove-btn">
+                            <i class="fas fa-trash"></i>
+                            Clear
+                        </button>
+                    </form>
                 </div>
 
                 <!-- Order Summary Section -->
@@ -177,7 +183,15 @@
             }
 
             quantityElement.textContent = newQuantity;
-            
+            $.ajax({
+                url:"/Cart/Update?Id="+itemId+"&quantity="+newQuantity,
+                // data : {deptId : deptId}
+                type:"POST",
+                success:function(result){
+                    console.log(result);
+
+                }
+            })
             // Update totals (you may want to implement AJAX call to update server)
             updateCartTotals();
         }
@@ -193,7 +207,7 @@
             element.classList.add('active');
             
             // Update delivery fee
-            document.getElementById('delivery-fee').textContent = `$${price.toFixed(2)}`;
+            document.getElementById('delivery-fee').textContent = `${price.toFixed(2)} EGP`;
             
             // Update total
             updateCartTotals();
@@ -216,15 +230,15 @@
             }
             
             // Update subtotal
-            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('subtotal').textContent = `${subtotal.toFixed(2)} EGP`;
             
             // Get delivery fee
             const deliveryFeeText = document.getElementById('delivery-fee').textContent;
-            const deliveryFee = parseFloat(deliveryFeeText.replace('$', ''));
+            const deliveryFee = parseFloat(deliveryFeeText.replace('EGP', ''));
             
             // Update total
             const total = subtotal + deliveryFee;
-            document.getElementById('total-amount').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('total-amount').textContent = `${total.toFixed(2)} EGP`;
         }
     </script>
 }

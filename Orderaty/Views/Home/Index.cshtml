@@ -41,6 +41,9 @@
                 <div class="store-card">
                     <div class="store-image">
                         <img src="~/images/users/@store.User.Image" alt="Fresh Market grocery store interior with fresh produce">
+                        <button class="add-to-favorites" onclick="MakeFavourite(this, '@store.User.Id')">
+                            <i class="far fa-heart"></i>
+                        </button>
                     </div>
                     <div class="store-info">
                         <div class="store-badge">@store.Category.ToString()</div>
@@ -138,3 +141,28 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        function MakeFavourite(btn, sellerId){
+            var icon = $(btn).find("i");
+
+            $.ajax(
+                {
+                    url: "/Favourite/Make?sellerId="+sellerId,
+                    // data : {id : empId},
+                    type : "POST",
+                    success: function(result){
+                        console.log(result)
+                        if (result === false) {
+                            icon.removeClass("fas").addClass("far").css("color", "");
+                        }
+                        else {
+                            icon.removeClass("far").addClass("fas").css("color", "red");
+                        }
+                    }
+                } 
+            );
+        }
+    </script>
+}
