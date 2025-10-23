@@ -1,4 +1,6 @@
-﻿namespace Orderaty.Models
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace Orderaty.Models
 {
     public class Product
     {
@@ -16,5 +18,6 @@
         public Seller Seller { get; set; }
         public List<OrderedItem> OrderedItems { get; set; }
         public List<CartItem> CartItems { get; set; }
+        //public List<ProductReview> ProductReviews { get; set; } ---> Error adding product
     }
 }

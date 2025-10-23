@@ -1,188 +1,235 @@
 ﻿@model Orderaty.Models.Product
 
 @{
-    ViewData["Title"] = "Product Details";
+    ViewData["Title"] = Model.Name;
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/client-product.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/client-product-details.css" asp-append-version="true" />
 }
 
-<h2>@Model.Name</h2>
+<div id="product-detail-page-container">
+    <div class="page-wrapper pb-20 md:pb-8">
+        <div class="container py-8">
+            <div class="product-layout-grid mb-12">
 
-<div class="card mb-4 shadow-sm" style="max-width: 750px;">
-    <div class="row g-0">
-        <div class="col-md-5">
-            @if (!string.IsNullOrEmpty(Model.Image))
-            {
-                <img src="~/images/products/@Model.Image" class="img-fluid rounded-start" alt="@Model.Name" />
-            }
-            else
-            {
-                <img src="~/images/default-product.png" class="img-fluid rounded-start" alt="No Image" />
-            }
-        </div>
-        <div class="col-md-7">
-            <div class="card-body">
-                <h4 class="card-title">@Model.Name</h4>
-                <p class="card-text">@Model.Description</p>
-                <p><strong>💰 Price:</strong> @Model.Price.ToString("C")</p>
-                <p><strong>📦 Available:</strong> @Model.Available_Amount</p>
-                <p><strong>⭐ Rating:</strong> @Model.Rating</p>
-                <p><strong>🏪 Seller:</strong> @Model.Seller.User.FullName</p>
-                <p><strong>📍 Category:</strong> @Model.Seller.Category.ToString().Replace("_", " ")</p>
+                <!-- Product Image -->
+                <div class="product-image-column">
+                    <div class="sticky-image-container">
+                        <div class="image-wrapper rounded-2xl overflow-hidden shadow-lg">
+                            @if (!string.IsNullOrEmpty(Model.Image))
+                            {
+                                <img id="product-image" src="~/images/products/@Model.Image" alt="@Model.Name" class="product-image image-with-fallback">
+                            }
+                            else
+                            {
+                                <img id="product-image" src="~/images/default-product.png" alt="No Image" class="product-image image-with-fallback">
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Details -->
+                <div class="product-details-column">
+                    <div class="mb-4">
+                        <span id="product-category-badge" class="badge mb-3">@Model.Seller.Category.ToString().Replace("_", " ")</span>
+                        <h1 id="product-name" class="product-title mb-2">@Model.Name</h1>
+                        <p id="product-store" class="store-link text-muted-foreground cursor-pointer">By @Model.Seller.User.FullName</p>
+                    </div>
+
+                    <div class="rating-reviews-container mb-6">
+                        <div id="product-rating-stars" class="rating-stars"></div>
+                        <span id="product-rating-text" class="text-muted-foreground">@Model.Rating.ToString("0.0") out of 5</span>
+                    </div>
+
+                    <hr class="separator my-6" />
+
+                    <div class="price-stock-container mb-6">
+                        <div class="price-unit-wrapper mb-2">
+                            <span id="product-price"
+                                  class="price-text"
+                                  data-base-price="@Model.Price.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)">
+                                @Model.Price.ToString("C")
+                            </span>
+                            <span id="product-unit" class="text-muted-foreground text-sm">(per item)</span>
+                        </div>
+                        @if (Model.Available_Amount > 0)
+                        {
+                            <span id="product-stock-status" class="badge" style="background-color: #dcfce7; color: #166534;">
+                                In Stock (@Model.Available_Amount available)
+                            </span>
+                        }
+                        else
+                        {
+                            <span id="product-stock-status" class="badge" style="background-color: #fee2e2; color: #991b1b;">
+                                Out of Stock
+                            </span>
+                        }
+                    </div>
+
+                    <hr class="separator my-6" />
+
+                    <div class="description-container mb-6">
+                        <h3 class="section-title mb-3">Description</h3>
+                        <p id="product-description" class="description-text text-muted-foreground leading-relaxed">@Model.Description</p>
+                    </div>
+
+                    <hr class="separator my-6" />
+
+                    <!-- Quantity and Buttons -->
+                    <form asp-action="Add" asp-controller="Cart" method="post" id="add-to-cart-form">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <input type="hidden" name="quantity" id="quantity-hidden" value="1" />
+
+                        <div class="quantity-section mb-6">
+                            <label class="quantity-label block mb-3">Quantity</label>
+                            <div class="quantity-controls-wrapper flex items-center gap-4">
+                                <button type="button" id="decrease-quantity" class="quantity-button px-3 py-1 rounded bg-gray-200 text-gray-800">−</button>
+                                <div id="quantity-display" class="quantity-value text-lg font-semibold">1</div>
+                                <button type="button" id="increase-quantity" class="quantity-button px-3 py-1 rounded bg-gray-200 text-gray-800">+</button>
+                                <div class="total-price-display ml-4 text-primary font-medium">
+                                    Total: <span id="total-price">@Model.Price.ToString("C")</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons-container flex gap-4 mt-4">
+                            <button id="add-to-cart-button" type="submit" class="button primary-button flex-1" disabled="@(Model.Available_Amount == 0)">
+                                Add to Cart
+                            </button>
+                            <button id="buy-now-button" type="button" class="button outline-button flex-1" disabled="@(Model.Available_Amount == 0)">
+                                Buy Now
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Reviews -->
+            <div class="reviews-section mt-12">
+                <div class="reviews-header flex justify-between items-center mb-6">
+                    <h2 class="section-title text-2xl">Customer Reviews</h2>
+                    <button id="write-review-button" class="button outline-button rounded-xl">
+                        Write a Review
+                    </button>
+                </div>
+
+                <div id="reviews-list-container" class="reviews-list space-y-4">
+                    @if (Model.ProductReviews != null && Model.ProductReviews.Any())
+                    {
+                        @foreach (var review in Model.ProductReviews)
+                        {
+                            <div class="review-card card rounded-2xl p-4">
+                                <div class="review-card-header flex justify-between">
+                                    <span class="reviewer-name font-medium">
+                                        @(review.Client?.User?.FullName != null ? review.Client.User.FullName : "Anonymous")
+                                    </span>
+                                    <span class="review-rating" data-rating="@review.Rating">@review.Rating.ToString("0.0") ⭐</span>
+                                </div>
+                                <p class="review-comment text-muted-foreground mt-2">@review.Comment</p>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="no-reviews-placeholder text-center text-muted-foreground">
+                            <p>No reviews yet. Be the first to write one!</p>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
-        <!-- Product Details Section -->
-        <section class="product-details-section">
-            <div class="container">
-                <div class="product-details-card">
-                    <div class="row g-0">
-                        <div class="col-md-6">
-                            <div class="product-details-image">
-                                @if (!string.IsNullOrEmpty(Model.Image))
-                                {
-                                    <img src="~/images/products/@Model.Image" alt="@Model.Name" />
-                                }
-                                else
-                                {
-                                    <img src="~/images/default-product.png" alt="No Image" />
-                                }
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="product-details-content">
-                                <h1 class="product-details-title">@Model.Name</h1>
-                                <p class="product-details-description">@Model.Description</p>
-        
-                                <div class="product-details-meta">
-                                    <div class="details-meta-item">
-                                        <i class="fas fa-dollar-sign"></i>
-                                        <div class="details-meta-content">
-                                            <div class="details-meta-label">Price</div>
-                                            <div class="details-meta-value price">@Model.Price.ToString("C")</div>
-                                        </div>
-                                    </div>
-        
-                                    <div class="details-meta-item">
-                                        <i class="fas fa-box"></i>
-                                        <div class="details-meta-content">
-                                            <div class="details-meta-label">Available Stock</div>
-                                            <div class="details-meta-value">@Model.Available_Amount units</div>
-                                        </div>
-                                    </div>
-        
-                                    <div class="details-meta-item">
-                                        <i class="fas fa-star"></i>
-                                        <div class="details-meta-content">
-                                            <div class="details-meta-label">Rating</div>
-                                            <div class="details-meta-value rating">@Model.Rating</div>
-                                        </div>
-                                    </div>
-        
-                                    <div class="details-meta-item">
-                                        <i class="fas fa-store"></i>
-                                        <div class="details-meta-content">
-                                            <div class="details-meta-label">Seller</div>
-                                            <div class="details-meta-value">@Model.Seller.User.FullName</div>
-                                        </div>
-                                    </div>
-        
-                                    <div class="details-meta-item">
-                                        <i class="fas fa-tag"></i>
-                                        <div class="details-meta-content">
-                                            <div class="details-meta-label">Category</div>
-                                            <div class="details-meta-value">@Model.Seller.Category.ToString().Replace("_", " ")</div>
-                                        </div>
-                                    </div>
-                                </div>
-        
-                                <a asp-action="Index" class="back-btn">
-                                    <i class="fas fa-arrow-left"></i>
-                                    Back to Products
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center mb-3">
-                        <button type="button" class="btn btn-outline-secondary btn-sm me-2 decrease-btn">−</button>
-                        <input type="number" class="form-control text-center quantity-input" value="1" min="1" max="@Model.Available_Amount"
-                               style="width:60px;" />
-                        <button type="button" class="btn btn-outline-secondary btn-sm ms-2 increase-btn">+</button>
-                    </div>
-                    <form asp-action="Add" asp-controller="Cart" method="post" class="add-to-cart-form">
-                        <input type="hidden" name="id" value="@Model.Id" />
-                        <input type="hidden" name="quantity" value="1" class="quantity-hidden" />
-                        <button type="submit" class="btn btn-primary w-100">Add to Cart</button>
-                    </form>
-                    <a asp-action="Index" class="btn btn-secondary mt-3">Back to Products</a>
-                </div>
-           </div>
-        </section>
     </div>
 </div>
 
-            @section Scripts {
-                <script>
-                    document.querySelectorAll(".card").forEach(card => {
-                        const input = card.querySelector(".quantity-input");
-                        const hiddenInput = card.querySelector(".quantity-hidden");
-                        const increaseBtn = card.querySelector(".increase-btn");
-                        const decreaseBtn = card.querySelector(".decrease-btn");
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
-                        const max = parseInt(input.getAttribute("max"));
-                        const min = parseInt(input.getAttribute("min")) || 1;
+            const ICONS = {
+                star_filled: '<svg class="icon icon-md star-icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+                star_empty: '<svg class="icon icon-md" style="color: var(--muted-foreground);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+            };
 
-                        function updateButtons() {
-                            const value = parseInt(input.value);
-                            increaseBtn.disabled = value >= max;
-                            decreaseBtn.disabled = value <= min;
-                            if (parseInt(input.value) >= max) {
-                                input.classList.add("border-danger");
-                            } else {
-                                input.classList.remove("border-danger");
-                            }
-                        }
-
-                        increaseBtn.addEventListener("click", () => {
-                            let val = parseInt(input.value);
-                            if (val < max) {
-                                val++;
-                                input.value = val;
-                                hiddenInput.value = val;
-                            }
-                            updateButtons();
-                        });
-
-                        decreaseBtn.addEventListener("click", () => {
-                            let val = parseInt(input.value);
-                            if (val > min) {
-                                val--;
-                                input.value = val;
-                                hiddenInput.value = val;
-                            }
-                            updateButtons();
-                        });
-
-                        input.addEventListener("input", () => {
-                            let val = parseInt(input.value);
-                            if (isNaN(val) || val < min) val = min;
-                            if (val > max) val = max;
-                            input.value = val;
-                            hiddenInput.value = val;
-                            updateButtons();
-                        });
-                        updateButtons();
-                    });
-                    document.querySelectorAll(".add-to-cart-form").forEach(form => {
-                        form.addEventListener("submit", function (e) {
-                            const input = form.closest(".card").querySelector(".quantity-input");
-                            const hiddenInput = form.querySelector(".quantity-hidden");
-                            hiddenInput.value = input.value;
-                        });
-                    });
-                </script>
+            function createStarsHtml(rating) {
+                let starsHtml = '';
+                const fullStars = Math.floor(rating);
+                for (let i = 0; i < 5; i++) {
+                    starsHtml += i < fullStars ? ICONS.star_filled : ICONS.star_empty;
+                }
+                return starsHtml;
             }
-            =======
-            </section>
-            >>>>>>> 6f605e5a4c76a16ca6bfd521b1c4267e89e824ac
+
+            const decreaseBtn = document.getElementById("decrease-quantity");
+            const increaseBtn = document.getElementById("increase-quantity");
+            const quantityDisplay = document.getElementById("quantity-display");
+            const hiddenInput = document.getElementById("quantity-hidden");
+            const totalPriceEl = document.getElementById("total-price");
+            const priceEl = document.getElementById("product-price");
+
+            const maxStock = parseInt('@Model.Available_Amount', 10) || 99;
+            let currentQuantity = 1;
+
+            const basePrice = parseFloat(priceEl.dataset.basePrice) || 0;
+
+            function updateUI() {
+                quantityDisplay.textContent = currentQuantity;
+                hiddenInput.value = currentQuantity;
+                const total = (basePrice * currentQuantity).toFixed(2);
+                totalPriceEl.textContent = `$${total}`;
+                decreaseBtn.disabled = currentQuantity <= 1;
+                increaseBtn.disabled = currentQuantity >= maxStock;
+            }
+
+            if (increaseBtn && decreaseBtn) {
+                increaseBtn.addEventListener("click", () => {
+                    if (currentQuantity < maxStock) {
+                        currentQuantity++;
+                        updateUI();
+                    }
+                });
+
+                decreaseBtn.addEventListener("click", () => {
+                    if (currentQuantity > 1) {
+                        currentQuantity--;
+                        updateUI();
+                    }
+                });
+            }
+
+            updateUI();
+
+            // --- Rating Stars ---
+            const productRatingStarsEl = document.getElementById('product-rating-stars');
+            if (productRatingStarsEl) {
+                productRatingStarsEl.innerHTML = createStarsHtml(@Model.Rating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture));
+            }
+
+            document.querySelectorAll('.review-rating[data-rating]').forEach(el => {
+                const rating = parseFloat(el.dataset.rating);
+                el.innerHTML = createStarsHtml(rating);
+            });
+
+            // --- Buttons ---
+            const buyNowButton = document.getElementById('buy-now-button');
+            const productStoreEl = document.getElementById('product-store');
+            const writeReviewButton = document.getElementById('write-review-button');
+
+            if (buyNowButton) {
+                buyNowButton.addEventListener('click', () => {
+                    alert(`Proceeding to checkout with ${currentQuantity} '@Model.Name'(s)! (Simulated)`);
+                });
+            }
+            if (productStoreEl) {
+                productStoreEl.addEventListener('click', () => {
+                    alert(`Navigating to '@Model.Seller.User.FullName's profile! (Simulated)`);
+                });
+            }
+            if (writeReviewButton) {
+                writeReviewButton.addEventListener('click', () => {
+                    alert(`Navigating to write review page for product @Model.Id! (Simulated)`);
+                });
+            }
+        });
+    </script>
+}
