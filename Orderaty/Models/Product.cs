@@ -18,6 +18,6 @@ namespace Orderaty.Models
         public Seller Seller { get; set; }
         public List<OrderedItem> OrderedItems { get; set; }
         public List<CartItem> CartItems { get; set; }
-        //public List<ProductReview> ProductReviews { get; set; } ---> Error adding product
+        public List<ProductReview> ProductReviews { get; set; } //---> Error adding product
     }
 }
