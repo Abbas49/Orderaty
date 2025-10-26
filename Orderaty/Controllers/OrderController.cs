@@ -12,6 +12,27 @@ namespace Orderaty.Controllers
         {
             this.db = db;
         }
+
+        public IActionResult History()
+        {
+           if (User.Identity != null && User.Identity.IsAuthenticated)
+           {
+               var clientId = db.Users.Where(c => c.UserName == User.Identity.Name)
+                   .FirstOrDefault()?.Id;
+               var orders = db.Orders.Include(o => o.OrderedItems).ThenInclude(oi => oi.Product)
+                   .Include(o => o.Seller).ThenInclude(s => s.User)
+                   .Where(c => c.ClientId == clientId)
+                   .OrderByDescending(o => o.CreatedAt)
+                   .ToList();
+
+               if (orders != null)
+                   return View(orders);
+
+               return View(new List<Order>());
+           }
+           return RedirectToAction("Login", "User");
+        }
+
         public IActionResult Details(int id)
         {
             var order = db.Orders.Include(o => o.Seller).ThenInclude(s => s.User)
@@ -54,22 +75,22 @@ namespace Orderaty.Controllers
             return RedirectToAction("Index", "ClientProduct");
         }
 
-        public IActionResult History()
-        {
-            if(User.Identity != null && User.Identity.IsAuthenticated)
-            {
-                var clientId = db.Users.Where(c => c.UserName == User.Identity.Name)
-                    .FirstOrDefault()?.Id;
-                var orders = db.Orders.Include(o => o.OrderedItems)
-                    .Include(o => o.Seller).ThenInclude(o => o.User)
-                    .Where(c => c.ClientId == clientId).ToList();
+        // public IActionResult History()
+        // {
+        //     if(User.Identity != null && User.Identity.IsAuthenticated)
+        //     {
+        //         var clientId = db.Users.Where(c => c.UserName == User.Identity.Name)
+        //             .FirstOrDefault()?.Id;
+        //         var orders = db.Orders.Include(o => o.OrderedItems)
+        //             .Include(o => o.Seller).ThenInclude(o => o.User)
+        //             .Where(c => c.ClientId == clientId).ToList();
 
-                if(orders != null)
-                    return View(orders);
+        //         if(orders != null)
+        //             return View(orders);
 
-                return NoContent();
-            }
-            return NotFound();
-        }
+        //         return NoContent();
+        //     }
+        //     return NotFound();
+        // }
     }
 }
