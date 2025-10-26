@@ -265,6 +265,12 @@
     transform: translateY(0);
 }
 
+.sort-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
 .sort-option {
     display: flex;
     align-items: center;
@@ -330,6 +336,31 @@
 
 .filter-tag i:hover {
     opacity: 1;
+}
+
+.reset-filters-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.reset-filters-btn:hover {
+    background: var(--primary-bg-light);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.reset-filters-btn i {
+    font-size: 12px;
 }
 
 /* Stores Section */
@@ -630,6 +661,13 @@
     padding: 80px 20px;
 }
 
+.empty-state-inline {
+    background: var(--bg-white);
+    padding: 80px 20px;
+    border-radius: 16px;
+    border: 1px solid var(--border-light);
+}
+
 .empty-content {
     text-align: center;
     max-width: 500px;
@@ -828,4 +866,17 @@
     .store-card {
         break-inside: avoid;
     }
+}
+
+/* Utility Classes */
+.text-success {
+    color: #10b981 !important;
+}
+
+.text-danger {
+    color: #ef4444 !important;
+}
+
+.badge-closed {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
 }
