@@ -218,22 +218,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Store cards functionality
+    // Store cards functionality - now handled by anchor tags
     function initStoreCards() {
-        const storeCards = document.querySelectorAll('.store-card');
-        
-        storeCards.forEach(card => {
-            card.addEventListener('click', function() {
-                const storeTitle = this.querySelector('.store-title').textContent;
-                showNotification(`Opening ${storeTitle}...`, 'success');
-                
-                // Add click animation
-                this.style.transform = 'scale(0.98)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 150);
-            });
-        });
+        // Store cards are now proper links to Seller Details page
+        // No additional JavaScript needed
     }
     
     // Category items functionality

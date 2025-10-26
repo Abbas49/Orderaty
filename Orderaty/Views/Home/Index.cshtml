@@ -44,10 +44,10 @@
         <div class="stores-grid">
             @foreach(var store in Model.Sellers)
             {
-                <div class="store-card">
+                <a href="@Url.Action("Details", "Seller", new { id = store.Id })" class="store-card">
                     <div class="store-image">
                         <img src="~/images/users/@store.User.Image" alt="Fresh Market grocery store interior with fresh produce">
-                        <button class="add-to-favorites" onclick="MakeFavourite(this, '@store.User.Id')">
+                        <button class="add-to-favorites" onclick="event.preventDefault(); event.stopPropagation(); MakeFavourite(this, '@store.User.Id')">
                             <i class="far fa-heart"></i>
                         </button>
                     </div>
@@ -59,7 +59,7 @@
                             <span class="eta">20-30 min</span>
                         </div>
                     </div>
-                </div>
+                </a>
             }
         </div>
     </div>
@@ -79,25 +79,27 @@
             @foreach(var product in Model.Products)
             {
                 <div class="product-card">
-                    <div class="product-image">
-                        <img src="~/images/products/@product.Image" alt="Fresh Organic Salad">
-                        <button class="add-to-favorites">
-                            <i class="far fa-heart"></i>
-                        </button>
-                    </div>
-                    <div class="product-info">
-                        @*<div class="product-category">@product</div>*@
-                        <h3 class="product-title">@product.Name</h3>
-                        <p class="product-store">@product.Seller.User.FullName</p>
-                        <div class="product-footer">
-                            <div class="product-price">
-                                <span class="price">@product.Price EGP</span>
-                            </div>
-                            <button class="add-to-cart-btn">
-                                <i class="fas fa-plus"></i>
+                    <a href="@Url.Action("Details", "ClientProduct", new { id = product.Id })" class="product-link">
+                        <div class="product-image">
+                            <img src="~/images/products/@product.Image" alt="@product.Name">
+                            <button class="add-to-favorites" onclick="event.preventDefault(); event.stopPropagation();">
+                                <i class="far fa-heart"></i>
                             </button>
                         </div>
-                    </div>
+                        <div class="product-info">
+                            @*<div class="product-category">@product</div>*@
+                            <h3 class="product-title">@product.Name</h3>
+                            <p class="product-store">@product.Seller.User.FullName</p>
+                            <div class="product-footer">
+                                <div class="product-price">
+                                    <span class="price">@product.Price EGP</span>
+                                </div>
+                                <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation();">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </a>
                 </div>
             }
         </div>

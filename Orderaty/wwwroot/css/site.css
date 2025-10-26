@@ -374,25 +374,35 @@ main {
     border-radius: 2px 2px 0 0;
 }
 
+/* Cart Icon Wrapper */
+.cart-icon-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
 /* Cart Badge */
 .cart-badge {
-    position: absolute;
-    top: 6px;
-    right: 10px;
     background: var(--error-color);
     color: white;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
-    padding: 3px 7px;
-    border-radius: 12px;
-    min-width: 20px;
+    padding: 3px 5px;
+    border-radius: 10px;
+    min-width: 18px;
     text-align: center;
     box-shadow: 0 2px 6px rgba(220, 38, 38, 0.4);
     animation: pulse 2s ease-in-out infinite;
+    line-height: 1;
+    margin-left: 4px;
 }
 
 /* For navbar items with position relative needed for badge */
 .navbar-item {
+    position: relative;
+}
+
+.navbar-item i {
     position: relative;
 }
 
