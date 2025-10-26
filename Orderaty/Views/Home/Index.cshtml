@@ -34,7 +34,13 @@
 <!-- Featured Stores Section -->
 <section class="featured-stores">
     <div class="container">
-        <h2 class="section-title">Featured Stores</h2>
+        <div class="section-header">
+            <h2 class="section-title">Featured Stores</h2>
+            <a href="/Seller/Browse" class="view-all-btn">
+                View All
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
         <div class="stores-grid">
             @foreach(var store in Model.Sellers)
             {
@@ -62,7 +68,13 @@
 <!-- Trending Items Section -->
 <section class="trending-items">
     <div class="container">
-        <h2 class="section-title">Trending Items</h2>
+        <div class="section-header">
+            <h2 class="section-title">Trending Items</h2>
+            <a href="/ClientProduct/Index" class="view-all-btn">
+                View All
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
         <div class="products-grid">
             @foreach(var product in Model.Products)
             {
