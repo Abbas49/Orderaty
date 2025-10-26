@@ -1,78 +1,185 @@
 ﻿@model Orderaty.Models.Seller
-
 @{
-    ViewData["Title"] = "Product Details";
+    // NULL CHECK: Use ?.FullName and provide a fallback title
+    ViewData["Title"] = $"Store Profile - {Model.User?.FullName ?? "Details"}";
 }
 
-@section Styles {
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-}
+<link rel="stylesheet" href="~/css/store-details.css">
 
-<h2>@Model.User.FullName</h2>
+<div id="store-profile-page-container">
+    <div class="page-wrapper pb-20 md:pb-8">
 
-<div class="card mb-4 shadow-sm" style="max-width: 750px;">
-    <div class="row g-0">
-        <div class="col-md-5">
-            @if (!string.IsNullOrEmpty(Model.User.Image))
-            {
-                <img src="~/images/products/@Model.User.Image" class="img-fluid rounded-start" alt="@Model.User.FullName" />
-            }
-            else
-            {
-                <img src="~/images/default-product.png" class="img-fluid rounded-start" alt="No Image" />
-            }
-        </div>
-        <div class="col-md-7">
-            <div class="card-body">
-                <h4 class="card-title">@Model.User.FullName</h4>
-                <p class="card-text">@Model.Description</p>
-                <p><strong>⭐ Address:</strong> @Model.Address</p>
-                <p><strong>📦 Status:</strong> @Model.Status.ToString()</p>
-                <p><strong>📍 Category:</strong> @Model.Category.ToString()</p>
-                <p><strong>⭐ Rating:</strong> @Model.Rating</p>
+        <div class="cover-image-container">
+            <img id="store-cover-image" src="" alt="@(Model.User?.FullName ?? "Store") cover image" class="cover-image image-with-fallback">
+            <div class="cover-gradient"></div>
+            <div class="cover-actions">
+                <button class="action-button" aria-label="Add to favorites">
+                    <svg class="icon icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.04 3 5.5l7 7Z" /></svg>
+                </button>
+                <button class="action-button" aria-label="Share">
+                    <svg class="icon icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" x2="15.42" y1="13.51" y2="17.49" /><line x1="15.41" x2="8.59" y1="6.51" y2="10.49" /></svg>
+                </button>
             </div>
         </div>
-        <h2 class="mb-4">🛒 Explore Products</h2>
 
-        @if (!Model.Products.Any())
-        {
-            <div class="alert alert-info mt-4">No products found matching your search.</div>
-        }
-        else
-        {
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                @foreach (var item in Model.Products)
-                {
-                    <div class="col">
-                        <a href="/ClientProduct/Details/@item.Id">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-img-top text-center p-2" style="height: 200px; overflow: hidden;">
-                                    @if (!string.IsNullOrEmpty(item.Image))
-                                    {
-                                        <img src="~/images/products/@item.Image"
-                                             alt="@item.Name"
-                                             style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" />
-                                    }
-                                    else
-                                    {
-                                        <img src="~/images/default-product.png"
-                                             alt="No Image"
-                                             style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" />
-                                    }
+        <div class="container">
+            <div class="store-info-header-wrapper">
+                <div class="store-info-card card">
+                    <div class="card-content p-6">
+                        <div class="store-header-layout">
+                            <div class="store-logo-wrapper">
+                                <img id="store-logo" src="~/images/users/@Model.User?.Image" alt="@(Model.User?.FullName ?? "Store") logo" class="store-logo image-with-fallback"
+                                     onerror="this.onerror=null; this.src='/images/default-user.png';">
+                            </div>
+                            <div class="store-details">
+                                <div class="store-title-badge-wrapper">
+                                    <div>
+                                        <h1 id="store-name" class="store-title">@(Model.User?.FullName ?? "Store Name")</h1>
+                                        <span id="store-category-badge" class="badge">@Model.Category.ToString().Replace("_", " ")</span>
+                                        <span class="badge" style="background-color: @(Model.Status == SellerStatus.Open ? "var(--primary)" : "var(--muted-foreground)"); color: white;">@Model.Status.ToString().Replace("_", " ")</span>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <h5 class="card-title">@item.Name</h5>
-                                    <p class="card-text text-muted">@item.Description</p>
-                                    <p><strong>💰 Price:</strong> @item.Price.ToString("C")</p>
-                                    <p><strong>📦 Available:</strong> @item.Available_Amount</p>
-                                    <p><strong>⭐ Rating:</strong> @item.Rating</p>
-                                    <p><strong>🏪 Seller:</strong> @item.Seller.User.FullName</p>
+                                <div class="store-meta-info">
+                                    <div class="store-meta-item">
+                                        <svg class="icon icon-sm star-icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                                        <span id="store-rating-reviews">@Model.Rating.ToString("F1") (@(Model.SellerReviews?.Count ?? 0) reviews)</span>
+                                    </div>
                                 </div>
                             </div>
-                        </a>
+                        </div>
+                        <hr class="separator my-6" />
+                        <div class="store-contact-grid">
+                            <div class="contact-item">
+                                <svg class="icon icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
+                                <div>
+                                    <p class="contact-item-label">Address</p>
+                                    <p id="store-address" class="contact-item-value">@Model.Address</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                }
+                </div>
             </div>
-        }
+
+            <div class="tabs-container mb-8">
+                <div class="tabs-list mb-6">
+                    <button id="tab-products" class="tab-trigger active" data-tab-target="#content-products">Products</button>
+                    <button id="tab-reviews" class="tab-trigger" data-tab-target="#content-reviews">Reviews</button>
+                </div>
+
+                <div id="content-products" class="tab-content active">
+                    <div id="products-grid-container" class="products-grid">
+                        @if (Model.Products == null || !Model.Products.Any())
+                        {
+                            <p class="text-muted-foreground text-center">No products found for this seller.</p>
+                        }
+                        else
+                        {
+                            @foreach (var product in Model.Products)
+                            {
+                                <a href="/ClientProduct/Details/@product.Id" class="card product-card" style="text-decoration: none; color: inherit;">
+                                    <div class="card-image-container">
+                                        <img src="~/images/products/@product.Image" alt="@product.Name" class="card-image image-with-fallback"
+                                             onerror="this.onerror=null; this.src='/images/default-product.png';">
+                                    </div>
+                                    <div class="card-content p-4">
+                                        <h3 class="card-title mb-2">@product.Name</h3>
+                                        <div class="product-info-flex">
+                                            <div>
+                                                <p class="product-price">@product.Price.ToString("C")</p>
+                                            </div>
+                                            <button class="add-to-cart-button" aria-label="Add @product.Name to cart">
+                                                <svg class="icon icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="5" y2="19" /><line x1="5" x2="19" y1="12" y2="12" /></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <div id="content-reviews" class="tab-content hidden">
+                    <div id="reviews-list-container" class="reviews-list">
+                        @if (Model.SellerReviews == null || !Model.SellerReviews.Any())
+                        {
+                            <p class="text-muted-foreground text-center">No reviews yet.</p>
+                        }
+                        else
+                        {
+                            @foreach (var review in Model.SellerReviews)
+                            {
+                                <div class="card review-card">
+                                    <div class="card-content p-6">
+                                        <div class="review-header">
+                                            <div>
+                                                <h4 class="review-author">@(review.Client?.User?.FullName ?? "Anonymous")</h4>
+                                            </div>
+                                            <div class="review-rating">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    @if (i <= review.Rating)
+                                                    {
+                                                        <svg class="icon icon-sm star-icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                                                    }
+                                                    else
+                                                    {
+                                                        <svg class="icon icon-sm" style="color: var(--muted-foreground);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                        <p class="review-comment">@review.Comment</p>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Function to set up tab switching logic
+        function setupTabs() {
+            const tabTriggers = document.querySelectorAll('.tab-trigger');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabTriggers.forEach(trigger => {
+                trigger.addEventListener('click', () => {
+                    const targetSelector = trigger.getAttribute('data-tab-target');
+                    const targetContent = document.querySelector(targetSelector);
+
+                    // Deactivate all triggers
+                    tabTriggers.forEach(t => t.classList.remove('active'));
+                    // Activate the clicked trigger
+                    trigger.classList.add('active');
+
+                    // Hide all content panels
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        content.classList.add('hidden');
+                    });
+
+                    // Show the target content panel
+                    if (targetContent) {
+                        targetContent.classList.remove('hidden');
+                        targetContent.classList.add('active');
+                    }
+                });
+            });
+
+            // Trigger a click on the initial active tab to ensure correct state on load
+            const initialActiveTab = document.querySelector('.tab-trigger.active');
+            if (initialActiveTab) {
+                initialActiveTab.click();
+            }
+        }
+
+        // Initialize the tab logic
+        setupTabs();
+    </script>
+}
