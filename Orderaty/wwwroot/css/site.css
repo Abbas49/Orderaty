@@ -135,58 +135,58 @@
 
 /* Dark Mode Theme */
 [data-theme="dark"] {
-    /* Primary Colors - Modern Cyan/Blue accent */
-    --primary-color: #06b6d4;
-    --primary-light: #22d3ee;
-    --primary-lighter: #67e8f9;
-    --primary-bg: #164e63;
-    --primary-bg-light: #0e7490;
+    /* Primary Colors - Vibrant Orange/Amber accent */
+    --primary-color: #ff9500;
+    --primary-light: #ffaa33;
+    --primary-lighter: #ffbb55;
+    --primary-bg: #1a1a1a;
+    --primary-bg-light: #252525;
     
     /* Text Colors - High contrast for readability */
-    --text-primary: #f8fafc;
-    --text-secondary: #cbd5e1;
-    --text-muted: #94a3b8;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --text-muted: #808080;
     --text-white: #ffffff;
-    --text-white-soft: rgba(255, 255, 255, 0.95);
+    --text-white-soft: rgba(255, 255, 255, 0.9);
     
-    /* Background Colors - Rich dark slate */
-    --bg-body: #0a0e1a;
-    --bg-white: #1a1f2e;
-    --bg-gray-light: #1f2937;
-    --bg-gray-lighter: #374151;
-    --bg-section: #131720;
+    /* Background Colors - Deep blacks and dark grays */
+    --bg-body: #000000;
+    --bg-white: #1a1a1a;
+    --bg-gray-light: #1f1f1f;
+    --bg-gray-lighter: #2a2a2a;
+    --bg-section: #0d0d0d;
     
-    /* Border Colors - Subtle but visible */
-    --border-color: #2d3748;
-    --border-light: rgba(148, 163, 184, 0.12);
+    /* Border Colors - Subtle dark borders */
+    --border-color: #333333;
+    --border-light: rgba(255, 255, 255, 0.06);
     
     /* Shadow Colors - Deeper shadows for depth */
-    --shadow-sm: rgba(0, 0, 0, 0.5);
-    --shadow-md: rgba(0, 0, 0, 0.6);
-    --shadow-lg: rgba(0, 0, 0, 0.7);
-    --shadow-input: rgba(0, 0, 0, 0.3);
+    --shadow-sm: rgba(0, 0, 0, 0.8);
+    --shadow-md: rgba(0, 0, 0, 0.9);
+    --shadow-lg: rgba(0, 0, 0, 0.95);
+    --shadow-input: rgba(0, 0, 0, 0.5);
     
     /* Alert/Error Colors - Vibrant but not harsh */
-    --error-color: #fb7185;
-    --error-bg: #4c0519;
-    --success-color: #34d399;
-    --success-bg: #064e3b;
-    --warning-color: #fbbf24;
-    --warning-bg: #451a03;
+    --error-color: #ff3b30;
+    --error-bg: #2a0a08;
+    --success-color: #34c759;
+    --success-bg: #0a2a12;
+    --warning-color: #ff9500;
+    --warning-bg: #2a1f00;
     
     /* Category Colors - Diverse and vibrant */
-    --category-groceries-bg: #064e3b;
-    --category-groceries-text: #34d399;
-    --category-food-bg: #7c2d12;
-    --category-food-text: #fdba74;
-    --category-pharmacy-bg: #1e3a8a;
-    --category-pharmacy-text: #93c5fd;
-    --category-electronics-bg: #581c87;
-    --category-electronics-text: #e9d5ff;
-    --category-fashion-bg: #831843;
-    --category-fashion-text: #f9a8d4;
-    --category-home-bg: #422006;
-    --category-home-text: #fcd34d;
+    --category-groceries-bg: #1a2a1a;
+    --category-groceries-text: #34c759;
+    --category-food-bg: #2a1f00;
+    --category-food-text: #ff9500;
+    --category-pharmacy-bg: #1a1f2a;
+    --category-pharmacy-text: #5ac8fa;
+    --category-electronics-bg: #2a1a2a;
+    --category-electronics-text: #bf5af2;
+    --category-fashion-bg: #2a1a1f;
+    --category-fashion-text: #ff2d55;
+    --category-home-bg: #2a2200;
+    --category-home-text: #ffd60a;
 }
 
 /* Reset and Base Styles */
