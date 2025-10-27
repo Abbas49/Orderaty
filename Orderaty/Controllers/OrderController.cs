@@ -38,7 +38,7 @@ namespace Orderaty.Controllers
             var order = db.Orders.Include(o => o.Seller).ThenInclude(s => s.User)
                 .Include(o => o.OrderedItems).ThenInclude(oi => oi.Product)
                 .FirstOrDefault(o => o.Id == id);
-            return View();
+            return View(order);
         }
 
         public IActionResult Checkout()
