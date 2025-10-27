@@ -33,6 +33,15 @@
     </div>
 
     <div class="order-details-container">
+        <!-- Print-only Receipt Header -->
+        <div class="receipt-header" style="display: none;">
+            <div class="receipt-info">
+                <p><strong>Order Number:</strong> #@Model.Id.ToString("D5")</p>
+                <p><strong>Date:</strong> @Model.CreatedAt.ToString("MMMM d, yyyy 'at' h:mm tt")</p>
+                <p><strong>Status:</strong> @GetStatusText(Model.Status)</p>
+            </div>
+        </div>
+
         <div class="order-details-grid">
             
             <!-- Main Content Area -->
@@ -129,8 +138,8 @@
                                     <p class="item-description">@item.Product.Description</p>
                                     <div class="item-quantity">Quantity: @item.Quantity</div>
                                 </div>
-                                <div class="item-price">
-                                    <div class="item-unit-price">@item.Product.Price.ToString("C2") each</div>
+                                <div class="item-price" data-quantity="@item.Quantity">
+                                    <div class="item-unit-price">@item.Product.Price.ToString("C2")</div>
                                     <div class="item-total-price">@((item.Product.Price * item.Quantity).ToString("C2"))</div>
                                 </div>
                             </div>

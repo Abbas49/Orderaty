@@ -704,30 +704,318 @@
     }
 }
 
-/* Print Styles */
+/* Print Styles - Receipt Format */
 @media print {
+    /* Hide website header and footer */
+    header,
+    footer,
+    nav,
+    .navbar,
+    .header,
+    .footer {
+        display: none !important;
+    }
+
+    /* Hide unnecessary elements */
     .order-details-header,
     .back-link,
     .order-actions-card,
-    .visit-store-btn {
-        display: none;
+    .visit-store-btn,
+    .order-progress-card,
+    .order-cancelled-card,
+    .delivery-info-card,
+    .item-image-wrapper,
+    .item-description,
+    .progress-tracker,
+    .header-meta {
+        display: none !important;
+    }
+
+    /* Show receipt header */
+    .receipt-header {
+        display: block !important;
+        text-align: center;
+        border-bottom: 2px solid #000;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+
+    .receipt-header::before {
+        content: "ORDER RECEIPT";
+        display: block;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .receipt-info {
+        text-align: left;
+        margin: 0 auto;
+        max-width: 500px;
+    }
+
+    .receipt-info p {
+        margin: 5px 0;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .receipt-info strong {
+        display: inline-block;
+        width: 120px;
+    }
+
+    /* Reset page styles */
+    body {
+        margin: 0;
+        padding: 20px;
     }
 
     .order-details-section {
         background: white;
+        padding: 0;
+        min-height: auto;
+    }
+
+    .order-details-container {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
     }
 
     .order-details-grid {
-        grid-template-columns: 1fr;
+        display: block;
     }
 
-    .order-progress-card,
-    .order-items-card,
-    .summary-card,
-    .store-info-card,
-    .delivery-info-card {
+    /* Store and Order Info */
+    .store-info-card {
         box-shadow: none;
-        border: 1px solid #ddd;
+        border: none;
+        border-bottom: 1px dashed #000;
+        border-radius: 0;
+        padding: 10px 0;
+        margin-bottom: 10px;
+    }
+
+    .store-info-card .card-title {
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+    }
+
+    .store-content {
+        gap: 8px;
+    }
+
+    .store-header {
+        gap: 8px;
+    }
+
+    .store-header i {
+        display: none;
+    }
+
+    .store-name {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .store-category {
+        font-size: 12px;
+    }
+
+    /* Order Items */
+    .order-items-card {
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        padding: 10px 0;
+        margin-bottom: 10px;
+    }
+
+    .order-items-card .card-title {
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        border-bottom: 2px solid #000;
+        padding-bottom: 5px;
+    }
+
+    /* Table header for items */
+    .items-list::before {
+        content: "Product Name" "\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0\A0" "Price" "\A0\A0\A0\A0\A0\A0\A0\A0" "Qty" "\A0\A0\A0\A0\A0\A0" "Total";
+        display: block;
+        font-weight: bold;
+        font-size: 11px;
+        border-bottom: 1px solid #000;
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+        white-space: pre;
+    }
+
+    .items-list {
+        gap: 0;
+    }
+
+    /* Table row layout */
+    .order-item {
+        display: table;
+        width: 100%;
+        padding: 8px 0;
+        background: transparent;
+        border-radius: 0;
+        border-bottom: 1px dotted #ccc;
+    }
+
+    .order-item:hover {
+        background: transparent;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .order-item:last-child {
+        border-bottom: 1px solid #000;
+    }
+
+    /* Product name column */
+    .item-details {
+        display: table-cell;
+        width: 50%;
+        padding-right: 10px;
+        vertical-align: middle;
+    }
+
+    .item-name {
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+
+    .item-quantity {
+        display: none;
+    }
+
+    /* Price, Quantity, and Total columns */
+    .item-price {
+        display: table-cell;
+        width: 50%;
+        vertical-align: middle;
+    }
+
+    .item-unit-price {
+        display: inline-block;
+        width: 25%;
+        font-size: 12px;
+        color: #000;
+        text-align: right;
+        padding-right: 15px;
+    }
+
+    /* Quantity display */
+    .item-price::before {
+        content: attr(data-quantity);
+        display: inline-block;
+        width: 15%;
+        font-size: 12px;
+        text-align: center;
+        color: #000;
+    }
+
+    .item-total-price {
+        display: inline-block;
+        width: 25%;
+        font-size: 13px;
+        font-weight: bold;
+        color: #000;
+        text-align: right;
+    }
+
+    /* Summary */
+    .summary-card {
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        padding: 10px 0;
+    }
+
+    .summary-card .card-title {
+        display: none;
+    }
+
+    .summary-content {
+        gap: 6px;
+    }
+
+    .summary-row {
+        font-size: 13px;
+        padding: 3px 0;
+    }
+
+    .summary-label,
+    .summary-value {
+        font-size: 13px;
+    }
+
+    .summary-divider {
+        margin: 8px 0;
+        border-top: 1px solid #000;
+    }
+
+    .summary-row.total {
+        border-top: 2px solid #000;
+        padding-top: 8px;
+        margin-top: 5px;
+    }
+
+    .summary-row.total .summary-label,
+    .summary-row.total .summary-value {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .summary-row.discount .summary-label,
+    .summary-row.discount .summary-value {
+        color: #000;
+    }
+
+    /* Receipt Footer */
+    .summary-card::after {
+        content: "Thank you for your order!";
+        display: block;
+        margin-top: 30px;
+        padding-top: 15px;
+        border-top: 1px dashed #000;
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    /* Hide sidebar initially, show in correct order */
+    .order-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .order-main-content {
+        order: 2;
+    }
+
+    .order-sidebar {
+        order: 1;
+    }
+
+    /* Remove all colors for print */
+    * {
+        color: #000 !important;
+        background: transparent !important;
+    }
+
+    /* Page break control */
+    .order-items-card,
+    .summary-card {
         page-break-inside: avoid;
     }
 }
