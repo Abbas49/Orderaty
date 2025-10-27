@@ -7,7 +7,7 @@
 /* Hero Section */
 .hero {
     min-height: 600px;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: var(--bg-section);
     display: flex;
     align-items: center;
     position: relative;
@@ -84,12 +84,13 @@
     align-items: center;
     gap: 8px;
     padding: 10px 18px;
-    background: white;
+    background: var(--bg-white);
     border-radius: 50px;
     box-shadow: 0 2px 8px var(--shadow-sm);
     font-size: 14px;
     font-weight: 500;
     color: var(--text-primary);
+    border: 1px solid var(--border-light);
 }
 
 .hero-feature-badge i {
@@ -98,15 +99,15 @@
 }
 
 .hero-feature-badge:nth-child(1) i {
-    color: #10b981; /* Green for delivery time */
+    color: var(--success-color);
 }
 
 .hero-feature-badge:nth-child(2) i {
-    color: var(--primary-color); /* Primary for security */
+    color: var(--primary-color);
 }
 
 .hero-feature-badge:nth-child(3) i {
-    color: #f59e0b; /* Amber for rating */
+    color: var(--warning-color);
 }
 
 /* Hero Action Buttons */
@@ -147,7 +148,7 @@
 }
 
 .hero-btn-secondary {
-    background: white;
+    background: var(--bg-white);
     color: var(--primary-color);
     border: 2px solid var(--border-color);
 }
@@ -178,7 +179,7 @@
 }
 
 .hero-category-card {
-    background: white;
+    background: var(--bg-white);
     border-radius: 20px;
     padding: 28px;
     display: flex;
@@ -186,13 +187,13 @@
     gap: 16px;
     text-decoration: none;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 16px var(--shadow-md);
     border: 1px solid var(--border-light);
 }
 
 .hero-category-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 12px 32px var(--shadow-lg);
 }
 
 .hero-category-icon {
@@ -225,43 +226,43 @@
 
 /* Category-specific styles */
 .hero-category-food .hero-category-icon {
-    background: #fff5f5;
-    color: #ef4444;
+    background: var(--category-food-bg);
+    color: var(--category-food-text);
 }
 
 .hero-category-food:hover .hero-category-icon {
-    background: #ef4444;
-    color: white;
+    background: var(--category-food-text);
+    color: var(--bg-white);
 }
 
 .hero-category-groceries .hero-category-icon {
-    background: #f0fdf4;
-    color: #22c55e;
+    background: var(--category-groceries-bg);
+    color: var(--category-groceries-text);
 }
 
 .hero-category-groceries:hover .hero-category-icon {
-    background: #22c55e;
-    color: white;
+    background: var(--category-groceries-text);
+    color: var(--bg-white);
 }
 
 .hero-category-pharmacy .hero-category-icon {
-    background: #eff6ff;
-    color: #3b82f6;
+    background: var(--category-pharmacy-bg);
+    color: var(--category-pharmacy-text);
 }
 
 .hero-category-pharmacy:hover .hero-category-icon {
-    background: #3b82f6;
-    color: white;
+    background: var(--category-pharmacy-text);
+    color: var(--bg-white);
 }
 
 .hero-category-electronics .hero-category-icon {
-    background: #faf5ff;
-    color: #a855f7;
+    background: var(--category-electronics-bg);
+    color: var(--category-electronics-text);
 }
 
 .hero-category-electronics:hover .hero-category-icon {
-    background: #a855f7;
-    color: white;
+    background: var(--category-electronics-text);
+    color: var(--bg-white);
 }
 
 /* Responsive Design */
