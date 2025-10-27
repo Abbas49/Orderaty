@@ -13,14 +13,14 @@
    
    ================================================================ */
 
-/* CSS Variables - Default Theme (Green Fresh) */
+/* CSS Variables - Default Theme (Ocean Blue) */
 :root {
     /* Primary Colors */
-    --primary-color: #1f9a3a;
-    --primary-light: #2db34a;
-    --primary-lighter: #38c172;
-    --primary-bg: #f0faf2;
-    --primary-bg-light: #f3f9f5;
+    --primary-color: #1e40af;
+    --primary-light: #3b82f6;
+    --primary-lighter: #60a5fa;
+    --primary-bg: #eff6ff;
+    --primary-bg-light: #dbeafe;
     
     /* Text Colors */
     --text-primary: #1f2d3d;
@@ -53,6 +53,30 @@
     --success-bg: #dcfce7;
     --warning-color: #d97706;
     --warning-bg: #fef3c7;
+    
+    /* Category Colors */
+    --category-groceries-bg: #eff6ff;
+    --category-groceries-text: #1e40af;
+    --category-food-bg: #fff8eb;
+    --category-food-text: #ffb33a;
+    --category-pharmacy-bg: #f0f9ff;
+    --category-pharmacy-text: #0284c7;
+    --category-electronics-bg: #fef3c7;
+    --category-electronics-text: #d97706;
+    --category-fashion-bg: #eff6ff;
+    --category-fashion-text: #1e40af;
+    --category-home-bg: #fef3c7;
+    --category-home-text: #d97706;
+}
+
+/* Green Fresh Theme */
+[data-theme="green-fresh"] {
+    /* Primary Colors */
+    --primary-color: #1f9a3a;
+    --primary-light: #2db34a;
+    --primary-lighter: #38c172;
+    --primary-bg: #f0faf2;
+    --primary-bg-light: #f3f9f5;
     
     /* Category Colors */
     --category-groceries-bg: #f0faf2;

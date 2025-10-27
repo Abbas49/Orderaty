@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const themeOptions = document.querySelectorAll('.theme-option');
         
         // Load saved theme or use default
-        const savedTheme = localStorage.getItem('orderaty-theme') || 'green-fresh';
+        const savedTheme = localStorage.getItem('orderaty-theme') || 'ocean-blue';
         applyTheme(savedTheme);
         
         // Toggle dropdown
@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Remove all theme attributes
             document.documentElement.removeAttribute('data-theme');
             
-            // Apply selected theme
-            if (themeName !== 'green-fresh') {
+            // Apply selected theme (ocean-blue is default, no attribute needed)
+            if (themeName !== 'ocean-blue') {
                 document.documentElement.setAttribute('data-theme', themeName);
             }
             
