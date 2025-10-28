@@ -13,30 +13,27 @@
     @RenderSection("Styles", required: false)
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <!-- Logo -->
-                <div class="logo">
-                    <i class="fas fa-box"></i>
-                    <span>Orderaty</span>
+    <!-- Modern Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <!-- Logo Section -->
+            <a href="/" class="navbar-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shopping-bag"></i>
                 </div>
-                
-                <!-- Mobile Menu Button -->
-                <button class="mobile-menu-btn" id="mobile-menu-btn">
-                    <i class="fas fa-bars"></i>
-                </button>
-                
-                <!-- Navigation -->
-                <nav class="nav" id="nav-menu">
-                    <a href="/" class="nav-link active">
+                <span class="logo-text">Orderaty</span>
+            </a>
+            
+            <!-- Desktop Navigation Links -->
+            <div class="navbar-menu" id="navbar-menu">
+                <div class="navbar-links">
+                    <a href="/" class="navbar-item">
                         <i class="fas fa-home"></i>
-                        Home
+                        <span>Home</span>
                     </a>
-                    <a asp-controller="Seller" asp-action="Browse" class="nav-link">
-                        <i class="fas fa-th-large"></i>
-                        Browse
+                    <a asp-controller="Seller" asp-action="Browse" class="navbar-item">
+                        <i class="fas fa-store"></i>
+                        <span>Browse Stores</span>
                     </a>
                     @if(User.Identity.IsAuthenticated && User.IsInRole("Client"))
                     {
@@ -44,62 +41,81 @@
                         var currentUserId = DbContext.Users.FirstOrDefault(c => c.UserName == User.Identity.Name)?.Id;
                         var cartCount = DbContext.CartItems.Count(c => c.ClientId == currentUserId);
                         
-                        <a href="/Cart/Index" class="nav-link">
+                        <a href="/Cart/Index" class="navbar-item">
                             <i class="fas fa-shopping-cart"></i>
-                            Cart
+                            <span>Cart</span>
                             @if(cartCount > 0)
                             {
-                                <span class="badge" id="cart-count">@cartCount</span>
+                                <span class="cart-badge" id="cart-count">@cartCount</span>
                             }
                         </a>
                     }
-                    <a href="#" class="nav-link">
+                    <a href="@Url.Action("History", "Order")" class="navbar-item">
                         <i class="fas fa-receipt"></i>
-                        Orders
+                        <span>Orders</span>
                     </a>
+                </div>
+                
+                <!-- Mobile Divider -->
+                <div class="navbar-divider"></div>
+                
+                <!-- User Actions -->
+                <div class="navbar-actions">
                     @if (User.Identity.IsAuthenticated)
                     {
                         @if (User.IsInRole("Client"))
                         {
-                            <a href="/Client/Profile" class="nav-link">
-                                <i class="fas fa-user"></i>
-                                Profile
+                            <a href="/Client/Profile" class="navbar-item navbar-profile">
+                                <i class="fas fa-user-circle"></i>
+                                <span>Profile</span>
                             </a>
                         }
                         else if (User.IsInRole("Seller"))
                         {
-                            <a href="/Seller/Profile" class="nav-link">
-                                <i class="fas fa-store"></i>
-                                Profile
+                            <a href="/Seller/Profile" class="navbar-item navbar-profile">
+                                <i class="fas fa-store-alt"></i>
+                                <span>My Store</span>
                             </a>
                         }
-                        <a asp-controller="User" asp-action="Logout" class="nav-link mobile-logout">
+                        else if (User.IsInRole("Delivery"))
+                        {
+                            <a href="/Delivery/Home" class="navbar-item navbar-profile">
+                                <i class="fas fa-shipping-fast"></i>
+                                <span>Deliveries</span>
+                            </a>
+                        }
+                        <a asp-controller="User" asp-action="Logout" class="navbar-item navbar-logout">
                             <i class="fas fa-sign-out-alt"></i>
-                            Logout
+                            <span>Logout</span>
                         </a>
                     }
                     else
                     {
-                        <a asp-controller="User" asp-action="Login" class="nav-link mobile-auth">
+                        <a asp-controller="User" asp-action="Login" class="navbar-btn btn-login">
                             <i class="fas fa-sign-in-alt"></i>
-                            Login
+                            <span>Login</span>
                         </a>
-                        <a asp-controller="User" asp-action="Register" class="nav-link mobile-auth">
+                        <a asp-controller="User" asp-action="Register" class="navbar-btn btn-register">
                             <i class="fas fa-user-plus"></i>
-                            Register
+                            <span>Sign Up</span>
                         </a>
                     }
-                </nav>
-                
+                </div>
+            </div>
+            
+            <!-- Right Actions (Desktop) -->
+            <div class="navbar-right">
                 <!-- Theme Switcher -->
                 <div class="theme-switcher">
-                    <button class="theme-toggle-btn" id="theme-toggle">
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Change theme">
                         <i class="fas fa-palette"></i>
-                        <span>Theme</span>
                     </button>
                     <div class="theme-dropdown" id="theme-dropdown">
-                        <div class="theme-dropdown-header">Choose Theme</div>
-                        <button class="theme-option active" data-theme="green-fresh">
+                        <div class="theme-dropdown-header">
+                            <i class="fas fa-swatchbook"></i>
+                            <span>Choose Theme</span>
+                        </div>
+                        <button class="theme-option" data-theme="green-fresh">
                             <div class="theme-icon">
                                 <i class="fas fa-leaf"></i>
                             </div>
@@ -109,7 +125,7 @@
                             </div>
                             <i class="fas fa-check theme-checkmark"></i>
                         </button>
-                        <button class="theme-option" data-theme="ocean-blue">
+                        <button class="theme-option active" data-theme="ocean-blue">
                             <div class="theme-icon">
                                 <i class="fas fa-water"></i>
                             </div>
@@ -142,9 +158,15 @@
                     </div>
                 </div>
                 
+                <!-- Mobile Menu Toggle -->
+                <button class="navbar-toggle" id="navbar-toggle" aria-label="Toggle menu">
+                    <span class="toggle-bar"></span>
+                    <span class="toggle-bar"></span>
+                    <span class="toggle-bar"></span>
+                </button>
             </div>
         </div>
-    </header>
+    </nav>
 
     <main role="main">
         @RenderBody()

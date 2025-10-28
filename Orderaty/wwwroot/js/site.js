@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const themeOptions = document.querySelectorAll('.theme-option');
         
         // Load saved theme or use default
-        const savedTheme = localStorage.getItem('orderaty-theme') || 'green-fresh';
+        const savedTheme = localStorage.getItem('orderaty-theme') || 'ocean-blue';
         applyTheme(savedTheme);
         
         // Toggle dropdown
@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Remove all theme attributes
             document.documentElement.removeAttribute('data-theme');
             
-            // Apply selected theme
-            if (themeName !== 'green-fresh') {
+            // Apply selected theme (ocean-blue is default, no attribute needed)
+            if (themeName !== 'ocean-blue') {
                 document.documentElement.setAttribute('data-theme', themeName);
             }
             
@@ -145,7 +145,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Navigation functionality
     function initNavigation() {
         const navLinks = document.querySelectorAll('.nav-link');
+        const navbarItems = document.querySelectorAll('.navbar-item');
         
+        // Handle old nav-link clicks
         navLinks.forEach(link => {
             link.addEventListener('click', function(e) {
                 // Allow links with actual URLs to navigate normally
@@ -185,24 +187,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
-    }
-    
-    // Store cards functionality
-    function initStoreCards() {
-        const storeCards = document.querySelectorAll('.store-card');
         
-        storeCards.forEach(card => {
-            card.addEventListener('click', function() {
-                const storeTitle = this.querySelector('.store-title').textContent;
-                showNotification(`Opening ${storeTitle}...`, 'success');
+        // Handle new navbar-item clicks
+        navbarItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                // Allow links with actual URLs to navigate normally
+                const href = this.getAttribute('href');
+                if (href && href !== '#' && !href.startsWith('javascript:')) {
+                    // Let the link navigate normally
+                    return;
+                }
                 
-                // Add click animation
-                this.style.transform = 'scale(0.98)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 150);
+                e.preventDefault();
+                
+                // Remove active class from all items
+                navbarItems.forEach(i => i.classList.remove('active'));
+                
+                // Add active class to clicked item
+                this.classList.add('active');
             });
         });
+        
+        // Set active state based on current page
+        const currentPath = window.location.pathname;
+        navbarItems.forEach(item => {
+            const href = item.getAttribute('href');
+            if (href === currentPath || (currentPath === '/' && href === '/')) {
+                item.classList.add('active');
+            }
+        });
+    }
+    
+    // Store cards functionality - now handled by anchor tags
+    function initStoreCards() {
+        // Store cards are now proper links to Seller Details page
+        // No additional JavaScript needed
     }
     
     // Category items functionality
@@ -225,24 +244,37 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Responsive behavior
     function initResponsiveBehavior() {
-        // Handle mobile menu (if needed in future)
+        // Handle navbar scroll effect
+        const navbar = document.querySelector('.navbar');
         const header = document.querySelector('.header');
         
-        // Add scroll effect to header
         let lastScrollY = window.scrollY;
         
         window.addEventListener('scroll', function() {
             const currentScrollY = window.scrollY;
             
-            if (currentScrollY > 100) {
-                // Use semi-transparent background that respects theme colors
-                header.style.background = 'var(--bg-white)';
-                header.style.backdropFilter = 'blur(10px)';
-                header.style.boxShadow = '0 2px 8px var(--shadow-md)';
-            } else {
-                header.style.background = 'var(--bg-white)';
-                header.style.backdropFilter = 'none';
-                header.style.boxShadow = '0 1px 3px var(--shadow-sm)';
+            // Handle new navbar
+            if (navbar) {
+                if (currentScrollY > 50) {
+                    navbar.style.boxShadow = '0 4px 20px var(--shadow-md)';
+                    navbar.style.backdropFilter = 'blur(12px)';
+                } else {
+                    navbar.style.boxShadow = '0 2px 10px var(--shadow-sm)';
+                    navbar.style.backdropFilter = 'blur(10px)';
+                }
+            }
+            
+            // Handle old header if it exists
+            if (header) {
+                if (currentScrollY > 100) {
+                    header.style.background = 'var(--bg-white)';
+                    header.style.backdropFilter = 'blur(10px)';
+                    header.style.boxShadow = '0 2px 8px var(--shadow-md)';
+                } else {
+                    header.style.background = 'var(--bg-white)';
+                    header.style.backdropFilter = 'none';
+                    header.style.boxShadow = '0 1px 3px var(--shadow-sm)';
+                }
             }
             
             lastScrollY = currentScrollY;
@@ -379,6 +411,58 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Mobile menu functionality
     function initMobileMenu() {
+        const navbarToggle = document.getElementById('navbar-toggle');
+        const navbarMenu = document.getElementById('navbar-menu');
+        const navbarItems = document.querySelectorAll('.navbar-item');
+        
+        if (navbarToggle && navbarMenu) {
+            // Toggle menu
+            navbarToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                navbarMenu.classList.toggle('active');
+                navbarToggle.classList.toggle('active');
+                
+                // Prevent body scroll when menu is open
+                if (navbarMenu.classList.contains('active')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // Close menu when clicking on nav items
+            navbarItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        navbarMenu.classList.remove('active');
+                        navbarToggle.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (navbarMenu.classList.contains('active') && 
+                    !navbarMenu.contains(e.target) && 
+                    !navbarToggle.contains(e.target)) {
+                    navbarMenu.classList.remove('active');
+                    navbarToggle.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // Close menu on window resize to desktop
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && navbarMenu.classList.contains('active')) {
+                    navbarMenu.classList.remove('active');
+                    navbarToggle.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+        
+        // Handle old mobile menu button if it exists
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const navMenu = document.getElementById('nav-menu');
         
@@ -404,18 +488,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.body.style.overflow = '';
                 });
             });
-            
-            // Handle mobile logout
-            const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
-            if (mobileLogoutBtn) {
-                mobileLogoutBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const logoutForm = document.querySelector('form[action*="Logout"]');
-                    if (logoutForm) {
-                        logoutForm.submit();
-                    }
-                });
-            }
             
             // Close menu when clicking outside
             document.addEventListener('click', function(e) {

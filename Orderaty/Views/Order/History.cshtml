@@ -1,53 +1,208 @@
-﻿@model IEnumerable<Orderaty.Models.Order>
+﻿@model List<Orderaty.Models.Order>
 
 @{
-    ViewData["Title"] = "History";
+    ViewData["Title"] = "My Orders";
+    var activeOrders = Model.Where(o => o.Status != Orderaty.Models.OrderStatus.Delivered).ToList();
+    var orderHistory = Model.Where(o => o.Status == Orderaty.Models.OrderStatus.Delivered).ToList();
 }
 
-<h1>History</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Seller)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Seller.User.FullName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@section Styles {
+    <link rel="stylesheet" href="~/css/orders.css" />
 }
-    </tbody>
-</table>
+
+<section class="orders-section">
+    <!-- Orders Header -->
+    <div class="orders-header">
+        <div class="orders-header-content">
+            <h1 class="orders-title">My Orders</h1>
+            <p class="orders-subtitle">Track and manage your orders</p>
+        </div>
+    </div>
+
+    <div class="orders-container">
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('active')">
+                Active Orders (@activeOrders.Count)
+            </button>
+            <button class="tab-btn" onclick="switchTab('history')">
+                Order History (@orderHistory.Count)
+            </button>
+        </div>
+
+        <!-- Active Orders Tab Content -->
+        <div id="active-tab" class="tab-content active">
+            @if (!activeOrders.Any())
+            {
+                <div class="empty-orders">
+                    <i class="fas fa-shopping-bag"></i>
+                    <h2 class="empty-orders-title">No active orders</h2>
+                    <p class="empty-orders-text">You don't have any active orders at the moment.</p>
+                    <a href="@Url.Action("Index", "ClientProduct")" class="browse-btn">
+                        Browse Products
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="orders-list">
+                    @foreach (var order in activeOrders)
+                    {
+                        <div class="order-card">
+                            <div class="order-header-card">
+                                <div class="order-number-status">
+                                    <span class="order-number">#@order.Id.ToString("D5")</span>
+                                    <span class="order-status status-@order.Status.ToString().ToLower()">
+                                        <i class="fas @GetStatusIcon(order.Status)"></i>
+                                        @GetStatusText(order.Status)
+                                    </span>
+                                </div>
+                                <div class="order-meta">
+                                    <span class="order-price">@order.TotalPrice.ToString("C2")</span>
+                                    <span class="order-date">@order.CreatedAt.ToString("MMM d, yyyy")</span>
+                                </div>
+                            </div>
+
+                            <div class="order-body">
+                                <div class="order-info">
+                                    <p class="order-store">
+                                        <i class="fas fa-store"></i>
+                                        @order.Seller.User.FullName • @order.OrderedItems.Count @(order.OrderedItems.Count == 1 ? "item" : "items")
+                                    </p>
+                                    @if (order.Status == Orderaty.Models.OrderStatus.Processing)
+                                    {
+                                        <p class="order-delivery-time">
+                                            <i class="fas fa-clock"></i>
+                                            Estimated delivery: 20-30 min
+                                        </p>
+                                    }
+                                    else if (order.Status == Orderaty.Models.OrderStatus.Shipped)
+                                    {
+                                        <p class="order-delivery-time">
+                                            <i class="fas fa-truck"></i>
+                                            On the way
+                                        </p>
+                                    }
+                                </div>
+
+                                <div class="order-actions">
+                                    <a href="@Url.Action("Details", "Order", new { id = order.Id })" class="view-details-btn">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- Order History Tab Content -->
+        <div id="history-tab" class="tab-content">
+            @if (!orderHistory.Any())
+            {
+                <div class="empty-orders">
+                    <i class="fas fa-history"></i>
+                    <h2 class="empty-orders-title">No order history</h2>
+                    <p class="empty-orders-text">You haven't completed any orders yet.</p>
+                    <a href="@Url.Action("Index", "ClientProduct")" class="browse-btn">
+                        Browse Products
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="orders-list">
+                    @foreach (var order in orderHistory)
+                    {
+                        <div class="order-card">
+                            <div class="order-header-card">
+                                <div class="order-number-status">
+                                    <span class="order-number">#@order.Id.ToString("D5")</span>
+                                    <span class="order-status status-delivered">
+                                        <i class="fas fa-check-circle"></i>
+                                        Delivered
+                                    </span>
+                                </div>
+                                <div class="order-meta">
+                                    <span class="order-price">@order.TotalPrice.ToString("C2")</span>
+                                    <span class="order-date">@order.CreatedAt.ToString("MMM d, yyyy")</span>
+                                </div>
+                            </div>
+
+                            <div class="order-body">
+                                <div class="order-info">
+                                    <p class="order-store">
+                                        <i class="fas fa-store"></i>
+                                        @order.Seller.User.FullName • @order.OrderedItems.Count @(order.OrderedItems.Count == 1 ? "item" : "items")
+                                    </p>
+                                    <p class="order-delivery-time delivered">
+                                        <i class="fas fa-check"></i>
+                                        Delivered at @order.CreatedAt.AddMinutes(25).ToString("h:mm tt")
+                                    </p>
+                                </div>
+
+                                <div class="order-actions">
+                                    <button class="write-review-btn" onclick="window.location.href='@Url.Action("Details", "Seller", new { id = order.SellerId })'">
+                                        Write Review
+                                    </button>
+                                    <a href="@Url.Action("Details", "Order", new { id = order.Id })" class="reorder-btn">
+                                        Reorder
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function switchTab(tabName) {
+            // Remove active class from all tabs and buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Add active class to selected tab
+            if (tabName === 'active') {
+                document.querySelector('.tab-btn:first-child').classList.add('active');
+                document.getElementById('active-tab').classList.add('active');
+            } else {
+                document.querySelector('.tab-btn:last-child').classList.add('active');
+                document.getElementById('history-tab').classList.add('active');
+            }
+        }
+    </script>
+}
+
+@functions {
+    string GetStatusIcon(Orderaty.Models.OrderStatus status)
+    {
+        return status switch
+        {
+            Orderaty.Models.OrderStatus.PendingDelivery => "fa-clock",
+            Orderaty.Models.OrderStatus.Processing => "fa-spinner",
+            Orderaty.Models.OrderStatus.Shipped => "fa-truck",
+            Orderaty.Models.OrderStatus.Delivered => "fa-check-circle",
+            Orderaty.Models.OrderStatus.Cancelled => "fa-times-circle",
+            _ => "fa-circle"
+        };
+    }
+
+    string GetStatusText(Orderaty.Models.OrderStatus status)
+    {
+        return status switch
+        {
+            Orderaty.Models.OrderStatus.PendingDelivery => "Pending",
+            Orderaty.Models.OrderStatus.Processing => "Processing",
+            Orderaty.Models.OrderStatus.Shipped => "Shipped",
+            Orderaty.Models.OrderStatus.Delivered => "Delivered",
+            Orderaty.Models.OrderStatus.Cancelled => "Cancelled",
+            _ => status.ToString()
+        };
+    }
+}
+

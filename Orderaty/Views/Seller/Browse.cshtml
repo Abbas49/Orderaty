@@ -18,10 +18,17 @@
 
             <!-- Search Bar -->
             <div class="header-search">
-                <div class="search-input-wrapper">
-                    <i class="fas fa-search"></i>
-                    <input type="text" class="search-input" placeholder="Search for stores, categories, or cuisines..." id="store-search">
-                </div>
+                <form asp-controller="Seller" asp-action="Browse" method="get" id="search-form">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="search-input" name="sellerName" 
+                               placeholder="Search for stores..." 
+                               id="store-search"
+                               value="@ViewBag.CurrentSearch">
+                        <input type="hidden" name="category" id="hidden-category" value="@ViewBag.CurrentCategory">
+                        <input type="hidden" name="sort" id="hidden-sort" value="@ViewBag.CurrentSort">
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -38,28 +45,44 @@
                     Category
                 </label>
                 <div class="filter-buttons">
-                    <button class="filter-btn active" data-category="all">
+                    <button class="filter-btn @(string.IsNullOrEmpty(ViewBag.CurrentCategory) || ViewBag.CurrentCategory == "all" ? "active" : "")" 
+                            data-category="all">
                         All Stores
                     </button>
-                    <button class="filter-btn" data-category="restaurants">
+                    <button class="filter-btn @(ViewBag.CurrentCategory == "Food_Restaurants" ? "active" : "")" 
+                            data-category="Food_Restaurants">
                         <i class="fas fa-utensils"></i>
                         Restaurants
                     </button>
-                    <button class="filter-btn" data-category="groceries">
+                    <button class="filter-btn @(ViewBag.CurrentCategory == "Groceries_Supermarkets" ? "active" : "")" 
+                            data-category="Groceries_Supermarkets">
                         <i class="fas fa-shopping-bag"></i>
                         Groceries
                     </button>
-                    <button class="filter-btn" data-category="pharmacy">
+                    <button class="filter-btn @(ViewBag.CurrentCategory == "Pharmacy_Health" ? "active" : "")" 
+                            data-category="Pharmacy_Health">
                         <i class="fas fa-prescription-bottle"></i>
                         Pharmacy
                     </button>
-                    <button class="filter-btn" data-category="bakery">
-                        <i class="fas fa-bread-slice"></i>
-                        Bakery
+                    <button class="filter-btn @(ViewBag.CurrentCategory == "Electronics_Mobile" ? "active" : "")" 
+                            data-category="Electronics_Mobile">
+                        <i class="fas fa-mobile-alt"></i>
+                        Electronics
                     </button>
-                    <button class="filter-btn" data-category="coffee">
-                        <i class="fas fa-coffee"></i>
-                        Coffee Shops
+                    <button class="filter-btn @(ViewBag.CurrentCategory == "Fashion_Clothing" ? "active" : "")" 
+                            data-category="Fashion_Clothing">
+                        <i class="fas fa-tshirt"></i>
+                        Fashion
+                    </button>
+                    <button class="filter-btn @(ViewBag.CurrentCategory == "Home_Furniture" ? "active" : "")" 
+                            data-category="Home_Furniture">
+                        <i class="fas fa-couch"></i>
+                        Home & Furniture
+                    </button>
+                    <button class="filter-btn @(ViewBag.CurrentCategory == "Stationery_Books" ? "active" : "")" 
+                            data-category="Stationery_Books">
+                        <i class="fas fa-book"></i>
+                        Books
                     </button>
                 </div>
             </div>
@@ -71,26 +94,47 @@
                     Sort By
                 </label>
                 <div class="sort-dropdown">
-                    <button class="sort-btn" id="sort-trigger">
-                        <span id="selected-sort">Rating</span>
+                    <button class="sort-btn" id="sort-trigger" type="button">
+                        <span id="selected-sort">
+                            @if (ViewBag.CurrentSort == "rating_asc")
+                            {
+                                <text>Rating (Low to High)</text>
+                            }
+                            else if (ViewBag.CurrentSort == "name_asc")
+                            {
+                                <text>Name (A-Z)</text>
+                            }
+                            else if (ViewBag.CurrentSort == "name_desc")
+                            {
+                                <text>Name (Z-A)</text>
+                            }
+                            else
+                            {
+                                <text>Rating (High to Low)</text>
+                            }
+                        </span>
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="sort-menu" id="sort-menu">
-                        <button class="sort-option active" data-sort="rating">
+                        <button class="sort-option @(ViewBag.CurrentSort == "rating_desc" || string.IsNullOrEmpty(ViewBag.CurrentSort) ? "active" : "")" 
+                                data-sort="rating_desc" type="button">
                             <i class="fas fa-star"></i>
-                            Rating
+                            Rating (High to Low)
                         </button>
-                        <button class="sort-option" data-sort="delivery-time">
-                            <i class="fas fa-clock"></i>
-                            Delivery Time
+                        <button class="sort-option @(ViewBag.CurrentSort == "rating_asc" ? "active" : "")" 
+                                data-sort="rating_asc" type="button">
+                            <i class="fas fa-star"></i>
+                            Rating (Low to High)
                         </button>
-                        <button class="sort-option" data-sort="delivery-fee">
-                            <i class="fas fa-dollar-sign"></i>
-                            Delivery Fee
+                        <button class="sort-option @(ViewBag.CurrentSort == "name_asc" ? "active" : "")" 
+                                data-sort="name_asc" type="button">
+                            <i class="fas fa-sort-alpha-down"></i>
+                            Name (A-Z)
                         </button>
-                        <button class="sort-option" data-sort="popular">
-                            <i class="fas fa-fire"></i>
-                            Most Popular
+                        <button class="sort-option @(ViewBag.CurrentSort == "name_desc" ? "active" : "")" 
+                                data-sort="name_desc" type="button">
+                            <i class="fas fa-sort-alpha-up"></i>
+                            Name (Z-A)
                         </button>
                     </div>
                 </div>
@@ -98,12 +142,29 @@
         </div>
 
         <!-- Active Filters Display -->
-        <div class="active-filters" id="active-filters">
-            <span class="filter-tag">
-                All Stores
-                <i class="fas fa-times"></i>
-            </span>
-        </div>
+        @if (!string.IsNullOrEmpty(ViewBag.CurrentSearch) || (!string.IsNullOrEmpty(ViewBag.CurrentCategory) && ViewBag.CurrentCategory != "all"))
+        {
+            <div class="active-filters" id="active-filters">
+                @if (!string.IsNullOrEmpty(ViewBag.CurrentSearch))
+                {
+                    <span class="filter-tag">
+                        Search: @ViewBag.CurrentSearch
+                        <i class="fas fa-times" onclick="clearSearch()"></i>
+                    </span>
+                }
+                @if (!string.IsNullOrEmpty(ViewBag.CurrentCategory) && ViewBag.CurrentCategory != "all")
+                {
+                    <span class="filter-tag">
+                        @ViewBag.CurrentCategory.Replace("_", " ")
+                        <i class="fas fa-times" onclick="clearCategory()"></i>
+                    </span>
+                }
+                <button class="reset-filters-btn" onclick="resetAllFilters()">
+                    <i class="fas fa-redo"></i>
+                    Clear All
+                </button>
+            </div>
+        }
     </div>
 </section>
 
@@ -111,54 +172,92 @@
 <section class="stores-section">
     <div class="container">
         <div class="stores-info">
-            <h2 class="section-heading">All Stores</h2>
-            <p class="stores-count">Showing <span class="count-number">@Model.Count()</span> stores</p>
+            <h2 class="section-heading">
+                @if (!string.IsNullOrEmpty(ViewBag.CurrentCategory) && ViewBag.CurrentCategory != "all")
+                {
+                    @ViewBag.CurrentCategory.Replace("_", " ")
+                    <text> Stores</text>
+                }
+                else
+                {
+                    <text>All Stores</text>
+                }
+            </h2>
+            <p class="stores-count">Showing <span class="count-number">@Model.Count()</span> store@(Model.Count() != 1 ? "s" : "")</p>
         </div>
 
         <div class="stores-grid">
-            @foreach(var store in Model)
+            @if (Model.Any())
             {
-                <div class="store-card" data-category="restaurants">
-                    <div class="store-image-wrapper">
-                        <img src="~/images/users/@store.User.Image" alt="The Italian Kitchen restaurant interior" class="store-image">
-                        <div class="store-badges">
-                            <span class="badge badge-featured">
-                                <i class="fas fa-star"></i>
-                                Featured
-                            </span>
+                @foreach(var store in Model)
+                {
+                    <div class="store-card" data-category="@store.Category.ToString()">
+                        <div class="store-image-wrapper">
+                            <img src="~/images/users/@store.User.Image" alt="@store.User.FullName store" class="store-image">
+                            <div class="store-badges">
+                                @if (store.Rating >= 4.5m)
+                                {
+                                    <span class="badge badge-featured">
+                                        <i class="fas fa-star"></i>
+                                        Featured
+                                    </span>
+                                }
+                                @if (store.Status == Orderaty.Models.SellerStatus.Closed)
+                                {
+                                    <span class="badge badge-closed">
+                                        <i class="fas fa-times-circle"></i>
+                                        Closed
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                        <div class="store-content">
+                            <div class="store-header">
+                                <h3 class="store-name">@store.User.FullName</h3>
+                                <p class="store-category">
+                                    <i class="fas fa-tag"></i>
+                                    @store.Category.ToString().Replace("_", " ")
+                                </p>
+                            </div>
+
+                            <div class="store-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-star"></i>
+                                    <span class="meta-value">@store.Rating.ToString("0.0")</span>
+                                    <span class="meta-label">rating</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-box"></i>
+                                    <span class="meta-value">@store.Products.Count() product@(store.Products.Count() != 1 ? "s" : "")</span>
+                                </div>
+                            </div>
+
+                            <div class="store-footer">
+                                <div class="delivery-info">
+                                    <i class="fas fa-circle @(store.Status == Orderaty.Models.SellerStatus.Open ? "text-success" : "text-danger")"></i>
+                                    <span class="delivery-fee">@store.Status.ToString().Replace("_", " ")</span>
+                                </div>
+                                <a href="/Seller/Details/@store.Id" class="view-store-btn">
+                                    View Store
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <div class="store-content">
-                        <div class="store-header">
-                            <h3 class="store-name">@store.User.FullName</h3>
-                            <p class="store-category">
-                                <i class="fas fa-tag"></i>
-                                @store.Category.ToString()
-                            </p>
-                        </div>
-
-                        <div class="store-meta">
-                            <div class="meta-item">
-                                <i class="fas fa-star"></i>
-                                <span class="meta-value">4.8</span>
-                                <span class="meta-label">(@store.SellerReviews.Count() + ratings)</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-clock"></i>
-                                <span class="meta-value">25-35 min</span>
-                            </div>
-                        </div>
-
-                        <div class="store-footer">
-                            <div class="delivery-info">
-                                <i class="fas fa-motorcycle"></i>
-                                <span class="delivery-fee">$2.99 delivery</span>
-                            </div>
-                            <a href="/Seller/Details/@store.Id" class="view-store-btn">
-                                View Store
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
+                }
+            }
+            else
+            {
+                <!-- Empty State -->
+                <div class="empty-state-inline" style="grid-column: 1 / -1;">
+                    <div class="empty-content">
+                        <i class="fas fa-store-slash"></i>
+                        <h2 class="empty-title">No stores found</h2>
+                        <p class="empty-text">Try adjusting your filters or search terms</p>
+                        <button class="reset-btn" onclick="resetAllFilters()">
+                            <i class="fas fa-redo"></i>
+                            Reset Filters
+                        </button>
                     </div>
                 </div>
             }
@@ -166,17 +265,87 @@
     </div>
 </section>
 
-<!-- Empty State (Hidden by default) -->
-<section class="empty-state" style="display: none;">
-    <div class="container">
-        <div class="empty-content">
-            <i class="fas fa-store-slash"></i>
-            <h2 class="empty-title">No stores found</h2>
-            <p class="empty-text">Try adjusting your filters or search terms</p>
-            <button class="reset-btn">
-                <i class="fas fa-redo"></i>
-                Reset Filters
-            </button>
-        </div>
-    </div>
-</section>
+@section Scripts {
+    <script>
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const sortOptions = document.querySelectorAll('.sort-option');
+            const sortTrigger = document.getElementById('sort-trigger');
+            const sortMenu = document.getElementById('sort-menu');
+            const searchForm = document.getElementById('search-form');
+            const searchInput = document.getElementById('store-search');
+            const hiddenCategory = document.getElementById('hidden-category');
+            const hiddenSort = document.getElementById('hidden-sort');
+
+            // Category filter buttons
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.getAttribute('data-category');
+                    hiddenCategory.value = category;
+                    searchForm.submit();
+                });
+            });
+
+            // Sort dropdown toggle
+            sortTrigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                sortMenu.classList.toggle('show');
+            });
+
+            // Sort options
+            sortOptions.forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sortValue = this.getAttribute('data-sort');
+                    hiddenSort.value = sortValue;
+                    sortMenu.classList.remove('show');
+                    searchForm.submit();
+                });
+            });
+
+            // Close sort dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!sortTrigger.contains(e.target) && !sortMenu.contains(e.target)) {
+                    sortMenu.classList.remove('show');
+                }
+            });
+
+            // Search on Enter key or after typing delay
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchForm.submit();
+                }, 800);
+            });
+
+            // Immediate search on Enter
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    clearTimeout(searchTimeout);
+                    searchForm.submit();
+                }
+            });
+        });
+
+        // Clear search function
+        function clearSearch() {
+            const searchInput = document.getElementById('store-search');
+            searchInput.value = '';
+            document.getElementById('search-form').submit();
+        }
+
+        // Clear category function
+        function clearCategory() {
+            document.getElementById('hidden-category').value = 'all';
+            document.getElementById('search-form').submit();
+        }
+
+        // Reset all filters
+        function resetAllFilters() {
+            window.location.href = '@Url.Action("Browse", "Seller")';
+        }
+    </script>
+}

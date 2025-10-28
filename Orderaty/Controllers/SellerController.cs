@@ -105,10 +105,11 @@ namespace Orderaty.Controllers
         }
 
         // --------------------- ✏️ View All Stores for clients ---------------------
-        public async Task<IActionResult> Browse(string? sellerName/*, string? category, string? sort*/)
+        public async Task<IActionResult> Browse(string? sellerName, string? category, string? sort)
         {
             var sellers = db.Sellers
-                .Include(p => p.User).Include(p => p.SellerReviews)
+                .Include(p => p.User)
+                .Include(p => p.Products)
                 .AsQueryable();
 
             // البحث بالاسم
@@ -116,23 +117,31 @@ namespace Orderaty.Controllers
                 sellers = sellers.Where(p => p.User.FullName.Contains(sellerName));
 
             // فلترة بالفئة (Category)
-            /*if (!string.IsNullOrEmpty(category))
+            if (!string.IsNullOrEmpty(category) && category != "all")
             {
                 if (Enum.TryParse<SellerCategory>(category, out var categoryEnum))
                 {
-                    products = products.Where(p => p.Category == categoryEnum);
+                    sellers = sellers.Where(p => p.Category == categoryEnum);
                 }
-            }*/
+            }
 
             // الترتيب
-            /*products = sort switch
+            sellers = sort switch
             {
-                "rating_desc" => products.OrderByDescending(p => p.Rating),
-                "rating_asc" => products.OrderBy(p => p.Rating),
-                _ => products.OrderByDescending(p => p.Id)
-            };*/
+                "rating_desc" => sellers.OrderByDescending(p => p.Rating),
+                "rating_asc" => sellers.OrderBy(p => p.Rating),
+                "name_asc" => sellers.OrderBy(p => p.User.FullName),
+                "name_desc" => sellers.OrderByDescending(p => p.User.FullName),
+                _ => sellers.OrderByDescending(p => p.Rating)
+            };
 
             var result = await sellers.ToListAsync();
+            
+            // Pass the filter values to the view for maintaining state
+            ViewBag.CurrentSearch = sellerName;
+            ViewBag.CurrentCategory = category;
+            ViewBag.CurrentSort = sort;
+            
             return View(result);
         }
 

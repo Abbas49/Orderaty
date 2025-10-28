@@ -10,22 +10,87 @@
 <!-- Hero Section -->
 <section class="hero">
     <div class="container">
-        <div class="hero-content">
-            <h1 class="hero-title">Fast Delivery to Your Door</h1>
-            <p class="hero-subtitle">Order from your favorite stores and get it delivered instantly</p>
+        <div class="hero-grid">
+            <!-- Left Column - Content -->
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Your Favorite <span class="hero-title-highlight">Stores</span><br>
+                    Delivered Fast
+                </h1>
+                <p class="hero-subtitle">
+                    From restaurants to pharmacies, groceries to electronics - get everything delivered to your doorstep in minutes, not hours.
+                </p>
 
-            <div class="search-container">
-                <div class="search-input-group">
-                    <div class="search-input">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <input type="text" placeholder="Enter address (e.g. 123 Main St, New York)">
+                <!-- Feature Badges -->
+                <div class="hero-features">
+                    <div class="hero-feature-badge">
+                        <i class="fas fa-clock"></i>
+                        <span>30 min delivery</span>
                     </div>
-                    <div class="search-input">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search for stores, items, or categories">
-                        <button class="search-btn">Search</button>
+                    <div class="hero-feature-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Safe & secure</span>
+                    </div>
+                    <div class="hero-feature-badge">
+                        <i class="fas fa-star"></i>
+                        <span>4.8 rating</span>
                     </div>
                 </div>
+
+                <!-- Action Buttons -->
+                <div class="hero-actions">
+                    <a href="/Seller/Browse" class="hero-btn hero-btn-primary">
+                        <i class="fas fa-shopping-bag"></i>
+                        Order Now
+                    </a>
+                    <button class="hero-btn hero-btn-secondary">
+                        <i class="fas fa-play"></i>
+                        How it works
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column - Category Cards -->
+            <div class="hero-categories">
+                <a href="/Seller/Browse?category=Food" class="hero-category-card hero-category-food">
+                    <div class="hero-category-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="hero-category-info">
+                        <h3 class="hero-category-title">Food Delivery</h3>
+                        <p class="hero-category-subtitle">2000+ restaurants</p>
+                    </div>
+                </a>
+
+                <a href="/Seller/Browse?category=Groceries" class="hero-category-card hero-category-groceries">
+                    <div class="hero-category-icon">
+                        <i class="fas fa-shopping-basket"></i>
+                    </div>
+                    <div class="hero-category-info">
+                        <h3 class="hero-category-title">Groceries</h3>
+                        <p class="hero-category-subtitle">Fresh & organic</p>
+                    </div>
+                </a>
+
+                <a href="/Seller/Browse?category=Pharmacy" class="hero-category-card hero-category-pharmacy">
+                    <div class="hero-category-icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <div class="hero-category-info">
+                        <h3 class="hero-category-title">Pharmacy</h3>
+                        <p class="hero-category-subtitle">24/7 medicine delivery</p>
+                    </div>
+                </a>
+
+                <a href="/Seller/Browse?category=Electronics" class="hero-category-card hero-category-electronics">
+                    <div class="hero-category-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="hero-category-info">
+                        <h3 class="hero-category-title">Electronics</h3>
+                        <p class="hero-category-subtitle">Latest gadgets</p>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
@@ -34,14 +99,20 @@
 <!-- Featured Stores Section -->
 <section class="featured-stores">
     <div class="container">
-        <h2 class="section-title">Featured Stores</h2>
+        <div class="section-header">
+            <h2 class="section-title">Featured Stores</h2>
+            <a href="/Seller/Browse" class="view-all-btn">
+                View All
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
         <div class="stores-grid">
             @foreach(var store in Model.Sellers)
             {
-                <div class="store-card">
+                <a href="@Url.Action("Details", "Seller", new { id = store.Id })" class="store-card">
                     <div class="store-image">
                         <img src="~/images/users/@store.User.Image" alt="Fresh Market grocery store interior with fresh produce">
-                        <button class="add-to-favorites" onclick="MakeFavourite(this, '@store.User.Id')">
+                        <button class="add-to-favorites" onclick="event.preventDefault(); event.stopPropagation(); MakeFavourite(this, '@store.User.Id')">
                             <i class="far fa-heart"></i>
                         </button>
                     </div>
@@ -53,7 +124,7 @@
                             <span class="eta">20-30 min</span>
                         </div>
                     </div>
-                </div>
+                </a>
             }
         </div>
     </div>
@@ -62,30 +133,38 @@
 <!-- Trending Items Section -->
 <section class="trending-items">
     <div class="container">
-        <h2 class="section-title">Trending Items</h2>
+        <div class="section-header">
+            <h2 class="section-title">Trending Items</h2>
+            <a href="/ClientProduct/Index" class="view-all-btn">
+                View All
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
         <div class="products-grid">
             @foreach(var product in Model.Products)
             {
                 <div class="product-card">
-                    <div class="product-image">
-                        <img src="~/images/products/@product.Image" alt="Fresh Organic Salad">
-                        <button class="add-to-favorites">
-                            <i class="far fa-heart"></i>
-                        </button>
-                    </div>
-                    <div class="product-info">
-                        @*<div class="product-category">@product</div>*@
-                        <h3 class="product-title">@product.Name</h3>
-                        <p class="product-store">@product.Seller.User.FullName</p>
-                        <div class="product-footer">
-                            <div class="product-price">
-                                <span class="price">@product.Price EGP</span>
-                            </div>
-                            <button class="add-to-cart-btn">
-                                <i class="fas fa-plus"></i>
+                    <a href="@Url.Action("Details", "ClientProduct", new { id = product.Id })" class="product-link">
+                        <div class="product-image">
+                            <img src="~/images/products/@product.Image" alt="@product.Name">
+                            <button class="add-to-favorites" onclick="event.preventDefault(); event.stopPropagation();">
+                                <i class="far fa-heart"></i>
                             </button>
                         </div>
-                    </div>
+                        <div class="product-info">
+                            @*<div class="product-category">@product</div>*@
+                            <h3 class="product-title">@product.Name</h3>
+                            <p class="product-store">@product.Seller.User.FullName</p>
+                            <div class="product-footer">
+                                <div class="product-price">
+                                    <span class="price">@product.Price EGP</span>
+                                </div>
+                                <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation();">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </a>
                 </div>
             }
         </div>
