@@ -1,0 +1,472 @@
+@model Orderaty.Models.Seller
+@{
+    ViewData["Title"] = "Seller Dashboard";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/seller-dashboard.css" asp-append-version="true" />
+}
+
+<!-- Dashboard Header -->
+<section class="dashboard-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="welcome-section">
+                <div class="welcome-text">
+                    <h1 class="dashboard-title">
+                        <i class="fas fa-store-alt"></i>
+                        Dashboard
+                    </h1>
+                    <p class="dashboard-subtitle">Welcome back, <strong>@Model.User.FullName</strong>! 👋</p>
+                </div>
+                <div class="store-status">
+                    <span class="status-badge status-@Model.Status.ToString().ToLower()">
+                        <i class="fas fa-circle"></i>
+                        @Model.Status.ToString().Replace("_", " ")
+                    </span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a asp-action="Edit" class="action-btn btn-primary">
+                    <i class="fas fa-cog"></i>
+                    Store Settings
+                </a>
+                <a asp-controller="Product" asp-action="Create" class="action-btn btn-success">
+                    <i class="fas fa-plus-circle"></i>
+                    Add Product
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Cards -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <!-- Total Revenue -->
+            <div class="stat-card stat-revenue">
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-label">Total Revenue</h3>
+                    <p class="stat-value">@ViewBag.TotalRevenue.ToString("C")</p>
+                    <span class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 12% from last month
+                    </span>
+                </div>
+            </div>
+
+            <!-- Total Orders -->
+            <div class="stat-card stat-orders">
+                <div class="stat-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-label">Total Orders</h3>
+                    <p class="stat-value">@ViewBag.TotalOrders</p>
+                    <span class="stat-change">
+                        <i class="fas fa-clock"></i> @ViewBag.PendingOrders pending
+                    </span>
+                </div>
+            </div>
+
+            <!-- Total Products -->
+            <div class="stat-card stat-products">
+                <div class="stat-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-label">Total Products</h3>
+                    <p class="stat-value">@ViewBag.TotalProducts</p>
+                    <span class="stat-change @(ViewBag.LowStockProducts > 0 ? "negative" : "")">
+                        <i class="fas fa-exclamation-triangle"></i> @ViewBag.LowStockProducts low stock
+                    </span>
+                </div>
+            </div>
+
+            <!-- Average Rating -->
+            <div class="stat-card stat-rating">
+                <div class="stat-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-label">Average Rating</h3>
+                    <p class="stat-value">@ViewBag.AverageRating.ToString("0.0")</p>
+                    <span class="stat-change">
+                        <i class="fas fa-comment"></i> @ViewBag.TotalReviews reviews
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Actions -->
+<section class="quick-actions-section">
+    <div class="container">
+        <h2 class="section-title">
+            <i class="fas fa-bolt"></i>
+            Quick Actions
+        </h2>
+        <div class="actions-grid">
+            <a asp-controller="Product" asp-action="Index" class="quick-action-card">
+                <div class="action-icon action-icon-products">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <h3 class="action-title">Manage Products</h3>
+                <p class="action-description">View, add, edit or delete your products</p>
+            </a>
+
+            <a asp-controller="Product" asp-action="Create" class="quick-action-card">
+                <div class="action-icon action-icon-add">
+                    <i class="fas fa-plus-square"></i>
+                </div>
+                <h3 class="action-title">Add New Product</h3>
+                <p class="action-description">List a new product in your store</p>
+            </a>
+
+            <a asp-action="Profile" class="quick-action-card">
+                <div class="action-icon action-icon-profile">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h3 class="action-title">View Profile</h3>
+                <p class="action-description">See how customers view your store</p>
+            </a>
+
+            <a asp-action="Edit" class="quick-action-card">
+                <div class="action-icon action-icon-settings">
+                    <i class="fas fa-edit"></i>
+                </div>
+                <h3 class="action-title">Edit Store Info</h3>
+                <p class="action-description">Update your store details and settings</p>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Orders & Top Products -->
+<section class="data-section">
+    <div class="container">
+        <div class="data-grid">
+            <!-- Recent Orders -->
+            <div class="data-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-receipt"></i>
+                        Recent Orders
+                    </h2>
+                    <a href="#" class="view-all-link">
+                        View All
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="card-content">
+                    @if (ViewBag.RecentOrders != null && ((List<Order>)ViewBag.RecentOrders).Any())
+                    {
+                        <div class="orders-list">
+                            @foreach (var order in (List<Order>)ViewBag.RecentOrders)
+                            {
+                                <div class="order-item">
+                                    <div class="order-main">
+                                        <div class="order-info">
+                                            <h4 class="order-id">Order #@order.Id</h4>
+                                            <p class="order-customer">
+                                                <i class="fas fa-user"></i>
+                                                @order.Client?.User?.FullName
+                                            </p>
+                                            <p class="order-date">
+                                                <i class="fas fa-calendar"></i>
+                                                @order.CreatedAt.ToString("MMM dd, yyyy")
+                                            </p>
+                                        </div>
+                                        <div class="order-meta">
+                                            <p class="order-total">@order.TotalPrice.ToString("C")</p>
+                                            <span class="order-status status-@order.Status.ToString().ToLower()">
+                                                @order.Status.ToString().Replace("_", " ")
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="order-items">
+                                        <span class="items-count">
+                                            <i class="fas fa-box"></i>
+                                            @order.OrderedItems.Count item(s)
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state-small">
+                            <i class="fas fa-inbox"></i>
+                            <p>No recent orders</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Top Products -->
+            <div class="data-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-fire"></i>
+                        Top Products
+                    </h2>
+                    <a asp-controller="Product" asp-action="Index" class="view-all-link">
+                        View All
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="card-content">
+                    @if (ViewBag.TopProducts != null && ((List<Product>)ViewBag.TopProducts).Any())
+                    {
+                        <div class="products-list">
+                            @foreach (var product in (List<Product>)ViewBag.TopProducts)
+                            {
+                                <div class="product-item">
+                                    <div class="product-image-wrapper">
+                                        @if (!string.IsNullOrEmpty(product.Image))
+                                        {
+                                            <img src="~/images/products/@product.Image" alt="@product.Name" class="product-image" />
+                                        }
+                                        else
+                                        {
+                                            <img src="~/images/default-product.png" alt="No Image" class="product-image" />
+                                        }
+                                    </div>
+                                    <div class="product-details">
+                                        <h4 class="product-name">@product.Name</h4>
+                                        <p class="product-price">@product.Price.ToString("C")</p>
+                                        <div class="product-stats">
+                                            <span class="product-stock @(product.Available_Amount < 10 ? "low-stock" : "")">
+                                                <i class="fas fa-warehouse"></i>
+                                                @product.Available_Amount in stock
+                                            </span>
+                                            <span class="product-rating">
+                                                <i class="fas fa-star"></i>
+                                                @product.Rating.ToString("0.0")
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="product-actions">
+                                        <a asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id" class="action-link" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state-small">
+                            <i class="fas fa-box-open"></i>
+                            <p>No products yet</p>
+                            <a asp-controller="Product" asp-action="Create" class="btn-small">
+                                <i class="fas fa-plus"></i>
+                                Add Product
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Store Overview & Analytics -->
+<section class="overview-section">
+    <div class="container">
+        <div class="overview-grid">
+            <!-- Store Information -->
+            <div class="overview-card">
+                <h2 class="overview-title">
+                    <i class="fas fa-store"></i>
+                    Store Information
+                </h2>
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-label">
+                            <i class="fas fa-tag"></i>
+                            Category
+                        </span>
+                        <span class="info-value">@Model.Category.ToString().Replace("_", " ")</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Address
+                        </span>
+                        <span class="info-value">@Model.Address</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <i class="fas fa-align-left"></i>
+                            Description
+                        </span>
+                        <span class="info-value">@(string.IsNullOrEmpty(Model.Description) ? "No description" : Model.Description)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">
+                            <i class="fas fa-star"></i>
+                            Overall Rating
+                        </span>
+                        <span class="info-value rating-value">
+                            @Model.Rating.ToString("0.0")
+                            <span class="rating-stars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= Model.Rating)
+                                    {
+                                        <i class="fas fa-star"></i>
+                                    }
+                                    else if (i - Model.Rating < 1)
+                                    {
+                                        <i class="fas fa-star-half-alt"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-star"></i>
+                                    }
+                                }
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="overview-card">
+                <h2 class="overview-title">
+                    <i class="fas fa-chart-line"></i>
+                    Performance Metrics
+                </h2>
+                <div class="metrics-list">
+                    <div class="metric-item">
+                        <div class="metric-header">
+                            <span class="metric-label">Order Completion Rate</span>
+                            <span class="metric-percentage">
+                                @{
+                                    var completionRate = ViewBag.TotalOrders > 0 
+                                        ? ((decimal)Model.Orders.Count(o => o.Status == OrderStatus.Delivered) / ViewBag.TotalOrders * 100) 
+                                        : 0;
+                                }
+                                @completionRate.ToString("0")%
+                            </span>
+                        </div>
+                        <div class="metric-progress">
+                            <div class="progress-bar" style="width: @completionRate%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric-item">
+                        <div class="metric-header">
+                            <span class="metric-label">Customer Satisfaction</span>
+                            <span class="metric-percentage">
+                                @{
+                                    var satisfaction = ViewBag.AverageRating > 0 
+                                        ? (ViewBag.AverageRating / 5 * 100) 
+                                        : 0;
+                                }
+                                @satisfaction.ToString("0")%
+                            </span>
+                        </div>
+                        <div class="metric-progress">
+                            <div class="progress-bar" style="width: @satisfaction%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric-item">
+                        <div class="metric-header">
+                            <span class="metric-label">Stock Availability</span>
+                            <span class="metric-percentage">
+                                @{
+                                    var stockRate = ViewBag.TotalProducts > 0 
+                                        ? ((decimal)(ViewBag.TotalProducts - ViewBag.LowStockProducts) / ViewBag.TotalProducts * 100) 
+                                        : 0;
+                                }
+                                @stockRate.ToString("0")%
+                            </span>
+                        </div>
+                        <div class="metric-progress">
+                            <div class="progress-bar" style="width: @stockRate%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Reviews (if any) -->
+@if (Model.SellerReviews.Any())
+{
+    <section class="reviews-section">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-comments"></i>
+                Recent Customer Reviews
+            </h2>
+            <div class="reviews-grid">
+                @foreach (var review in Model.SellerReviews.OrderByDescending(r => r.Id).Take(3))
+                {
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">
+                                    @if (!string.IsNullOrEmpty(review.Client?.User?.Image))
+                                    {
+                                        <img src="~/images/users/@review.Client.User.Image" alt="@review.Client.User.FullName" />
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-user-circle"></i>
+                                    }
+                                </div>
+                                <div class="reviewer-details">
+                                    <h4 class="reviewer-name">@review.Client?.User?.FullName</h4>
+                                    <div class="review-rating">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= review.Rating)
+                                            {
+                                                <i class="fas fa-star"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="far fa-star"></i>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p class="review-comment">@(string.IsNullOrEmpty(review.Comment) ? "No comment provided" : review.Comment)</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+@section Scripts {
+    <script>
+        // Auto-hide notifications after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const notifications = document.querySelectorAll('.notification');
+            notifications.forEach(notification => {
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 5000);
+            });
+        });
+    </script>
+}

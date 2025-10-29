@@ -34,6 +34,53 @@ namespace Orderaty.Controllers
             return View(seller);
         }
 
+        // --------------------- 📊 Dashboard ---------------------
+        public async Task<IActionResult> Dashboard()
+        {
+            var user = await userManager.GetUserAsync(User);
+            var seller = await db.Sellers
+                .Include(s => s.User)
+                .Include(s => s.Products)
+                .Include(s => s.Orders)
+                    .ThenInclude(o => o.OrderedItems)
+                        .ThenInclude(oi => oi.Product)
+                .Include(s => s.Orders)
+                    .ThenInclude(o => o.Client)
+                        .ThenInclude(c => c.User)
+                .Include(s => s.SellerReviews)
+                    .ThenInclude(sr => sr.Client)
+                        .ThenInclude(c => c.User)
+                .FirstOrDefaultAsync(s => s.Id == user.Id);
+
+            if (seller == null)
+                return RedirectToAction("Login", "User");
+
+            // Calculate statistics
+            ViewBag.TotalProducts = seller.Products.Count;
+            ViewBag.TotalOrders = seller.Orders.Count;
+            ViewBag.PendingOrders = seller.Orders.Count(o => o.Status == OrderStatus.PendingDelivery || o.Status == OrderStatus.Processing);
+            ViewBag.TotalRevenue = seller.Orders.Where(o => o.Status == OrderStatus.Delivered).Sum(o => o.TotalPrice);
+            ViewBag.AverageRating = seller.SellerReviews.Any() ? seller.SellerReviews.Average(r => r.Rating) : 0;
+            ViewBag.TotalReviews = seller.SellerReviews.Count;
+            
+            // Low stock products (less than 10 items)
+            ViewBag.LowStockProducts = seller.Products.Where(p => p.Available_Amount < 10).Count();
+            
+            // Recent orders (last 5)
+            ViewBag.RecentOrders = seller.Orders
+                .OrderByDescending(o => o.CreatedAt)
+                .Take(5)
+                .ToList();
+
+            // Top products by orders
+            ViewBag.TopProducts = seller.Products
+                .OrderByDescending(p => p.OrderedItems.Sum(oi => oi.Quantity))
+                .Take(5)
+                .ToList();
+
+            return View(seller);
+        }
+
         // --------------------- 👤 Profile ---------------------
         public async Task<IActionResult> Profile()
         {
