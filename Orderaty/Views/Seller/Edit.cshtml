@@ -1,54 +1,158 @@
 ﻿@model Orderaty.Models.Seller
+@{
+    ViewData["Title"] = "Edit Store Profile";
+}
 
-<h2>Edit Your Profile</h2>
+@section Styles {
+    <link rel="stylesheet" href="~/css/seller-edit.css" asp-append-version="true" />
+}
 
-<form asp-action="Edit" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="Id" />
+<!-- Edit Profile Section -->
+<section class="edit-section">
+    <div class="edit-container">
+        <div class="edit-card">
+            <div class="edit-header">
+                <i class="fas fa-store-alt"></i>
+                <h1 class="edit-title">Edit Store Profile</h1>
+                <p class="edit-subtitle">Update your store information and settings</p>
+            </div>
 
-    <div class="form-group">
-        <label>Full Name</label>
-        <input asp-for="User.FullName" class="form-control" />
+            <form asp-action="Edit" method="post" enctype="multipart/form-data" class="edit-form" novalidate>
+                <input type="hidden" asp-for="Id" />
+
+                <!-- Store Image Section -->
+                <div class="image-section">
+                    <label class="section-label">
+                        <i class="fas fa-image"></i>
+                        Store Logo
+                    </label>
+                    <div class="image-upload-wrapper">
+                        <input type="file" name="imageFile" class="file-input" id="store-image" accept="image/*" />
+                        <label for="store-image" class="image-upload-label">
+                            <div class="preview-image">
+                                @if (!string.IsNullOrEmpty(Model.User.Image))
+                                {
+                                    <img src="~/images/users/@Model.User.Image" alt="Store Image" id="preview-image" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/default-user.png" alt="Default Image" id="preview-image" />
+                                }
+                            </div>
+                            <div class="image-overlay">
+                                <i class="fas fa-camera"></i>
+                                <span>Click to change photo</span>
+                            </div>
+                            <div class="image-edit-badge">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                        </label>
+                        <p class="file-hint"><i class="fas fa-info-circle"></i> Click on the image above to upload a new logo</p>
+                        <p class="file-hint-small">Recommended: Square image, at least 400x400px</p>
+                    </div>
+                </div>
+
+                <!-- Store Information -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Store Information
+                    </h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label asp-for="User.FullName" class="form-label">
+                                <i class="fas fa-store"></i>
+                                Store Name
+                            </label>
+                            <input asp-for="User.FullName" class="form-input" placeholder="Enter your store name" />
+                            <span asp-validation-for="User.FullName" class="validation-error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Category" class="form-label">
+                                <i class="fas fa-tags"></i>
+                                Category
+                            </label>
+                            <select asp-for="Category" asp-items="Html.GetEnumSelectList<SellerCategory>()" class="form-input">
+                                <option value="">Select a category</option>
+                            </select>
+                            <span asp-validation-for="Category" class="validation-error"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Description" class="form-label">
+                            <i class="fas fa-align-left"></i>
+                            Store Description
+                        </label>
+                        <textarea asp-for="Description" class="form-input" rows="4" placeholder="Describe your store and what makes it special..."></textarea>
+                        <span asp-validation-for="Description" class="validation-error"></span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label asp-for="Address" class="form-label">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Store Address
+                            </label>
+                            <input asp-for="Address" class="form-input" placeholder="123 Main St, New York" />
+                            <span asp-validation-for="Address" class="validation-error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Status" class="form-label">
+                                <i class="fas fa-toggle-on"></i>
+                                Store Status
+                            </label>
+                            <select asp-for="Status" asp-items="Html.GetEnumSelectList<SellerStatus>()" class="form-input">
+                                <option value="">Select status</option>
+                            </select>
+                            <span asp-validation-for="Status" class="validation-error"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div asp-validation-summary="All" class="validation-summary"></div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i>
+                        Save Changes
+                    </button>
+                    <a asp-action="Profile" class="btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
+</section>
 
-    <div class="form-group">
-        <label>Description</label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-    </div>
-
-    <div class="form-group">
-        <label>Address</label>
-        <input asp-for="Address" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label>Status</label>
-        <select asp-for="Status" asp-items="Html.GetEnumSelectList<SellerStatus>()" class="form-control"></select>
-    </div>
-
-    <div class="form-group">
-        <label>Category</label>
-        <select asp-for="Category" asp-items="Html.GetEnumSelectList<SellerCategory>()" class="form-control"></select>
-    </div>
-
-    <div class="form-group mt-3">
-        <label>Current Image:</label><br />
-        @if (!string.IsNullOrEmpty(Model.User.Image))
-        {
-            <img src="~/images/users/@Model.User.Image" alt="Seller Image" style="width:120px;border-radius:10px" />
-        }
-        else
-        {
-            <img src="~/images/default-user.png" alt="Default Image" style="width:120px;border-radius:10px" />
-        }
-    </div>
-
-    <div class="form-group mt-2">
-        <label>Upload New Image</label>
-        <input type="file" name="imageFile" class="form-control" />
-    </div>
-
-    <div class="mt-3">
-        <button type="submit" class="btn btn-success">Save Changes</button>
-        <a asp-action="Profile" class="btn btn-secondary">Cancel</a>
-    </div>
-</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // File input preview
+            const fileInput = document.getElementById('store-image');
+            const previewImage = document.getElementById('preview-image');
+            
+            if (fileInput && previewImage) {
+                fileInput.addEventListener('change', function(e) {
+                    if (e.target.files && e.target.files.length > 0) {
+                        const file = e.target.files[0];
+                        
+                        // Preview the image
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            previewImage.src = event.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        });
+    </script>
+}
