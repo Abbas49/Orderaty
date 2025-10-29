@@ -7,8 +7,8 @@
 body {
     margin: 0;
     font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    background: linear-gradient(135deg, rgba(40,167,69,0.06) 0%, #ffffff 100%); /* subtle gradient from code1 */
-    color: #1a1a1a;
+    background: var(--bg-section);
+    color: var(--text-primary);
     line-height: 1.5;
 }
 
@@ -16,7 +16,7 @@ body {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    border: 0 solid #e0e0e0;
+    border: 0 solid var(--border-color);
 }
 
 img {
@@ -43,45 +43,19 @@ h1, h2, h3, h4, p, label {
 hr.separator {
     border: none;
     height: 1px;
-    background-color: var(--border);
+    background-color: var(--border-color);
 }
 
 label {
     display: block;
 }
 
-/* --- Theme variables (primary colors + shadows from code1) --- */
+/* --- Border radius utilities (used throughout the page) --- */
 :root {
-    --primary: #28A745;
-    --primary-foreground: #ffffff;
-    --primary-light: #3cbb59;
-    --primary-lighter: #5acfa0;
-    --secondary: #FFD93D;
-    --secondary-foreground: #1a1a1a;
-    --muted: #f5f5f5;
-    --muted-foreground: #717182;
-    --accent: #FFD93D;
-    --accent-foreground: #1a1a1a;
-    --destructive: #d4183d;
-    --destructive-foreground: #ffffff;
-    --border: #e0e0e0;
-    --border-light: #f0f0f0;
-    --card: #ffffff;
-    --card-foreground: #1a1a1a;
-    --background: #ffffff;
-    --foreground: #1a1a1a;
-    --radius-xl: 0.75rem; /* used in code2 */
+    --radius-xl: 0.75rem;
     --radius-2xl: 1rem;
     --radius-lg: 0.5rem;
     --radius-md: calc(var(--radius-xl) - 2px);
-    /* Shadows / effects (from code1) */
-    --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
-    --shadow-lg: 0 4px 12px rgba(0,0,0,0.08);
-    --shadow-xl: 0 12px 32px rgba(40,167,69,0.2);
-    /* small friendly aliases */
-    --primary-bg-light: rgba(40,167,69,0.10);
-    --text-white: #ffffff;
-    --text-white-soft: rgba(255,255,255,0.8);
 }
 
 /* --- Utility & layout classes (sizes from code2 preserved) --- */
@@ -236,27 +210,27 @@ label {
 }
 
 .text-primary {
-    color: var(--primary);
+    color: var(--primary-color);
 }
 
 .text-primary-foreground {
-    color: var(--primary-foreground);
+    color: var(--text-white);
 }
 
 .text-secondary {
-    color: var(--secondary);
+    color: var(--text-secondary);
 }
 
 .text-secondary-foreground {
-    color: var(--secondary-foreground);
+    color: var(--text-primary);
 }
 
 .text-muted-foreground {
-    color: var(--muted-foreground);
+    color: var(--text-muted);
 }
 
 .text-destructive {
-    color: var(--destructive);
+    color: var(--error-color);
 }
 
 .text-white {
@@ -325,7 +299,7 @@ label {
 .border {
     border-width: 1px;
     border-style: solid;
-    border-color: var(--border);
+    border-color: var(--border-color);
 }
 
 .border-transparent {
@@ -402,7 +376,7 @@ label {
 }
 
 .product-image-column .image-wrapper {
-    background-color: var(--muted);
+    background-color: var(--bg-gray-light);
 }
 
 .product-image-column .product-image {
@@ -428,21 +402,21 @@ label {
     justify-content: center;
     cursor: pointer;
     border: none;
-    background-color: var(--secondary);
-    color: var(--secondary-foreground);
+    background-color: var(--warning-color);
+    color: var(--text-primary);
     transition: background-color 0.15s ease-in-out, transform 0.15s ease, box-shadow 0.15s ease;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 1px 2px 0 var(--shadow-sm);
 }
 
     .action-button:hover {
-        background-color: rgba(255,217,61,0.8);
+        background-color: var(--warning-bg);
         transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
+        box-shadow: 0 4px 12px var(--shadow-md);
     }
 
     .action-button:active {
         transform: translateY(0) scale(0.98);
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 1px 2px 0 var(--shadow-sm);
     }
 
     .action-button svg {
@@ -477,8 +451,8 @@ label {
     }
 
 .rating-reviews-container .star-icon {
-    color: var(--secondary);
-    fill: var(--secondary);
+    color: var(--warning-color);
+    fill: var(--warning-color);
 }
 
 .price-unit-wrapper {
@@ -489,7 +463,7 @@ label {
 
 .price-text {
     font-size: 2.25rem;
-    color: var(--primary);
+    color: var(--primary-color);
 }
 /* preserved size from code2 */
 .unit-text {
@@ -516,7 +490,7 @@ label {
 .quantity-input-group {
     display: flex;
     align-items: center;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-xl);
     overflow: hidden;
 }
@@ -530,20 +504,20 @@ label {
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--foreground);
+    color: var(--text-primary);
     transition: background-color 0.15s ease, transform 0.12s ease, box-shadow 0.12s ease;
 }
 
     .quantity-button:hover {
-        background-color: var(--primary-bg-light);
-        color: var(--primary);
+        background-color: var(--primary-bg);
+        color: var(--primary-color);
         transform: translateY(-2px);
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 1px 2px 0 var(--shadow-sm);
     }
 
     .quantity-button:active {
         transform: scale(0.98);
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 1px 2px 0 var(--shadow-sm);
     }
 
 .quantity-value {
@@ -579,10 +553,10 @@ label {
     }
 
     .button.primary-button {
-        background: linear-gradient(135deg, var(--primary), var(--primary-light));
-        color: var(--primary-foreground);
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        color: var(--text-white);
         border: 1px solid transparent;
-        box-shadow: 0 4px 12px rgba(40,167,69,0.28);
+        box-shadow: 0 4px 12px var(--shadow-md);
     }
 
         .button.primary-button::before {
@@ -603,18 +577,18 @@ label {
         .button.primary-button:hover:not(:disabled) {
             background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
             transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 4px 12px var(--shadow-md);
         }
 
     .button.outline-button {
-        border: 1px solid var(--border);
-        background-color: var(--background);
-        color: var(--foreground);
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-white);
+        color: var(--text-primary);
     }
 
         .button.outline-button:hover:not(:disabled) {
-            background: var(--accent);
-            color: var(--accent-foreground);
+            background: var(--warning-color);
+            color: var(--text-white);
         }
 
 /* --- Badge (from code2 sizes) with code1 color/hover) --- */
@@ -626,13 +600,13 @@ label {
     font-size: 0.75rem;
     font-weight: 500;
     border: 1px solid transparent;
-    background-color: var(--primary-bg-light);
-    color: var(--primary);
+    background-color: var(--primary-bg);
+    color: var(--primary-color);
     transition: background-color 0.15s ease-in-out, transform 0.12s ease;
 }
 
     .badge:hover {
-        background-color: rgba(40,167,69,0.2);
+        background-color: var(--primary-bg-light);
         transform: translateY(-1px);
     }
 
@@ -645,10 +619,10 @@ label {
 }
 
 .product-card {
-    background: var(--card);
+    background: var(--bg-white);
     border-radius: 16px; /* preserve code2 feel */
     overflow: hidden;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 4px 12px var(--shadow-md);
     border: 1px solid var(--border-light);
     transition: all 0.18s ease-in-out;
     cursor: pointer;
@@ -657,15 +631,15 @@ label {
 
     .product-card:hover {
         transform: translateY(-8px);
-        box-shadow: var(--shadow-xl);
-        border-color: var(--primary);
+        box-shadow: 0 12px 32px var(--shadow-lg);
+        border-color: var(--primary-color);
     }
 
 .product-image-wrapper {
     position: relative;
     height: 200px;
     overflow: hidden;
-    background: linear-gradient(135deg, var(--primary-bg-light) 0%, var(--muted) 100%);
+    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--bg-gray-light) 100%);
 }
 
     .product-image-wrapper::after {
@@ -699,14 +673,14 @@ label {
 .product-title {
     font-size: 18px;
     font-weight: 700;
-    color: var(--foreground);
+    color: var(--text-primary);
     margin: 0 0 8px 0;
     line-height: 1.3;
 }
 
 .product-description {
     font-size: 14px;
-    color: var(--muted-foreground);
+    color: var(--text-muted);
     margin: 0 0 12px 0;
     line-height: 1.4;
     display: -webkit-box;
@@ -733,27 +707,27 @@ label {
 
     .meta-item i {
         font-size: 16px;
-        color: var(--primary);
+        color: var(--primary-color);
         width: 16px;
     }
 
 .meta-label {
     font-weight: 600;
-    color: var(--foreground);
+    color: var(--text-primary);
 }
 
 .meta-value {
-    color: var(--muted-foreground);
+    color: var(--text-muted);
 }
 
     .meta-value.price {
         font-weight: 700;
-        color: var(--primary);
+        color: var(--primary-color);
         font-size: 16px;
     }
 
     .meta-value.rating {
-        color: #fbbf24;
+        color: var(--warning-color);
         font-weight: 600;
     }
 
@@ -767,9 +741,9 @@ label {
     justify-content: center;
     cursor: pointer;
     border: none;
-    color: var(--primary-foreground);
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+    color: var(--text-white);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    box-shadow: 0 4px 12px var(--shadow-md);
     transition: all 0.15s ease-in-out;
     position: relative;
     overflow: hidden;
@@ -793,12 +767,12 @@ label {
     .add-to-cart-button:hover {
         background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
         transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
+        box-shadow: 0 4px 12px var(--shadow-md);
     }
 
     .add-to-cart-button:active {
         transform: translateY(0);
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 1px 2px 0 var(--shadow-sm);
     }
 
     .add-to-cart-button svg {
@@ -816,14 +790,14 @@ label {
 .review-card {
     border-radius: var(--radius-xl);
     padding: 1rem;
-    background-color: var(--card);
+    background-color: var(--bg-white);
     border: 1px solid var(--border-light);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 4px 12px var(--shadow-md);
     transition: all 0.15s ease-in-out;
 }
 
     .review-card:hover {
-        box-shadow: var(--shadow-xl);
+        box-shadow: 0 12px 32px var(--shadow-lg);
         transform: translateY(-4px);
     }
 
@@ -845,7 +819,7 @@ label {
 
 .review-date {
     font-size: 0.875rem;
-    color: var(--muted-foreground);
+    color: var(--text-muted);
 }
 
 .review-rating {
@@ -859,7 +833,7 @@ label {
     }
 
 .review-comment {
-    color: var(--muted-foreground);
+    color: var(--text-muted);
     margin-top: 0.75rem;
 }
 
@@ -872,8 +846,8 @@ label {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--muted);
-    color: var(--muted-foreground);
+    background-color: var(--bg-gray-light);
+    color: var(--text-muted);
     font-size: 0.875rem;
     text-align: center;
     width: 100%;
@@ -882,7 +856,7 @@ label {
 
 .skeleton-placeholder {
     padding: 1rem;
-    color: var(--muted-foreground);
+    color: var(--text-muted);
     text-align: center;
 }
 

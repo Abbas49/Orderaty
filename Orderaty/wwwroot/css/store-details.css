@@ -6,9 +6,9 @@
 body {
     margin: 0;
     font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    /* UPDATED: Use gradient background from client styles */
-    background: linear-gradient(135deg, var(--primary-bg-light) 0%, var(--background) 100%);
-    color: var(--foreground);
+    /* Use theme background */
+    background: linear-gradient(135deg, var(--primary-bg-light) 0%, var(--bg-white) 100%);
+    color: var(--text-primary);
     line-height: 1.5;
 }
 
@@ -16,13 +16,12 @@ body {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    border: 0 solid var(--border); /* Use border variable */
+    border: 0 solid var(--border-color);
 }
 
 img {
     max-width: 100%;
     display: block;
-    vertical-align: middle;
 }
 
 button {
@@ -43,53 +42,27 @@ h1, h2, h3, h4, p {
 hr.separator {
     border: none;
     height: 1px;
-    background-color: var(--border);
+    background-color: var(--border-color);
 }
 
-/* --- MERGED Color, Shadow & Radius Variables (From client-product-page.css) --- */
+/* --- Local Variables for Store Details Page --- */
+/* This page uses the global theme variables from site.css */
+/* Additional local variables for specific components */
 :root {
-    /* Primary colors */
-    --primary-color: #28A745; /* Renaming for clarity if needed, but keeping source name */
-    --primary: var(--primary-color); /* Alias */
-    --primary-light: #3cbb59;
-    --primary-lighter: #5acfa0;
-    --primary-foreground: #ffffff;
-    --primary-bg-light: rgba(40, 167, 69, 0.1);
-    /* Secondary colors (Kept from original store-details) */
-    --secondary: #FFD93D;
-    --secondary-foreground: #1a1a1a;
-    /* Base colors */
-    --background: #ffffff;
-    --foreground: #1a1a1a;
-    --card: #ffffff;
-    --card-foreground: #1a1a1a;
-    --muted: #f5f5f5;
-    --muted-foreground: #717182;
-    --border: #e0e0e0;
-    --border-light: #f0f0f0; /* From client styles */
-    --border-color: var(--border); /* Alias */
-    /* Text aliases */
-    --text-white: #ffffff;
-    --text-white-soft: rgba(255, 255, 255, 0.8);
-    --text-primary: var(--foreground);
-    --text-secondary: var(--muted-foreground);
-    --text-muted: var(--muted-foreground);
-    /* Background aliases */
-    --bg-white: var(--background);
-    --bg-gray-light: var(--muted);
-    /* Destructive colors */
-    --destructive: #d4183d;
-    --destructive-foreground: #ffffff;
-    --error-color: var(--destructive);
-    /* Shadows (From client-product-page.css) */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.08); /* Base card shadow */
-    --shadow-xl: 0 12px 32px rgba(40, 167, 69, 0.2); /* Hover card shadow */
-    /* Radius (Using values from client-product-page.css where applicable) */
+    /* Shadows - Using theme-aware shadows */
+    --shadow-sm: 0 1px 2px 0 var(--shadow-sm);
+    --shadow-lg: 0 4px 12px var(--shadow-md);
+    --shadow-xl: 0 12px 32px var(--shadow-lg);
+    
+    /* Radius - Component-specific radius values */
     --radius-md: 0.5rem; /* 8px */
     --radius-lg: 0.625rem; /* 10px (buttons) */
     --radius-xl: 1rem; /* 16px (cards) */
     --radius-2xl: 1rem; /* 16px (cards) */
+    
+    /* Secondary color for store details - using warning color from theme */
+    --secondary: var(--warning-color);
+    --secondary-foreground: var(--text-primary);
 }
 
 /* --- Utility Classes (Mostly unchanged) --- */
@@ -267,11 +240,11 @@ hr.separator {
 }
 
 .text-primary {
-    color: var(--primary);
+    color: var(--primary-color);
 }
 
 .text-primary-foreground {
-    color: var(--primary-foreground);
+    color: var(--text-white);
 }
 
 .text-secondary {
@@ -283,7 +256,7 @@ hr.separator {
 }
 
 .text-muted-foreground {
-    color: var(--muted-foreground);
+    color: var(--text-secondary);
 }
 
 .text-white {
@@ -457,7 +430,7 @@ hr.separator {
 }
 
 .store-info-card {
-    background-color: var(--card);
+    background-color: var(--bg-white);
     border-radius: var(--radius-xl); /* Use 16px radius */
     box-shadow: var(--shadow-lg); /* Use base shadow */
     border: 1px solid var(--border-light); /* Use light border */
@@ -515,7 +488,7 @@ hr.separator {
     flex-wrap: wrap;
     gap: 1rem;
     font-size: 0.875rem;
-    color: var(--muted-foreground);
+    color: var(--text-secondary);
     margin-top: 1rem;
 }
 
@@ -545,20 +518,18 @@ hr.separator {
     align-items: flex-start;
 }
 
-    .contact-item svg {
-        color: var(--primary);
-        margin-right: 0.5rem;
-        margin-top: 0.125rem;
-        flex-shrink: 0;
-    }
-
-.contact-item-label {
+.contact-item svg {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+}.contact-item-label {
     font-weight: 500;
     margin-bottom: 0.25rem;
 }
 
 .contact-item-value {
-    color: var(--muted-foreground);
+    color: var(--text-secondary);
 }
 
 /* --- Badge Specific --- */
@@ -571,19 +542,19 @@ hr.separator {
     font-weight: 500;
     border: 1px solid transparent;
     background-color: var(--primary-bg-light);
-    color: var(--primary);
+    color: var(--primary-color);
     transition: background-color 0.15s ease-in-out;
 }
 
     .badge:hover {
-        background-color: rgba(40, 167, 69, 0.2);
+        background-color: var(--primary-bg);
     }
 
 /* --- Tabs Specific (UPDATED radius/shadow) --- */
 .tabs-list {
     display: inline-flex;
-    background-color: var(--muted);
-    color: var(--muted-foreground);
+    background-color: var(--bg-gray-light);
+    color: var(--text-secondary);
     padding: 3px;
     border-radius: var(--radius-lg); /* Use 10px radius */
     margin-bottom: 1.5rem;
@@ -604,8 +575,8 @@ hr.separator {
 }
 
     .tab-trigger.active {
-        background-color: var(--card);
-        color: var(--card-foreground);
+        background-color: var(--bg-white);
+        color: var(--text-primary);
         box-shadow: var(--shadow-sm); /* Use shadow variable */
     }
 
@@ -630,7 +601,7 @@ hr.separator {
 }
 
 .product-card {
-    background-color: var(--card);
+    background-color: var(--bg-white);
     border: 1px solid var(--border-light); /* Use light border */
     border-radius: var(--radius-xl); /* Use 16px radius */
     overflow: hidden;
@@ -643,7 +614,7 @@ hr.separator {
     .product-card:hover {
         box-shadow: var(--shadow-xl); /* Use stronger shadow */
         transform: translateY(-8px); /* Add lift effect */
-        border-color: var(--primary); /* Add border color */
+        border-color: var(--primary-color); /* Add border color */
     }
 
     .product-card .card-image-container {
@@ -693,12 +664,12 @@ hr.separator {
 
 .product-price {
     font-size: 1.125rem;
-    color: var(--primary);
+    color: var(--primary-color);
 }
 
 .product-unit {
     font-size: 0.75rem;
-    color: var(--muted-foreground);
+    color: var(--text-secondary);
 }
 
 .add-to-cart-button { /* UPDATED styles */
@@ -710,9 +681,9 @@ hr.separator {
     justify-content: center;
     cursor: pointer;
     border: none;
-    color: var(--primary-foreground);
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    color: var(--text-white);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    box-shadow: 0 4px 12px var(--shadow-md);
     transition: all 0.15s ease-in-out; /* Use faster transition */
     position: relative;
     overflow: hidden; /* For shine effect */
@@ -757,7 +728,7 @@ hr.separator {
 }
 
 .review-card {
-    background-color: var(--card);
+    background-color: var(--bg-white);
     border: 1px solid var(--border-light); /* Use light border */
     border-radius: var(--radius-xl); /* Use 16px radius */
     box-shadow: var(--shadow-lg); /* Use base shadow */
@@ -787,7 +758,7 @@ hr.separator {
 
 .review-date {
     font-size: 0.875rem;
-    color: var(--muted-foreground);
+    color: var(--text-secondary);
 }
 /* Kept for potential future use */
 .review-rating {
@@ -801,7 +772,7 @@ hr.separator {
     }
 
 .review-comment {
-    color: var(--muted-foreground);
+    color: var(--text-secondary);
     margin-top: 0.75rem;
 }
 
