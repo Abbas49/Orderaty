@@ -48,7 +48,7 @@ namespace Orderaty.Controllers
                 {
                     if (await userManager.IsInRoleAsync(userData, "Seller"))
                     {
-                        return RedirectToAction("Home", "Seller");
+                        return RedirectToAction("Dashboard", "Seller");
                     }
                     if (await userManager.IsInRoleAsync(userData, "Delivery"))
                     {
