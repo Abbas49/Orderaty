@@ -1019,3 +1019,135 @@
         page-break-inside: avoid;
     }
 }
+
+/* ================================================================
+   Delivery Order Details - Additional Styles
+   ================================================================ */
+
+/* Delivery Info Content for Store and Client Information */
+.delivery-info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.info-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+    background: var(--bg-gray-light);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.info-row:hover {
+    background: var(--bg-gray-lighter);
+    transform: translateX(4px);
+}
+
+.info-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-label i {
+    font-size: 14px;
+    color: var(--primary-color);
+    width: 16px;
+}
+
+.info-value {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    padding-left: 24px;
+    word-wrap: break-word;
+}
+
+/* Store Info Card Title Icon Spacing */
+.store-info-card .card-title i {
+    margin-right: 8px;
+    color: var(--primary-color);
+}
+
+/* Delivery Complete Badge */
+.delivery-complete-badge {
+    text-align: center;
+    padding: 24px 16px;
+    background: linear-gradient(135deg, var(--success-bg) 0%, #d1fae5 100%);
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+.delivery-complete-badge i {
+    font-size: 48px;
+    color: var(--success-color);
+    margin-bottom: 12px;
+}
+
+.delivery-complete-badge h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--success-color);
+    margin: 0 0 8px 0;
+}
+
+.delivery-complete-badge p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Enhanced Store Info Card for Delivery View */
+.order-main-content .store-info-card {
+    margin-bottom: 24px;
+}
+
+.order-main-content .store-info-card:last-of-type {
+    margin-bottom: 24px;
+}
+
+/* Responsive adjustments for delivery info */
+@media (max-width: 768px) {
+    .info-row {
+        padding: 10px;
+    }
+
+    .info-label {
+        font-size: 12px;
+    }
+
+    .info-value {
+        font-size: 14px;
+        padding-left: 20px;
+    }
+
+    .delivery-complete-badge {
+        padding: 20px 12px;
+    }
+
+    .delivery-complete-badge i {
+        font-size: 40px;
+    }
+
+    .delivery-complete-badge h3 {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .info-label i {
+        font-size: 12px;
+    }
+
+    .info-value {
+        font-size: 13px;
+    }
+}

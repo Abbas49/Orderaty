@@ -186,6 +186,7 @@ namespace Orderaty.Controllers
             var pendingOrders = await db.Orders
                 .Include(o => o.Seller).ThenInclude(s => s.User)
                 .Include(o => o.Client).ThenInclude(c => c.User)
+                .Include(o => o.OrderedItems)
                 .Where(o => o.Status == OrderStatus.PendingDelivery)
                 .ToListAsync();
 
@@ -198,6 +199,9 @@ namespace Orderaty.Controllers
             var order = await db.Orders
                 .Include(o => o.Seller).ThenInclude(s => s.User)
                 .Include(o => o.Client).ThenInclude(c => c.User)
+                .Include(o => o.OrderedItems).ThenInclude(oi => oi.Product)
+                .Include(o => o.Coupon)
+                .Include(o => o.Delivery).ThenInclude(d => d.User)
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
@@ -245,8 +249,9 @@ namespace Orderaty.Controllers
             var myOrders = await db.Orders
                 .Include(o => o.Seller).ThenInclude(s => s.User)
                 .Include(o => o.Client).ThenInclude(c => c.User)
+                .Include(o => o.OrderedItems)
                 .Where(o =>
-                    o.DeliveryId == user.Id ||
+                    o.DeliveryId == user.Id &&
                     (o.Status == OrderStatus.Processing || o.Status == OrderStatus.Shipped))
                 .ToListAsync();
 

@@ -1,35 +1,145 @@
-﻿@model IEnumerable<Orderaty.Models.Order>
+﻿@model List<Orderaty.Models.Order>
 
 @{
-    ViewData["Title"] = "Orders Waiting for Delivery";
+    ViewData["Title"] = "Available Orders";
 }
 
-<h2 class="mb-4">📦 Orders Waiting for Delivery</h2>
-
-@if (!Model.Any())
-{
-    <div class="alert alert-info">No pending orders at the moment.</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/orders.css" />
 }
-else
-{
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-        @foreach (var order in Model)
+
+<section class="orders-section">
+    <!-- Orders Header -->
+    <div class="orders-header">
+        <div class="orders-header-content">
+            <h1 class="orders-title">Available Orders</h1>
+            <p class="orders-subtitle">Pick orders to deliver and start earning</p>
+        </div>
+    </div>
+
+    <div class="orders-container">
+        @if (!Model.Any())
         {
-            <div class="col">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Order #@order.Id</h5>
-                        <p><strong>Seller:</strong> @order.Seller.User.FullName</p>
-                        <p><strong>Total Price:</strong> @order.TotalPrice.ToString("C")</p>
-                        <p><strong>Status:</strong> <span class="badge bg-warning text-dark">@order.Status</span></p>
-                        <p><small>Created: @order.CreatedAt.ToString("g")</small></p>
-
-                        <a asp-action="OrderDetails" asp-route-id="@order.Id" class="btn btn-outline-primary btn-sm">
-                            View Details
-                        </a>
+            <div class="empty-orders">
+                <i class="fas fa-box-open"></i>
+                <h2 class="empty-orders-title">No pending orders</h2>
+                <p class="empty-orders-text">There are no orders waiting for delivery at the moment. Check back later!</p>
+                <a href="@Url.Action("Dashboard", "Delivery")" class="browse-btn">
+                    <i class="fas fa-chart-line"></i>
+                    Go to Dashboard
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="orders-stats-banner">
+                <div class="stats-item">
+                    <i class="fas fa-box"></i>
+                    <div class="stats-content">
+                        <span class="stats-number">@Model.Count</span>
+                        <span class="stats-label">Available Orders</span>
+                    </div>
+                </div>
+                <div class="stats-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div class="stats-content">
+                        <span class="stats-number">@Model.Sum(o => o.TotalPrice * 0.10m).ToString("C0")</span>
+                        <span class="stats-label">Potential Earnings</span>
                     </div>
                 </div>
             </div>
+
+            <div class="orders-list">
+                @foreach (var order in Model.OrderByDescending(o => o.CreatedAt))
+                {
+                    <div class="order-card delivery-order-card">
+                        <div class="order-header-card">
+                            <div class="order-number-status">
+                                <span class="order-number">#@order.Id.ToString("D5")</span>
+                                <span class="order-time-badge-inline">
+                                    <i class="fas fa-hourglass-half"></i>
+                                    @GetTimeAgo(order.CreatedAt)
+                                </span>
+                            </div>
+                            <div class="order-meta">
+                                <span class="order-price">@order.TotalPrice.ToString("C2")</span>
+                                <span class="order-status status-pendingdelivery">
+                                    <i class="fas fa-clock"></i>
+                                    Pending
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="order-body-compact">
+                            <!-- First Row: Route Information -->
+                            <div class="delivery-route-row">
+                                <div class="route-point-horizontal pickup">
+                                    <div class="route-icon-small">
+                                        <i class="fas fa-store"></i>
+                                    </div>
+                                    <div class="route-info">
+                                        <span class="route-label-small">Pickup</span>
+                                        <span class="route-address-compact">@order.Seller.Address</span>
+                                    </div>
+                                </div>
+
+                                <div class="route-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+
+                                <div class="route-point-horizontal delivery">
+                                    <div class="route-icon-small">
+                                        <i class="fas fa-home"></i>
+                                    </div>
+                                    <div class="route-info">
+                                        <span class="route-label-small">Deliver to</span>
+                                        <span class="route-address-compact">@order.Client.Address</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Second Row: Order Info & Actions -->
+                            <div class="order-info-row">
+                                <div class="order-meta-info">
+                                    <span class="order-date-compact">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        @order.CreatedAt.ToString("MMM d, yyyy • h:mm tt")
+                                    </span>
+                                    <div class="items-info-inline">
+                                        <i class="fas fa-shopping-bag"></i>
+                                        <span><strong>@order.OrderedItems.Count</strong> @(order.OrderedItems.Count == 1 ? "item" : "items")</span>
+                                    </div>
+                                </div>
+                                <a href="@Url.Action("OrderDetails", "Delivery", new { id = order.Id })" class="view-details-btn-inline">
+                                    <i class="fas fa-eye"></i>
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
         }
     </div>
+</section>
+
+@section Scripts {
+    <script>
+    </script>
+}
+
+@functions {
+    string GetTimeAgo(DateTime createdAt)
+    {
+        var timeSpan = DateTime.Now - createdAt;
+        
+        if (timeSpan.TotalMinutes < 1)
+            return "Just now";
+        else if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} min ago";
+        else if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} hour{((int)timeSpan.TotalHours != 1 ? "s" : "")} ago";
+        else
+            return $"{(int)timeSpan.TotalDays} day{((int)timeSpan.TotalDays != 1 ? "s" : "")} ago";
+    }
 }
