@@ -170,7 +170,7 @@
                                 <div class="product-price">
                                     <span class="price">@product.Price EGP</span>
                                 </div>
-                                <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation();">
+                                <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation(); AddToCart(@product.Id)">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
@@ -236,7 +236,6 @@
     <script>
         function MakeFavourite(btn, sellerId){
             var icon = $(btn).find("i");
-
             $.ajax(
                 {
                     url: "/Favourite/Make?sellerId="+sellerId,
@@ -253,6 +252,25 @@
                     }
                 } 
             );
+        }
+
+
+        function AddToCart(productId){
+            $.ajax({
+                url: '/Cart/Add?id='+productId+'&quantity=1',
+                type: 'POST',
+                //data: { productId: productId },
+                success: function (response) {
+                if (response.success) {
+                    document.getElementById('cart-count').textContent = response.cartCount;
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function () {
+                alert('Failed to add item to cart.');
+            }
+        });
         }
     </script>
 }
