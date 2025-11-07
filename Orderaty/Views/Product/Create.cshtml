@@ -1,33 +1,130 @@
 ﻿@model Orderaty.Models.Product
 
-<h2>Add New Product</h2>
+@{
+    ViewData["Title"] = "Create Product";
+}
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label>Name</label>
-        <input asp-for="Name" class="form-control" />
+@section Styles {
+    <link rel="stylesheet" href="~/css/client-product.css" asp-append-version="true" />
+}
+
+<!-- Page Header -->
+<section class="products-header">
+    <div class="container">
+        <div class="header-content-wrapper">
+            <div class="header-text">
+                <h1 class="page-title">Add new Product</h1>
+                <p class="page-subtitle">Add a new product to your inventory</p>
+            </div>
+        </div>
     </div>
+</section>
 
-    <div class="form-group">
-        <label>Description</label>
-        <textarea asp-for="Description" class="form-control"></textarea>
+<section class="products-section">
+    <div class="container">
+        @if (TempData["Error"] != null)
+        {
+            <div class="notification notification-error">
+                <div class="notification-content">
+                    <i class="fas fa-exclamation-circle notification-icon"></i>
+                    <span class="notification-text">@TempData["Error"]</span>
+                </div>
+                <div class="notification-progress"></div>
+            </div>
+        }
+
+        <div class="product-card" style="max-width: 800px; margin: 0 auto;">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div class="product-content" style="padding: 32px;">
+                    <div class="form-group mb-4">
+                        <label class="filter-label">
+                            <i class="fas fa-tag"></i>
+                            Product Name
+                        </label>
+                        <input asp-for="Name" class="form-input" placeholder="Enter product name" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="filter-label">
+                            <i class="fas fa-align-left"></i>
+                            Description
+                        </label>
+                        <textarea asp-for="Description" class="form-input" style="min-height: 120px;"
+                                  placeholder="Enter product description"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="filter-label">
+                            <i class="fas fa-dollar-sign"></i>
+                            Price
+                        </label>
+                        <input asp-for="Price" class="form-input" type="number" step="0.01" min="0"
+                               placeholder="Enter product price" value="0.00" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="filter-label">
+                            <i class="fas fa-boxes"></i>
+                            Available Amount
+                        </label>
+                        <input asp-for="Available_Amount" class="form-input" type="number" min="0"
+                               placeholder="Enter available quantity" value="0" />
+                        <span asp-validation-for="Available_Amount" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="filter-label">
+                            <i class="fas fa-image"></i>
+                            Product Image
+                        </label>
+                        <div class="mt-2" style="text-align: center;">
+                            <img src="~/images/default-product.png" alt="Product Preview"
+                                 style="max-width: 200px; border-radius: 10px; box-shadow: 0 2px 8px var(--shadow-sm);" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="filter-label">
+                            <i class="fas fa-upload"></i>
+                            Upload Image
+                        </label>
+                        <input type="file" name="imageFile" class="form-input" accept="image/*" />
+                    </div>
+
+                    <div style="display: flex; gap: 12px; margin-top: 32px;">
+                        <button type="submit" class="filter-btn" style="flex: 1;">
+                            <i class="fas fa-plus-circle"></i>
+                            Create Product
+                        </button>
+                        <a asp-action="Index" class="filter-btn secondary" style="flex: 1;">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
+</section>
 
-    <div class="form-group">
-        <label>Price</label>
-        <input asp-for="Price" class="form-control" type="number" step="0.01" />
-    </div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
-    <div class="form-group">
-        <label>Available Amount</label>
-        <input asp-for="Available_Amount" class="form-control" type="number" />
-    </div>
-
-    <div class="form-group">
-        <label>Image</label>
-        <input type="file" name="imageFile" class="form-control" />
-    </div>
-
-    <button type="submit" class="btn btn-success mt-3">Save</button>
-    <a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>
-</form>
+    <script>
+        // Preview image before upload
+        document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.querySelector('img').src = e.target.result;
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    </script>
+}

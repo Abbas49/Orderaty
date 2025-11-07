@@ -1,25 +1,158 @@
 ﻿@model Orderaty.Models.Seller
-
-<h2>@Model.User.FullName's Profile</h2>
-
-@if (!string.IsNullOrEmpty(Model.User.Image))
-{
-    <img src="~/images/users/@Model.User.Image" alt="Seller Image" style="width:150px;border-radius:10px;margin-bottom:10px" />
-}
-else
-{
-    <img src="~/images/default-user.png" alt="Default Image" style="width:150px;border-radius:10px;margin-bottom:10px" />
+@{
+    ViewData["Title"] = "Profile";
 }
 
-<ul class="list-group">
-    <li class="list-group-item"><strong>Full Name:</strong> @Model.User.FullName</li>
-    <li class="list-group-item"><strong>Description:</strong> @Model.Description</li>
-    <li class="list-group-item"><strong>Address:</strong> @Model.Address</li>
-    <li class="list-group-item"><strong>Status:</strong> @Model.Status</li>
-    <li class="list-group-item"><strong>Category:</strong> @Model.Category</li>
-</ul>
+@section Styles {
+    <link rel="stylesheet" href="~/css/seller-profile.css" asp-append-version="true" />
+}
 
-<div class="mt-3">
-    <a asp-action="Edit" class="btn btn-warning">Edit Profile</a>
-    <a asp-action="Home" class="btn btn-secondary">Back to Home</a>
-</div>
+<!-- Profile Section -->
+<section class="profile-section">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-header-content">
+            <h1 class="profile-title">@Model.User.FullName's Profile</h1>
+            <p class="profile-subtitle">Manage your store information and settings</p>
+        </div>
+    </div>
+
+    <div class="profile-container">
+        <div class="profile-content">
+            <!-- Profile Card -->
+            <div class="profile-card">
+                <!-- Profile Image Section -->
+                <div class="profile-image-section">
+                    @if (!string.IsNullOrEmpty(Model.User.Image))
+                    {
+                        <div class="profile-image-wrapper">
+                            <img src="~/images/users/@Model.User.Image" alt="Seller Image" class="profile-image" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="profile-image-wrapper">
+                            <div class="profile-image-placeholder">
+                                <i class="fas fa-store"></i>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Profile Info -->
+                <div class="profile-info">
+                    <h2 class="profile-name">@Model.User.FullName</h2>
+                    <div class="profile-role">@Model.Category.ToString().Replace("_", " ")</div>
+
+                    <!-- Profile Details -->
+                    <ul class="profile-details">
+                        <li class="profile-detail-item">
+                            <div class="profile-detail-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="profile-detail-content">
+                                <div class="profile-detail-label">Description</div>
+                                <div class="profile-detail-value">@(string.IsNullOrEmpty(Model.Description) ? "No description provided" : Model.Description)</div>
+                            </div>
+                        </li>
+
+                        <li class="profile-detail-item">
+                            <div class="profile-detail-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="profile-detail-content">
+                                <div class="profile-detail-label">Address</div>
+                                <div class="profile-detail-value">@(string.IsNullOrEmpty(Model.Address) ? "No address provided" : Model.Address)</div>
+                            </div>
+                        </li>
+
+                        <li class="profile-detail-item">
+                            <div class="profile-detail-icon">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="profile-detail-content">
+                                <div class="profile-detail-label">Status</div>
+                                <div class="profile-detail-value">
+                                    <span class="status-badge @(Model.Status.ToString().ToLower())">
+                                        <i class="fas @(Model.Status == Orderaty.Models.SellerStatus.Open ? "fa-check-circle" : "fa-times-circle")"></i>
+                                        @Model.Status.ToString().Replace("_", " ")
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="profile-detail-item">
+                            <div class="profile-detail-icon">
+                                <i class="fas fa-tag"></i>
+                            </div>
+                            <div class="profile-detail-content">
+                                <div class="profile-detail-label">Category</div>
+                                <div class="profile-detail-value">@Model.Category.ToString().Replace("_", " ")</div>
+                            </div>
+                        </li>
+
+                        <li class="profile-detail-item">
+                            <div class="profile-detail-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="profile-detail-content">
+                                <div class="profile-detail-label">Rating</div>
+                                <div class="profile-detail-value">@Model.Rating.ToString("0.0") ⭐</div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- Profile Actions -->
+                    <div class="profile-actions">
+                        <a asp-action="Edit" class="profile-btn profile-btn-primary">
+                            <i class="fas fa-edit"></i>
+                            Edit Profile
+                        </a>
+                        <a asp-action="Home" class="profile-btn profile-btn-secondary">
+                            <i class="fas fa-home"></i>
+                            Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="profile-stats">
+                <h3 class="stats-title">Store Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-value">@(Model.Products?.Count() ?? 0)</div>
+                        <div class="stat-label">Products</div>
+                    </div>
+
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-value">@(Model.Orders?.Count() ?? 0)</div>
+                        <div class="stat-label">Orders</div>
+                    </div>
+
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-value">@Model.Rating.ToString("0.0")</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="stat-value">@(Model.SellerReviews?.Count() ?? 0)</div>
+                        <div class="stat-label">Reviews</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,484 @@
+@model Orderaty.Models.Delivery
+@{
+    ViewData["Title"] = "Delivery Dashboard";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/delivery-dashboard.css" asp-append-version="true" />
+}
+
+<!-- Dashboard Header -->
+<section class="dashboard-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="welcome-section">
+                <div class="welcome-text">
+                    <h1 class="dashboard-title">
+                        <i class="fas fa-shipping-fast"></i>
+                        Delivery Dashboard
+                    </h1>
+                    <p class="dashboard-subtitle">Welcome back, <strong>@Model.User.FullName</strong>! 🚚</p>
+                </div>
+                <div class="delivery-status">
+                    <span class="status-badge status-active">
+                        <i class="fas fa-circle"></i>
+                        Active
+                    </span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a asp-action="Profile" class="action-btn btn-primary">
+                    <i class="fas fa-user"></i>
+                    My Profile
+                </a>
+                <a asp-action="Orders" class="action-btn btn-success">
+                    <i class="fas fa-list"></i>
+                    Available Orders
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Cards - Primary KPIs -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <!-- Total Deliveries -->
+            <div class="stat-card stat-deliveries">
+                <div class="stat-icon">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-label">Total Deliveries</h3>
+                    <p class="stat-value">@ViewBag.TotalDeliveriesAll</p>
+                    <div class="stat-breakdown">
+                        <span class="breakdown-item">
+                            <i class="fas fa-calendar-day"></i> Today: @ViewBag.TotalDeliveriesToday
+                        </span>
+                        <span class="breakdown-item">
+                            <i class="fas fa-calendar-week"></i> Week: @ViewBag.TotalDeliveriesWeek
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Earnings -->
+            <div class="stat-card stat-earnings">
+                <div class="stat-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-label">Total Earnings</h3>
+                    <p class="stat-value">@ViewBag.EarningsAll.ToString("C")</p>
+                    <div class="stat-breakdown">
+                        <span class="breakdown-item">
+                            <i class="fas fa-calendar-day"></i> Today: @ViewBag.EarningsToday.ToString("C")
+                        </span>
+                        <span class="breakdown-item">
+                            <i class="fas fa-calendar-alt"></i> Month: @ViewBag.EarningsMonth.ToString("C")
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Deliveries -->
+            <div class="stat-card stat-active">
+                <div class="stat-icon">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-label">Active Deliveries</h3>
+                    <p class="stat-value">@ViewBag.ActiveDeliveries</p>
+                    <div class="stat-breakdown">
+                        <span class="breakdown-item">
+                            <i class="fas fa-clock"></i> Processing: @ViewBag.ProcessingOrders
+                        </span>
+                        <span class="breakdown-item">
+                            <i class="fas fa-shipping-fast"></i> Shipped: @ViewBag.ShippedOrders
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Rating -->
+            <div class="stat-card stat-rating">
+                <div class="stat-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-label">Performance Rating</h3>
+                    <p class="stat-value">@ViewBag.PerformanceRating.ToString("0.0")</p>
+                    <div class="rating-stars">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= ViewBag.PerformanceRating)
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                            else if (i - ViewBag.PerformanceRating < 1)
+                            {
+                                <i class="fas fa-star-half-alt"></i>
+                            }
+                            else
+                            {
+                                <i class="far fa-star"></i>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Performance Metrics -->
+<section class="metrics-section">
+    <div class="container">
+        <h2 class="section-title">
+            <i class="fas fa-chart-line"></i>
+            Performance Metrics
+        </h2>
+        <div class="metrics-grid">
+            <!-- Average Delivery Time -->
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-stopwatch"></i>
+                </div>
+                <div class="metric-content">
+                    <h3 class="metric-label">Avg. Delivery Time</h3>
+                    <p class="metric-value">@ViewBag.AverageDeliveryTime.ToString("0.0") hrs</p>
+                    <span class="metric-info">
+                        <i class="fas fa-info-circle"></i> Based on this month
+                    </span>
+                </div>
+            </div>
+
+            <!-- Completion Rate -->
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="metric-content">
+                    <h3 class="metric-label">Completion Rate</h3>
+                    @{
+                        var completionRate = Model.Orders.Any() ? 
+                            (decimal)Model.Orders.Count(o => o.Status == OrderStatus.Delivered) / Model.Orders.Count * 100 : 0;
+                    }
+                    <p class="metric-value">@completionRate.ToString("0")%</p>
+                    <div class="metric-progress">
+                        <div class="progress-bar" style="width: @completionRate%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Deliveries -->
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="metric-content">
+                    <h3 class="metric-label">This Month</h3>
+                    <p class="metric-value">@ViewBag.TotalDeliveriesMonth</p>
+                    <span class="metric-change positive">
+                        <i class="fas fa-arrow-up"></i> Great progress!
+                    </span>
+                </div>
+            </div>
+
+            <!-- Available Orders -->
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="metric-content">
+                    <h3 class="metric-label">Available Orders</h3>
+                    <p class="metric-value">@ViewBag.PendingDeliveries</p>
+                    <a asp-action="Orders" class="metric-link">
+                        View Orders <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Actions -->
+<section class="quick-actions-section">
+    <div class="container">
+        <h2 class="section-title">
+            <i class="fas fa-bolt"></i>
+            Quick Actions
+        </h2>
+        <div class="actions-grid">
+            <a asp-action="Orders" class="quick-action-card">
+                <div class="action-icon action-icon-orders">
+                    <i class="fas fa-list-ul"></i>
+                </div>
+                <h3 class="action-title">Browse Orders</h3>
+                <p class="action-description">View and accept available delivery orders</p>
+                @if (ViewBag.PendingDeliveries > 0)
+                {
+                    <span class="action-badge">@ViewBag.PendingDeliveries new</span>
+                }
+            </a>
+
+            <a asp-action="MyDeliveries" class="quick-action-card">
+                <div class="action-icon action-icon-active">
+                    <i class="fas fa-truck-loading"></i>
+                </div>
+                <h3 class="action-title">My Active Deliveries</h3>
+                <p class="action-description">Manage your ongoing deliveries</p>
+                @if (ViewBag.ActiveDeliveries > 0)
+                {
+                    <span class="action-badge">@ViewBag.ActiveDeliveries active</span>
+                }
+            </a>
+
+            <a asp-action="History" class="quick-action-card">
+                <div class="action-icon action-icon-history">
+                    <i class="fas fa-history"></i>
+                </div>
+                <h3 class="action-title">Delivery History</h3>
+                <p class="action-description">View your completed deliveries</p>
+            </a>
+
+            <a asp-action="Profile" class="quick-action-card">
+                <div class="action-icon action-icon-profile">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h3 class="action-title">My Profile</h3>
+                <p class="action-description">View and edit your profile information</p>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Activity Timeline -->
+<section class="activity-section">
+    <div class="container">
+        <div class="activity-grid">
+            <!-- Recent Deliveries -->
+            <div class="activity-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-clock"></i>
+                        Recent Activity
+                    </h2>
+                    <a asp-action="History" class="view-all-link">
+                        View All
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="card-content">
+                    @if (ViewBag.RecentOrders != null && ((List<Order>)ViewBag.RecentOrders).Any())
+                    {
+                        <div class="timeline">
+                            @foreach (var order in (List<Order>)ViewBag.RecentOrders)
+                            {
+                                <div class="timeline-item">
+                                    <div class="timeline-marker status-@order.Status.ToString().ToLower()">
+                                        @switch (order.Status)
+                                        {
+                                            case OrderStatus.Delivered:
+                                                <i class="fas fa-check"></i>
+                                                break;
+                                            case OrderStatus.Shipped:
+                                                <i class="fas fa-shipping-fast"></i>
+                                                break;
+                                            case OrderStatus.Processing:
+                                                <i class="fas fa-box"></i>
+                                                break;
+                                            default:
+                                                <i class="fas fa-clock"></i>
+                                                break;
+                                        }
+                                    </div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-header">
+                                            <h4 class="timeline-title">Order #@order.Id</h4>
+                                            <span class="timeline-status status-@order.Status.ToString().ToLower()">
+                                                @order.Status.ToString().Replace("_", " ")
+                                            </span>
+                                        </div>
+                                        <div class="timeline-details">
+                                            <p class="timeline-customer">
+                                                <i class="fas fa-user"></i>
+                                                @order.Client?.User?.FullName
+                                            </p>
+                                            <p class="timeline-seller">
+                                                <i class="fas fa-store"></i>
+                                                @order.Seller?.User?.FullName
+                                            </p>
+                                            <p class="timeline-price">
+                                                <i class="fas fa-dollar-sign"></i>
+                                                @order.TotalPrice.ToString("C")
+                                            </p>
+                                        </div>
+                                        <div class="timeline-footer">
+                                            <span class="timeline-date">
+                                                <i class="fas fa-calendar"></i>
+                                                @order.CreatedAt.ToString("MMM dd, yyyy HH:mm")
+                                            </span>
+                                            @if (order.Status != OrderStatus.Delivered && order.Status != OrderStatus.Cancelled)
+                                            {
+                                                <a asp-action="OrderDetails" asp-route-id="@order.Id" class="timeline-action">
+                                                    View Details
+                                                    <i class="fas fa-arrow-right"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No recent activity</p>
+                            <a asp-action="Orders" class="btn-primary">
+                                <i class="fas fa-search"></i>
+                                Browse Available Orders
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Earnings Breakdown -->
+            <div class="activity-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-chart-pie"></i>
+                        Earnings Summary
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <div class="earnings-breakdown">
+                        <div class="earning-item">
+                            <div class="earning-icon earning-today">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                            <div class="earning-details">
+                                <h4 class="earning-label">Today</h4>
+                                <p class="earning-value">@ViewBag.EarningsToday.ToString("C")</p>
+                                <span class="earning-count">@ViewBag.TotalDeliveriesToday deliveries</span>
+                            </div>
+                        </div>
+
+                        <div class="earning-item">
+                            <div class="earning-icon earning-week">
+                                <i class="fas fa-calendar-week"></i>
+                            </div>
+                            <div class="earning-details">
+                                <h4 class="earning-label">This Week</h4>
+                                <p class="earning-value">@ViewBag.EarningsWeek.ToString("C")</p>
+                                <span class="earning-count">@ViewBag.TotalDeliveriesWeek deliveries</span>
+                            </div>
+                        </div>
+
+                        <div class="earning-item">
+                            <div class="earning-icon earning-month">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="earning-details">
+                                <h4 class="earning-label">This Month</h4>
+                                <p class="earning-value">@ViewBag.EarningsMonth.ToString("C")</p>
+                                <span class="earning-count">@ViewBag.TotalDeliveriesMonth deliveries</span>
+                            </div>
+                        </div>
+
+                        <div class="earning-item earning-total">
+                            <div class="earning-icon earning-all">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="earning-details">
+                                <h4 class="earning-label">Total Earnings</h4>
+                                <p class="earning-value">@ViewBag.EarningsAll.ToString("C")</p>
+                                <span class="earning-count">@ViewBag.TotalDeliveriesAll total deliveries</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="earnings-note">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Earnings are calculated at 10% of order total</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tips & Performance Insights -->
+<section class="insights-section">
+    <div class="container">
+        <div class="insights-grid">
+            <!-- Performance Tips -->
+            <div class="insight-card">
+                <div class="insight-header">
+                    <i class="fas fa-lightbulb"></i>
+                    <h3>Performance Tips</h3>
+                </div>
+                <ul class="tips-list">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        Complete deliveries promptly to improve your rating
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        Communicate with customers for better experience
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        Keep your availability status updated
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        Plan your routes efficiently to save time
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Achievement Badges -->
+            <div class="insight-card">
+                <div class="insight-header">
+                    <i class="fas fa-trophy"></i>
+                    <h3>Achievements</h3>
+                </div>
+                <div class="badges-grid">
+                    @if (ViewBag.TotalDeliveriesAll >= 10)
+                    {
+                        <div class="badge-item earned">
+                            <i class="fas fa-medal"></i>
+                            <span>10 Deliveries</span>
+                        </div>
+                    }
+                    @if (ViewBag.TotalDeliveriesAll >= 50)
+                    {
+                        <div class="badge-item earned">
+                            <i class="fas fa-star"></i>
+                            <span>50 Deliveries</span>
+                        </div>
+                    }
+                    @if (ViewBag.TotalDeliveriesAll >= 100)
+                    {
+                        <div class="badge-item earned">
+                            <i class="fas fa-crown"></i>
+                            <span>100 Deliveries</span>
+                        </div>
+                    }
+                    @if (ViewBag.PerformanceRating >= 4.5m)
+                    {
+                        <div class="badge-item earned">
+                            <i class="fas fa-award"></i>
+                            <span>Top Rated</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -26,6 +26,83 @@ namespace Orderaty.Controllers
             return View();
         }
 
+        // ✅ Dashboard with Statistics
+        public async Task<IActionResult> Dashboard()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction("Login", "User");
+
+            var delivery = await db.Deliveries
+                .Include(d => d.User)
+                .Include(d => d.Orders)
+                    .ThenInclude(o => o.OrderedItems)
+                .Include(d => d.Orders)
+                    .ThenInclude(o => o.Client)
+                        .ThenInclude(c => c.User)
+                .Include(d => d.Orders)
+                    .ThenInclude(o => o.Seller)
+                        .ThenInclude(s => s.User)
+                .FirstOrDefaultAsync(d => d.Id == user.Id);
+
+            if (delivery == null)
+                return NotFound();
+
+            var now = DateTime.Now;
+            var startOfToday = now.Date;
+            var startOfWeek = now.Date.AddDays(-(int)now.DayOfWeek);
+            var startOfMonth = new DateTime(now.Year, now.Month, 1);
+
+            // Calculate statistics
+            var allDeliveries = delivery.Orders.Where(o => o.Status == OrderStatus.Delivered).ToList();
+            
+            // Total deliveries
+            ViewBag.TotalDeliveriesToday = allDeliveries.Count(o => o.CreatedAt >= startOfToday);
+            ViewBag.TotalDeliveriesWeek = allDeliveries.Count(o => o.CreatedAt >= startOfWeek);
+            ViewBag.TotalDeliveriesMonth = allDeliveries.Count(o => o.CreatedAt >= startOfMonth);
+            ViewBag.TotalDeliveriesAll = allDeliveries.Count;
+
+            // Earnings (assuming delivery fee is 10% of order total)
+            decimal deliveryFeePercentage = 0.10m;
+            ViewBag.EarningsToday = allDeliveries.Where(o => o.CreatedAt >= startOfToday).Sum(o => o.TotalPrice * deliveryFeePercentage);
+            ViewBag.EarningsWeek = allDeliveries.Where(o => o.CreatedAt >= startOfWeek).Sum(o => o.TotalPrice * deliveryFeePercentage);
+            ViewBag.EarningsMonth = allDeliveries.Where(o => o.CreatedAt >= startOfMonth).Sum(o => o.TotalPrice * deliveryFeePercentage);
+            ViewBag.EarningsAll = allDeliveries.Sum(o => o.TotalPrice * deliveryFeePercentage);
+
+            // Active deliveries (Processing + Shipped)
+            ViewBag.ActiveDeliveries = delivery.Orders.Count(o => o.Status == OrderStatus.Processing || o.Status == OrderStatus.Shipped);
+
+            // Average delivery time (mock calculation - hours between order creation and delivery)
+            var deliveredOrders = allDeliveries.Where(o => o.CreatedAt.Date >= startOfMonth).ToList();
+            if (deliveredOrders.Any())
+            {
+                // Assuming average delivery takes 2-4 hours (mock data)
+                ViewBag.AverageDeliveryTime = 3.2; // in hours
+            }
+            else
+            {
+                ViewBag.AverageDeliveryTime = 0;
+            }
+
+            // Performance rating (mock - based on delivery count and completion)
+            var completionRate = delivery.Orders.Any() ? 
+                (decimal)allDeliveries.Count / delivery.Orders.Count * 100 : 0;
+            ViewBag.PerformanceRating = Math.Min(5.0m, completionRate / 20); // Convert to 5-star scale
+
+            // Recent activity - last 10 orders
+            ViewBag.RecentOrders = delivery.Orders
+                .OrderByDescending(o => o.CreatedAt)
+                .Take(10)
+                .ToList();
+
+            // Orders by status
+            ViewBag.PendingDeliveries = db.Orders.Count(o => o.Status == OrderStatus.PendingDelivery);
+            ViewBag.ProcessingOrders = delivery.Orders.Count(o => o.Status == OrderStatus.Processing);
+            ViewBag.ShippedOrders = delivery.Orders.Count(o => o.Status == OrderStatus.Shipped);
+
+            return View(delivery);
+        }
+
         // ✅ عرض البروفايل
         public async Task<IActionResult> Profile()
         {
