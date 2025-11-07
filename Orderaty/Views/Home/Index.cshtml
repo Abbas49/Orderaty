@@ -113,7 +113,18 @@
                     <div class="store-image">
                         <img src="~/images/users/@store.User.Image" alt="Fresh Market grocery store interior with fresh produce">
                         <button class="add-to-favorites" onclick="event.preventDefault(); event.stopPropagation(); MakeFavourite(this, '@store.User.Id')">
-                            <i class="far fa-heart"></i>
+                            @inject Orderaty.Data.AppDbContext DbContext
+                            @{
+                                var currentUserId = DbContext.Users.FirstOrDefault(c => c.UserName == User.Identity.Name)?.Id;
+                            }
+                            @if (store.Favourites.Any(u => u.ClientId == currentUserId && u.IsFavourite))
+                            {
+                                <i class="fas fa-heart"></i>
+                            }
+                            else
+                            {
+                                <i class="far fa-heart"></i>
+                            }
                         </button>
                     </div>
                     <div class="store-info">
@@ -147,9 +158,9 @@
                     <a href="@Url.Action("Details", "ClientProduct", new { id = product.Id })" class="product-link">
                         <div class="product-image">
                             <img src="~/images/products/@product.Image" alt="@product.Name">
-                            <button class="add-to-favorites" onclick="event.preventDefault(); event.stopPropagation();">
+                            @*<button class="add-to-favorites" onclick="event.preventDefault(); event.stopPropagation();">
                                 <i class="far fa-heart"></i>
-                            </button>
+                            </button>*@
                         </div>
                         <div class="product-info">
                             @*<div class="product-category">@product</div>*@
@@ -237,7 +248,7 @@
                             icon.removeClass("fas").addClass("far").css("color", "");
                         }
                         else {
-                            icon.removeClass("far").addClass("fas").css("color", "red");
+                            icon.removeClass("far").addClass("fas").css("color", "white");
                         }
                     }
                 } 

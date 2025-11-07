@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Orderaty.Data;
 using Orderaty.Models;
 
 namespace Orderaty.Controllers
 {
-    
+    [Authorize(Roles = "Client")]
     public class FavouriteController : Controller
     {
         private readonly AppDbContext db;
