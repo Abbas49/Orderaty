@@ -147,6 +147,7 @@
                 @foreach (var item in Model)
                 {
                     <div class="product-card">
+                        <a href="@Url.Action("Details", "ClientProduct", new { id = item.Id })" class="product-link">
                         <div class="product-image-wrapper">
                             @if (!string.IsNullOrEmpty(item.Image))
                             {
@@ -157,7 +158,7 @@
                                 <img src="~/images/default-product.png" alt="No Image" class="product-image" />
                             }
                         </div>
-
+                        </a>
                         <div class="product-content">
                             <div class="product-header">
                                 <h3 class="product-title">@item.Name</h3>
@@ -200,6 +201,7 @@
                                 Add to Cart
                             </button>
                         </div>
+
                     </div>
                 }
             </div>
@@ -267,7 +269,7 @@
             });
         });
 
-                function AddToCart(itemId) {
+        function AddToCart(itemId) {
             const quantityInput = document.getElementById(`quantity-${itemId}`);
             if (!quantityInput) {
                 console.error(`Quantity input not found for item ${itemId}`);
@@ -277,15 +279,19 @@
             const quantity = parseInt(quantityInput.value) || 1;
 
             $.ajax({
-                url: "/Cart/Add",
-                type: "POST",
-                data: { id: itemId, quantity: quantity },
-                success: function (result) {
-                    console.log("Product added successfully:", result);
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error adding to cart:", error);
+                url: '/Cart/Add?id='+itemId+'&quantity='+quantity,
+                type: 'POST',
+                //data: { productId: productId },
+                success: function (response) {
+                if (response.success) {
+                    document.getElementById('cart-count').textContent = response.cartCount;
+                } else {
+                    alert('Error: ' + response.message);
                 }
+            },
+            error: function () {
+                alert('Failed to add item to cart.');
+            }
             });
         }
 
