@@ -27,6 +27,7 @@
                                value="@ViewBag.CurrentSearch">
                         <input type="hidden" name="category" id="hidden-category" value="@ViewBag.CurrentCategory">
                         <input type="hidden" name="sort" id="hidden-sort" value="@ViewBag.CurrentSort">
+                        <input type="hidden" name="favorite" id="hidden-favorite" value="@ViewBag.CurrentFavorite" />
                     </div>
                 </form>
             </div>
@@ -87,8 +88,30 @@
                 </div>
             </div>
 
+
+            
+
+
+
             <!-- Sort Options -->
             <div class="sort-group">
+                <!-- Favorite Filter -->
+                <div class="filter-group" style="margin-bottom: 15px;">
+                    <label class="filter-label">
+                        <i class="fas fa-heart"></i>
+                        Favorites
+                    </label>
+                    <div class="filter-buttons">
+                        <button class="filter-btn @(string.IsNullOrEmpty(ViewBag.CurrentFavorite) || ViewBag.CurrentFavorite == "false" ? "active" : "")" data-favorite="false">
+                            <i class="fas fa-store"></i> All Stores
+                        </button>
+                        <button class="filter-btn @(ViewBag.CurrentFavorite == "true" ? "active" : "")" data-favorite="true">
+                            <i class="fas fa-heart"></i> Show Favorites
+                        </button>
+                    </div>
+                </div>
+
+
                 <label class="filter-label">
                     <i class="fas fa-sort"></i>
                     Sort By
@@ -139,6 +162,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
         <!-- Active Filters Display -->
@@ -277,6 +301,16 @@
             const searchInput = document.getElementById('store-search');
             const hiddenCategory = document.getElementById('hidden-category');
             const hiddenSort = document.getElementById('hidden-sort');
+            const favoriteButtons = document.querySelectorAll('.filter-btn[data-favorite]');
+            const hiddenFavorite = document.getElementById('hidden-favorite');
+
+            favoriteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const favorite = this.getAttribute('data-favorite');
+                    hiddenFavorite.value = favorite;
+                    searchForm.submit();
+                });
+            });
 
             // Category filter buttons
             filterButtons.forEach(button => {

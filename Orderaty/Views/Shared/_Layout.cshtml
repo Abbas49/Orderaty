@@ -23,18 +23,32 @@
                 </div>
                 <span class="logo-text">Orderaty</span>
             </a>
-            
+
             <!-- Desktop Navigation Links -->
             <div class="navbar-menu" id="navbar-menu">
                 <div class="navbar-links">
-                    <a href="/" class="navbar-item">
-                        <i class="fas fa-home"></i>
-                        <span>Home</span>
-                    </a>
-                    <a asp-controller="Seller" asp-action="Browse" class="navbar-item">
-                        <i class="fas fa-store"></i>
-                        <span>Browse Stores</span>
-                    </a>
+                    @if(User.Identity.Name == null || (User.Identity.IsAuthenticated && User.IsInRole("Client")))
+                    {
+                        <a href="/" class="navbar-item">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </a>
+                    }
+                    else if (User.Identity.IsAuthenticated && User.IsInRole("Seller"))
+                    {
+                        <a href="/Seller/Dashboard" class="navbar-item">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </a>
+                    }
+                    else if (User.Identity.IsAuthenticated && User.IsInRole("Delivery"))
+                    {
+                        <a href="/Delivery/Dashboard" class="navbar-item">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </a>
+                    }
+                    
                     @if(User.Identity.IsAuthenticated && User.IsInRole("Client"))
                     {
                         @inject Orderaty.Data.AppDbContext DbContext
