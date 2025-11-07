@@ -215,32 +215,34 @@
         }
 
         // Update cart totals
-        function updateCartTotals() {
+                function updateCartTotals() {
             let subtotal = 0;
-            
-            // Calculate subtotal from all items
-            @foreach (var item in Model)
-            {
-                <text>
-                const quantity@(item.Id) = parseInt(document.getElementById('quantity-@item.Id').textContent);
-                const price@(item.Id) = @item.Product.Price;
-                const itemTotal@(item.Id) = quantity@(item.Id) * price@(item.Id);
-                document.getElementById('total-@item.Id').textContent = `$${itemTotal@(item.Id).toFixed(2)}`;
-                subtotal += itemTotal@(item.Id);
-                </text>
-            }
-            
-            // Update subtotal
+
+            // امشي على كل العناصر اللي لسه موجودة في الصفحة
+            document.querySelectorAll('.cart-item').forEach(item => {
+                const quantityEl = item.querySelector('.quantity-value');
+                const totalEl = item.querySelector('.item-total');
+                const priceText = item.querySelector('.cart-item-price').textContent.replace('EGP', '').trim();
+                const price = parseFloat(priceText);
+                const quantity = parseInt(quantityEl.textContent);
+
+                const itemTotal = quantity * price;
+                totalEl.textContent = `${itemTotal.toFixed(2)} EGP`;
+                subtotal += itemTotal;
+            });
+
+            // حدّث Subtotal
             document.getElementById('subtotal').textContent = `${subtotal.toFixed(2)} EGP`;
-            
-            // Get delivery fee
+
+            // خُد سعر التوصيل
             const deliveryFeeText = document.getElementById('delivery-fee').textContent;
-            const deliveryFee = parseFloat(deliveryFeeText.replace('EGP', ''));
-            
-            // Update total
+            const deliveryFee = parseFloat(deliveryFeeText.replace('EGP', '').trim()) || 0;
+
+            // حدّث التوتال
             const total = subtotal + deliveryFee;
             document.getElementById('total-amount').textContent = `${total.toFixed(2)} EGP`;
         }
+
 
                 function RemoveItem(itemId) {
             $.ajax({
