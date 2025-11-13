@@ -19,10 +19,13 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        var products = db.Products.Include(p => p.Seller).ThenInclude(p => p.User).Take(3).ToList();
+        var sellers = db.Sellers.Include(s => s.User).Include(f => f.Favourites).Take(3).ToList();
+        
         var data = new StoresProducts()
         {
-            Products = db.Products.Include(p => p.Seller).ThenInclude(p => p.User).Take(3).ToList(),
-            Sellers = db.Sellers.Include(s => s.User).Take(3).ToList()
+            Products = products,
+            Sellers = sellers
         };
         return View(data);
     }

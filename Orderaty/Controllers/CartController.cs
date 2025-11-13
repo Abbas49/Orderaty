@@ -23,7 +23,7 @@ namespace Orderaty.Controllers
         }
 
         [HttpPost]
-        public void Add(int id, int quantity)
+        public IActionResult Add(int id, int quantity)
         {
             var clientId = db.Users.FirstOrDefault(c => c.UserName == User.Identity.Name)?.Id;
             var sellerId = db.Products.Include(p => p.Seller).Where(p => p.Id == id).FirstOrDefault()?.SellerId;
@@ -52,19 +52,24 @@ namespace Orderaty.Controllers
                     db.SaveChanges();
                 }  
             }
-            return;
+            var cnt = db.CartItems
+                .Where(c => c.ClientId == clientId)
+                .Count();
+
+            return Json(new { success = true, cartCount = cnt });
         }
 
         [HttpPost]
         public IActionResult Remove(int id)
         {
+            var clientId = db.Users.FirstOrDefault(c => c.UserName == User.Identity.Name)?.Id;
             var item = db.CartItems.FirstOrDefault(c => c.Id == id);
             if (item != null)
             {
                 db.Remove(item);
                 db.SaveChanges();
             }
-            return RedirectToAction("Index");
+            return Json(new { success = true, cartCount = db.CartItems.Where(c => c.ClientId == clientId).Count() });
         }
 
         [HttpPost]

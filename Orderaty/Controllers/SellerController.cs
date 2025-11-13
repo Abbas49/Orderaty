@@ -152,11 +152,13 @@ namespace Orderaty.Controllers
         }
 
         // --------------------- ✏️ View All Stores for clients ---------------------
-        public async Task<IActionResult> Browse(string? sellerName, string? category, string? sort)
+        [Authorize(Roles = "Client")]
+        public async Task<IActionResult> Browse(string? sellerName, string? category, string? sort, string favorite)
         {
             var sellers = db.Sellers
                 .Include(p => p.User)
                 .Include(p => p.Products)
+                .Include(p => p.Favourites)
                 .AsQueryable();
 
             // البحث بالاسم
@@ -170,6 +172,14 @@ namespace Orderaty.Controllers
                 {
                     sellers = sellers.Where(p => p.Category == categoryEnum);
                 }
+            }
+
+            // Filter by favorite
+            if (favorite == "true")
+            {
+                var userId = userManager.GetUserId(User);
+                sellers = sellers.Where(s => s.Favourites
+                    .Any(f => f.SellerId == s.Id && f.ClientId == userId && f.IsFavourite));
             }
 
             // الترتيب
@@ -188,7 +198,8 @@ namespace Orderaty.Controllers
             ViewBag.CurrentSearch = sellerName;
             ViewBag.CurrentCategory = category;
             ViewBag.CurrentSort = sort;
-            
+            ViewBag.CurrentFavorite = favorite;
+
             return View(result);
         }
 

@@ -39,7 +39,7 @@
                     <div class="cart-items-list">
                         @foreach (var item in Model)
                         {
-                            <div class="cart-item">
+                            <div class="cart-item" id="item-@item.Id">
                                 <!-- Product Image -->
                                 <div class="cart-item-image">
                                     <img src="~/images/products/@item.Product.Image" 
@@ -75,20 +75,17 @@
                                     </span>
 
                                     <!-- Remove Button -->
-                                    <form asp-action="Remove" asp-controller="Cart" method="post" style="margin: 0;">
-                                        <input type="hidden" name="id" value="@item.Id" />
-                                        <button type="submit" class="remove-btn">
-                                            <i class="fas fa-trash"></i>
-                                            Remove
-                                        </button>
-                                    </form>
+                                    <button type="submit" class="remove-btn" onclick="RemoveItem(@item.Id)">
+                                        <i class="fas fa-trash"></i>
+                                        Remove
+                                    </button>
                                 </div>
                             </div>
                         }
                     </div>
                     
                     <!-- Clear Cart Button -->
-                    <div class="clear-cart-section">
+                    <div class="clear-cart-section" id="clear-cart">
                         <form asp-action="Clear" asp-controller="Cart" method="post" style="margin: 0; width: 100%;">
                             <button type="submit" class="clear-cart-btn" onclick="return confirm('Are you sure you want to clear all items from your cart?');">
                                 <i class="fas fa-trash-alt"></i>
@@ -218,32 +215,72 @@
         }
 
         // Update cart totals
-        function updateCartTotals() {
+                function updateCartTotals() {
             let subtotal = 0;
-            
-            // Calculate subtotal from all items
-            @foreach (var item in Model)
-            {
-                <text>
-                const quantity@(item.Id) = parseInt(document.getElementById('quantity-@item.Id').textContent);
-                const price@(item.Id) = @item.Product.Price;
-                const itemTotal@(item.Id) = quantity@(item.Id) * price@(item.Id);
-                document.getElementById('total-@item.Id').textContent = `$${itemTotal@(item.Id).toFixed(2)}`;
-                subtotal += itemTotal@(item.Id);
-                </text>
-            }
-            
-            // Update subtotal
+
+            // امشي على كل العناصر اللي لسه موجودة في الصفحة
+            document.querySelectorAll('.cart-item').forEach(item => {
+                const quantityEl = item.querySelector('.quantity-value');
+                const totalEl = item.querySelector('.item-total');
+                const priceText = item.querySelector('.cart-item-price').textContent.replace('EGP', '').trim();
+                const price = parseFloat(priceText);
+                const quantity = parseInt(quantityEl.textContent);
+
+                const itemTotal = quantity * price;
+                totalEl.textContent = `${itemTotal.toFixed(2)} EGP`;
+                subtotal += itemTotal;
+            });
+
+            // حدّث Subtotal
             document.getElementById('subtotal').textContent = `${subtotal.toFixed(2)} EGP`;
-            
-            // Get delivery fee
+
+            // خُد سعر التوصيل
             const deliveryFeeText = document.getElementById('delivery-fee').textContent;
-            const deliveryFee = parseFloat(deliveryFeeText.replace('EGP', ''));
-            
-            // Update total
+            const deliveryFee = parseFloat(deliveryFeeText.replace('EGP', '').trim()) || 0;
+
+            // حدّث التوتال
             const total = subtotal + deliveryFee;
             document.getElementById('total-amount').textContent = `${total.toFixed(2)} EGP`;
         }
+
+
+                function RemoveItem(itemId) {
+            $.ajax({
+                url: "/Cart/Remove?Id=" + itemId,
+                type: "POST",
+                success: function (result) {
+                    console.log(result);
+
+                    // احذف العنصر من الصفحة
+                    $('#item-' + itemId).remove();
+                    document.getElementById('cart-count').textContent = result.cartCount;
+                    // لو مفيش أي عناصر باقية في cart
+                    if ($('.cart-item').length === 0) {
+                        // شيل محتوى الكارت الحالي
+                        $('.cart-content').remove();
+
+                        // أضف واجهة "السلة فاضية"
+                        $('.cart-container').html(`
+                            <div class="empty-cart">
+                                <i class="fas fa-shopping-cart"></i>
+                                <h2 class="empty-cart-title">Your cart is empty</h2>
+                                <p class="empty-cart-text">Looks like you haven't added anything to your cart yet.</p>
+                                <a href="/ClientProduct/Index" class="browse-btn">
+                                    Browse Products
+                                </a>
+                            </div>
+                        `);
+                    } else {
+                        // لو لسه في عناصر، حدّث الإجماليات
+                        updateCartTotals();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error removing item:", error);
+                }
+            });
+        }
+
     </script>
 }
 

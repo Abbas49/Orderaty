@@ -64,7 +64,7 @@ namespace Orderaty
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
+            var context = serviceProvider.GetRequiredService<AppDbContext>();
             if (!await roleManager.RoleExistsAsync("Admin"))
             {
                 await roleManager.CreateAsync(new IdentityRole("Admin"));
@@ -97,6 +97,5 @@ namespace Orderaty
                 await userManager.AddToRoleAsync(user, "Admin");
             }
         }
-
     }
 }

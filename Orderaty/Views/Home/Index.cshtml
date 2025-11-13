@@ -113,7 +113,18 @@
                     <div class="store-image">
                         <img src="~/images/users/@store.User.Image" alt="Fresh Market grocery store interior with fresh produce">
                         <button class="add-to-favorites" onclick="event.preventDefault(); event.stopPropagation(); MakeFavourite(this, '@store.User.Id')">
-                            <i class="far fa-heart"></i>
+                            @inject Orderaty.Data.AppDbContext DbContext
+                            @{
+                                var currentUserId = DbContext.Users.FirstOrDefault(c => c.UserName == User.Identity.Name)?.Id;
+                            }
+                            @if (store.Favourites.Any(u => u.ClientId == currentUserId && u.IsFavourite))
+                            {
+                                <i class="fas fa-heart"></i>
+                            }
+                            else
+                            {
+                                <i class="far fa-heart"></i>
+                            }
                         </button>
                     </div>
                     <div class="store-info">
@@ -147,9 +158,9 @@
                     <a href="@Url.Action("Details", "ClientProduct", new { id = product.Id })" class="product-link">
                         <div class="product-image">
                             <img src="~/images/products/@product.Image" alt="@product.Name">
-                            <button class="add-to-favorites" onclick="event.preventDefault(); event.stopPropagation();">
+                            @*<button class="add-to-favorites" onclick="event.preventDefault(); event.stopPropagation();">
                                 <i class="far fa-heart"></i>
-                            </button>
+                            </button>*@
                         </div>
                         <div class="product-info">
                             @*<div class="product-category">@product</div>*@
@@ -159,7 +170,7 @@
                                 <div class="product-price">
                                     <span class="price">@product.Price EGP</span>
                                 </div>
-                                <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation();">
+                                <button class="add-to-cart-btn" onclick="event.preventDefault(); event.stopPropagation(); AddToCart(@product.Id)">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
@@ -177,46 +188,61 @@
         <h2 class="section-title">Browse Categories</h2>
         <div class="categories-grid">
             <div class="category-item">
+                <a href="/Seller/Browse?category=Groceries_Supermarkets">
                 <div class="category-icon groceries">
                     <i class="fas fa-shopping-bag" ></i>
                 </div>
+                </a>
                 <span class="category-label">Groceries</span>
             </div>
-            
+
             <div class="category-item">
-                <div class="category-icon food">
-                    <i class="fas fa-pizza-slice"></i>
+                <a href="/Seller/Browse?category=Food_Restaurants">
+                <div class="category-icon restaurants">
+                    <i class="fas fa-utensils"></i>
                 </div>
-                <span class="category-label">Food</span>
+                </a>
+                <span class="category-label">Restaurants</span>
+            </div>
+
+            <div class="category-item">
+                <a href="/Seller/Browse?category=Electronics_Mobile">
+                <div class="category-icon food">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                </a>
+                <span class="category-label">Electronics & Mobile</span>
             </div>
             
             <div class="category-item">
+                <a href="/Seller/Browse?category=Pharmacy_Health">
                 <div class="category-icon pharmacy">
                     <i class="fas fa-prescription-bottle"></i>
                 </div>
+                </a>
                 <span class="category-label">Pharmacy</span>
             </div>
             
             <div class="category-item">
+                <a href="/Seller/Browse?category=Fashion_Clothing">
                 <div class="category-icon packages">
-                    <i class="fas fa-box-open"></i>
+                    <i class="fas fa-tshirt"></i>
                 </div>
-                <span class="category-label">Packages</span>
+                </a>
+                <span class="category-label">Fashion & Clothing</span>
             </div>
             
-            <div class="category-item">
-                <div class="category-icon restaurants">
-                    <i class="fas fa-utensils"></i>
-                </div>
-                <span class="category-label">Restaurants</span>
-            </div>
+            
             
             <div class="category-item">
+                <a href="/Seller/Browse?category=Home_Furniture">
                 <div class="category-icon coffee">
-                    <i class="fas fa-coffee"></i>
+                    <i class="fas fa-couch"></i>
                 </div>
-                <span class="category-label">Coffee</span>
+                </a>
+                <span class="category-label">Home & Furniture</span>
             </div>
+
         </div>
     </div>
 </section>
@@ -225,7 +251,6 @@
     <script>
         function MakeFavourite(btn, sellerId){
             var icon = $(btn).find("i");
-
             $.ajax(
                 {
                     url: "/Favourite/Make?sellerId="+sellerId,
@@ -237,11 +262,30 @@
                             icon.removeClass("fas").addClass("far").css("color", "");
                         }
                         else {
-                            icon.removeClass("far").addClass("fas").css("color", "red");
+                            icon.removeClass("far").addClass("fas").css("color", "white");
                         }
                     }
                 } 
             );
+        }
+
+
+        function AddToCart(productId){
+            $.ajax({
+                url: '/Cart/Add?id='+productId+'&quantity=1',
+                type: 'POST',
+                //data: { productId: productId },
+                success: function (response) {
+                if (response.success) {
+                    document.getElementById('cart-count').textContent = response.cartCount;
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function () {
+                alert('Failed to add item to cart.');
+            }
+        });
         }
     </script>
 }
