@@ -1,53 +1,80 @@
 ﻿@model Orderaty.ViewModels.EditDeliveryVM
-
 @{
-    ViewData["Title"] = "Edit Delivery Profile";
+    ViewData["Title"] = "Edit Profile";
+    Layout = "_Layout";
 }
 
-<h2 class="mb-4">✏️ Edit Profile</h2>
+@section Styles {
+    <link rel="stylesheet" href="~/css/delivery-profile.css" asp-append-version="true" />
+}
 
-<form asp-action="EditProfile" method="post" enctype="multipart/form-data" style="max-width: 600px;">
+<!-- Edit Profile Section -->
+<section class="profile-section">
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <h2 class="profile-name">Edit Profile</h2>
+                <p class="profile-subtitle">Update your delivery information</p>
+            </div>
 
-    <div class="card shadow-sm mb-4">
-        <div class="card-body text-center">
-            <div class="mb-3">
-                <img id="profilePreview"
-                     src="@(string.IsNullOrEmpty(Model.CurrentImage) ? Url.Content("~/images/default-user.png") : Url.Content("~/images/users/" + Model.CurrentImage))"
-                     class="rounded-circle mb-3"
-                     style="width: 140px; height: 140px; object-fit: cover; border: 2px solid #ddd;" />
-
-                <div>
-                    <label for="NewImage" class="btn btn-outline-primary btn-sm mt-2">
-                        <i class="bi bi-camera"></i> Change Photo
-                    </label>
-                    <input asp-for="NewImage" type="file" id="NewImage" class="d-none" accept="image/*" />
+            <form asp-action="EditProfile" method="post" enctype="multipart/form-data" class="profile-form">
+                <div asp-validation-summary="All" class="validation-summary"></div>
+                
+                <!-- Profile Image Upload -->
+                <div class="form-group-image">
+                    <div class="profile-img-wrapper">
+                        <img id="profilePreview" 
+                             src="@(string.IsNullOrEmpty(Model.CurrentImage) ? Url.Content("~/images/default-user.png") : Url.Content("~/images/users/" + Model.CurrentImage))" 
+                             alt="Profile Picture" 
+                             class="profile-img" />
+                        <div class="upload-overlay" onclick="document.getElementById('NewImage').click()">
+                            <span class="upload-text">
+                                <i class="fas fa-camera"></i> Change Photo
+                            </span>
+                        </div>
+                    </div>
+                    <input asp-for="NewImage" type="file" id="NewImage" accept="image/*" style="display: none;" />
+                    <span asp-validation-for="NewImage" class="validation-error"></span>
                 </div>
-            </div>
 
-            <div class="mb-3">
-                <label asp-for="FullName" class="form-label fw-bold"></label>
-                <input asp-for="FullName" class="form-control" />
-                <span asp-validation-for="FullName" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="FullName" class="form-label">
+                        <i class="fas fa-user"></i>
+                        Full Name
+                    </label>
+                    <input asp-for="FullName" class="form-input" placeholder="Enter your full name" />
+                    <span asp-validation-for="FullName" class="validation-error"></span>
+                </div>
 
-            <div class="mb-3">
-                <label asp-for="PhoneNumber" class="form-label fw-bold"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="form-label">
+                        <i class="fas fa-phone"></i>
+                        Phone Number
+                    </label>
+                    <input asp-for="PhoneNumber" class="form-input" placeholder="(123) 456-7890" />
+                    <span asp-validation-for="PhoneNumber" class="validation-error"></span>
+                </div>
 
-            <button type="submit" class="btn btn-success px-4">Save Changes</button>
-            <a asp-action="Profile" class="btn btn-secondary ms-2">Cancel</a>
+                <div class="form-actions">
+                    <button type="submit" class="btn-update">
+                        <i class="fas fa-save"></i>
+                        Save Changes
+                    </button>
+                    <a asp-action="Profile" class="btn-cancel">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
-
-</form>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        // ✅ عند اختيار صورة جديدة من الجهاز
+        // Preview image when selected
         document.getElementById('NewImage').addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (file) {
