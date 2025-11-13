@@ -24,8 +24,10 @@
                 <span class="logo-text">Orderaty</span>
             </a>
 
-            <!-- Desktop Navigation Links -->
-            <div class="navbar-menu" id="navbar-menu">
+            <!-- Right Section (Menu + Actions) -->
+            <div class="navbar-right-wrapper">
+                <!-- Navigation Menu -->
+                <div class="navbar-menu" id="navbar-menu">
                 <div class="navbar-links">
                     @if(User.Identity.Name == null || (User.Identity.IsAuthenticated && User.IsInRole("Client")))
                     {
@@ -47,6 +49,10 @@
                             <i class="fas fa-home"></i>
                             <span>Home</span>
                         </a>
+						<a href="@Url.Action("Orders", "Delivery")" class="navbar-item">
+							<i class="fas fa-receipt"></i>
+							<span>Orders</span>
+						</a>
                     }
                     
                     @if(User.Identity.IsAuthenticated && User.IsInRole("Client"))
@@ -60,11 +66,12 @@
                             <span>Cart</span>
                             <span class="cart-badge" id="cart-count">@cartCount</span>
                         </a>
+						<a href="@Url.Action("History", "Order")" class="navbar-item">
+							<i class="fas fa-receipt"></i>
+							<span>Orders</span>
+						</a>
                     }
-                    <a href="@Url.Action("History", "Order")" class="navbar-item">
-                        <i class="fas fa-receipt"></i>
-                        <span>Orders</span>
-                    </a>
+                    
                 </div>
                 
                 <!-- Mobile Divider -->
@@ -114,7 +121,7 @@
                 </div>
             </div>
             
-            <!-- Right Actions (Desktop) -->
+            <!-- Theme & Mobile Toggle -->
             <div class="navbar-right">
                 <!-- Theme Switcher -->
                 <div class="theme-switcher">
@@ -146,7 +153,7 @@
                             </div>
                             <i class="fas fa-check theme-checkmark"></i>
                         </button>
-                        <button class="theme-option" data-theme="sunset-purple">
+                        @* <button class="theme-option" data-theme="sunset-purple">
                             <div class="theme-icon">
                                 <i class="fas fa-moon"></i>
                             </div>
@@ -155,7 +162,7 @@
                                 <div class="theme-description">Creative & elegant</div>
                             </div>
                             <i class="fas fa-check theme-checkmark"></i>
-                        </button>
+                        </button> *@
                         <button class="theme-option" data-theme="dark">
                             <div class="theme-icon">
                                 <i class="fas fa-moon"></i>
@@ -175,6 +182,7 @@
                     <span class="toggle-bar"></span>
                     <span class="toggle-bar"></span>
                 </button>
+            </div>
             </div>
         </div>
     </nav>
