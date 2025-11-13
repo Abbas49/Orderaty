@@ -260,9 +260,74 @@ namespace Orderaty.Controllers
         }
 
         // ===================== COUPON MANAGEMENT =====================
-        public IActionResult Coupons()
+        public async Task<IActionResult> Coupons()
         {
-            return View();
+            // Fetch all coupons
+            var coupons = await db.Coupons.Include(c => c.Orders).ToListAsync();
+
+            // Calculate statistics
+            var now = DateTime.Now;
+            var activeCoupons = coupons.Where(c => c.IsActive && c.ExpireDate >= now).Count();
+            var expiredCoupons = coupons.Where(c => c.ExpireDate < now).Count();
+            var totalUsage = coupons.Sum(c => c.Orders?.Count ?? 0);
+
+            ViewBag.ActiveCount = activeCoupons;
+            ViewBag.ExpiredCount = expiredCoupons;
+            ViewBag.TotalUsage = totalUsage;
+            ViewBag.TotalCount = coupons.Count;
+
+            // Create usage count dictionary
+            var couponUsage = new Dictionary<int, int>();
+            foreach (var coupon in coupons)
+            {
+                couponUsage[coupon.Id] = coupon.Orders?.Count ?? 0;
+            }
+            ViewBag.CouponUsage = couponUsage;
+
+            return View(coupons);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ToggleCoupon(int id)
+        {
+            var coupon = await db.Coupons.FindAsync(id);
+            if (coupon == null)
+            {
+                return NotFound();
+            }
+
+            // Check if expired
+            if (coupon.ExpireDate < DateTime.Now)
+            {
+                return BadRequest("Cannot toggle expired coupon");
+            }
+
+            // Toggle active status
+            coupon.IsActive = !coupon.IsActive;
+            await db.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteCoupon(int id)
+        {
+            var coupon = await db.Coupons.Include(c => c.Orders).FirstOrDefaultAsync(c => c.Id == id);
+            if (coupon == null)
+            {
+                return NotFound();
+            }
+
+            // Check if coupon has been used
+            if (coupon.Orders != null && coupon.Orders.Any())
+            {
+                return BadRequest("Cannot delete coupon that has been used in orders");
+            }
+
+            db.Coupons.Remove(coupon);
+            await db.SaveChangesAsync();
+
+            return Ok();
         }
 
         public IActionResult CreateCoupon()
@@ -270,9 +335,161 @@ namespace Orderaty.Controllers
             return View();
         }
 
-        public IActionResult EditCoupon(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCoupon(Coupon coupon)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                // Validate coupon code uniqueness
+                var existingCoupon = await db.Coupons.FirstOrDefaultAsync(c => c.Code == coupon.Code);
+                if (existingCoupon != null)
+                {
+                    ModelState.AddModelError("Code", "This coupon code already exists. Please use a different code.");
+                    return View(coupon);
+                }
+
+                // Validate expiration date
+                if (coupon.ExpireDate < DateTime.Now.Date)
+                {
+                    ModelState.AddModelError("ExpireDate", "Expiration date must be in the future.");
+                    return View(coupon);
+                }
+
+                // Validate discount value
+                if (coupon.DiscountValue <= 0)
+                {
+                    ModelState.AddModelError("DiscountValue", "Discount value must be greater than zero.");
+                    return View(coupon);
+                }
+
+                // Validate minimum total
+                if (coupon.MinimumTotal < 0)
+                {
+                    ModelState.AddModelError("MinimumTotal", "Minimum total cannot be negative.");
+                    return View(coupon);
+                }
+
+                // Add coupon to database
+                db.Coupons.Add(coupon);
+                await db.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Coupon '{coupon.Code}' created successfully!";
+                return RedirectToAction(nameof(Coupons));
+            }
+
+            return View(coupon);
+        }
+
+        public async Task<IActionResult> EditCoupon(int id)
+        {
+            var coupon = await db.Coupons
+                .Include(c => c.Orders)
+                .FirstOrDefaultAsync(c => c.Id == id);
+            
+            if (coupon == null)
+            {
+                return NotFound();
+            }
+
+            // Calculate usage statistics
+            ViewBag.TimesUsed = coupon.Orders?.Count ?? 0;
+            ViewBag.TotalSavings = coupon.Orders?.Sum(o => coupon.DiscountValue) ?? 0;
+            ViewBag.LastUsed = coupon.Orders?.OrderByDescending(o => o.CreatedAt).FirstOrDefault()?.CreatedAt.ToString("MMM dd, yyyy");
+
+            return View(coupon);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCoupon(Coupon coupon)
+        {
+            if (ModelState.IsValid)
+            {
+                // Check if code already exists (excluding current coupon)
+                var existingCoupon = await db.Coupons
+                    .FirstOrDefaultAsync(c => c.Code == coupon.Code && c.Id != coupon.Id);
+                
+                if (existingCoupon != null)
+                {
+                    ModelState.AddModelError("Code", "This coupon code already exists.");
+                    
+                    // Reload usage statistics for view
+                    var couponWithOrders = await db.Coupons
+                        .Include(c => c.Orders)
+                        .FirstOrDefaultAsync(c => c.Id == coupon.Id);
+                    ViewBag.TimesUsed = couponWithOrders?.Orders?.Count ?? 0;
+                    ViewBag.TotalSavings = couponWithOrders?.Orders?.Sum(o => coupon.DiscountValue) ?? 0;
+                    ViewBag.LastUsed = couponWithOrders?.Orders?.OrderByDescending(o => o.CreatedAt).FirstOrDefault()?.CreatedAt.ToString("MMM dd, yyyy");
+                    
+                    return View(coupon);
+                }
+
+                // Validate expiration date
+                if (coupon.ExpireDate < DateTime.Now.Date)
+                {
+                    ModelState.AddModelError("ExpireDate", "Expiration date must be in the future.");
+                    
+                    // Reload usage statistics for view
+                    var couponWithOrders = await db.Coupons
+                        .Include(c => c.Orders)
+                        .FirstOrDefaultAsync(c => c.Id == coupon.Id);
+                    ViewBag.TimesUsed = couponWithOrders?.Orders?.Count ?? 0;
+                    ViewBag.TotalSavings = couponWithOrders?.Orders?.Sum(o => coupon.DiscountValue) ?? 0;
+                    ViewBag.LastUsed = couponWithOrders?.Orders?.OrderByDescending(o => o.CreatedAt).FirstOrDefault()?.CreatedAt.ToString("MMM dd, yyyy");
+                    
+                    return View(coupon);
+                }
+
+                // Validate discount value
+                if (coupon.DiscountValue <= 0)
+                {
+                    ModelState.AddModelError("DiscountValue", "Discount value must be greater than zero.");
+                    
+                    // Reload usage statistics for view
+                    var couponWithOrders = await db.Coupons
+                        .Include(c => c.Orders)
+                        .FirstOrDefaultAsync(c => c.Id == coupon.Id);
+                    ViewBag.TimesUsed = couponWithOrders?.Orders?.Count ?? 0;
+                    ViewBag.TotalSavings = couponWithOrders?.Orders?.Sum(o => coupon.DiscountValue) ?? 0;
+                    ViewBag.LastUsed = couponWithOrders?.Orders?.OrderByDescending(o => o.CreatedAt).FirstOrDefault()?.CreatedAt.ToString("MMM dd, yyyy");
+                    
+                    return View(coupon);
+                }
+
+                // Validate minimum total
+                if (coupon.MinimumTotal < 0)
+                {
+                    ModelState.AddModelError("MinimumTotal", "Minimum total cannot be negative.");
+                    
+                    // Reload usage statistics for view
+                    var couponWithOrders = await db.Coupons
+                        .Include(c => c.Orders)
+                        .FirstOrDefaultAsync(c => c.Id == coupon.Id);
+                    ViewBag.TimesUsed = couponWithOrders?.Orders?.Count ?? 0;
+                    ViewBag.TotalSavings = couponWithOrders?.Orders?.Sum(o => coupon.DiscountValue) ?? 0;
+                    ViewBag.LastUsed = couponWithOrders?.Orders?.OrderByDescending(o => o.CreatedAt).FirstOrDefault()?.CreatedAt.ToString("MMM dd, yyyy");
+                    
+                    return View(coupon);
+                }
+
+                // Update coupon in database
+                db.Coupons.Update(coupon);
+                await db.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Coupon '{coupon.Code}' updated successfully!";
+                return RedirectToAction(nameof(Coupons));
+            }
+
+            // Reload usage statistics for view if ModelState is invalid
+            var loadedCoupon = await db.Coupons
+                .Include(c => c.Orders)
+                .FirstOrDefaultAsync(c => c.Id == coupon.Id);
+            ViewBag.TimesUsed = loadedCoupon?.Orders?.Count ?? 0;
+            ViewBag.TotalSavings = loadedCoupon?.Orders?.Sum(o => coupon.DiscountValue) ?? 0;
+            ViewBag.LastUsed = loadedCoupon?.Orders?.OrderByDescending(o => o.CreatedAt).FirstOrDefault()?.CreatedAt.ToString("MMM dd, yyyy");
+
+            return View(coupon);
         }
     }
 }
