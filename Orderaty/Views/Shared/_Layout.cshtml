@@ -36,6 +36,21 @@
                             <span>Home</span>
                         </a>
                     }
+                    else if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <a href="/Admin/Users" class="navbar-item">
+                            <i class="fas fa-users"></i>
+                            <span>Users</span>
+                        </a>
+                        <a href="/Admin/SellerApproval" class="navbar-item">
+                            <i class="fas fa-user-check"></i>
+                            <span>Sellers</span>
+                        </a>
+                        <a href="/Admin/Coupons" class="navbar-item">
+                            <i class="fas fa-ticket-alt"></i>
+                            <span>Coupons</span>
+                        </a>
+                    }
                     else if (User.Identity.IsAuthenticated && User.IsInRole("Seller"))
                     {
                         <a href="/Seller/Dashboard" class="navbar-item">
@@ -81,7 +96,14 @@
                 <div class="navbar-actions">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        @if (User.IsInRole("Client"))
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a href="/Admin/Dashboard" class="navbar-item navbar-profile">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Admin Panel</span>
+                            </a>
+                        }
+                        else if (User.IsInRole("Client"))
                         {
                             <a href="/Client/Profile" class="navbar-item navbar-profile">
                                 <i class="fas fa-user-circle"></i>

@@ -1,0 +1,168 @@
+@{
+    ViewData["Title"] = "Seller Details";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" />
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="page-title-section">
+                <h1 class="page-title">
+                    <i class="fas fa-store"></i>
+                    Seller Details
+                </h1>
+                <p class="page-subtitle">Review seller application and information</p>
+            </div>
+            <div class="header-actions">
+                <a asp-action="SellerApproval" class="action-btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Approvals
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Seller Details Section -->
+<section class="details-section">
+    <div class="container">
+        <div class="details-grid">
+            <!-- Store Information -->
+            <div class="details-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-store-alt"></i>
+                        Store Information
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <div class="store-profile-header">
+                        <div class="store-logo-large">
+                            <img src="~/images/default-store.png" alt="Store">
+                        </div>
+                        <div class="store-profile-info">
+                            <h3 class="store-name">Store Name</h3>
+                            <p class="store-owner">Owned by: Owner Name</p>
+                            <span class="category-badge">
+                                <i class="fas fa-tag"></i>
+                                Category Name
+                            </span>
+                        </div>
+                    </div>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-align-left"></i>
+                                Description
+                            </span>
+                            <span class="info-value">Store description will appear here...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Address
+                            </span>
+                            <span class="info-value">Store address</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-door-open"></i>
+                                Status
+                            </span>
+                            <span class="info-value">Open</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-calendar-plus"></i>
+                                Application Date
+                            </span>
+                            <span class="info-value">November 13, 2025</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Owner Information -->
+            <div class="details-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-user"></i>
+                        Owner Information
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-user-circle"></i>
+                                Full Name
+                            </span>
+                            <span class="info-value">Owner Full Name</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-envelope"></i>
+                                Email
+                            </span>
+                            <span class="info-value">owner@example.com</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-phone"></i>
+                                Phone Number
+                            </span>
+                            <span class="info-value">+1234567890</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-at"></i>
+                                Username
+                            </span>
+                            <span class="info-value">@@username</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approval Actions -->
+        <div class="approval-actions-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-tasks"></i>
+                    Approval Decision
+                </h2>
+            </div>
+            <div class="card-content">
+                <div class="approval-buttons">
+                    <button class="approval-action-btn btn-approve-large">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Approve Seller</span>
+                    </button>
+                    <button class="approval-action-btn btn-reject-large">
+                        <i class="fas fa-times-circle"></i>
+                        <span>Reject Application</span>
+                    </button>
+                </div>
+                <div class="approval-note">
+                    <label class="note-label">
+                        <i class="fas fa-comment"></i>
+                        Add Note (Optional)
+                    </label>
+                    <textarea class="note-textarea" placeholder="Add any notes or comments about this decision..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Seller details functionality
+        console.log('Seller Details loaded');
+    </script>
+}

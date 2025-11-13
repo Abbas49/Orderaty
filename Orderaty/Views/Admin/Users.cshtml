@@ -1,0 +1,362 @@
+@model IEnumerable<Orderaty.Models.User>
+@{
+    ViewData["Title"] = "User Management";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" />
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="page-title-section">
+                <h1 class="page-title">
+                    <i class="fas fa-users-cog"></i>
+                    User Management
+                </h1>
+                <p class="page-subtitle">Manage all platform users, roles, and permissions</p>
+            </div>
+            <div class="header-actions">
+                <a asp-action="Dashboard" class="action-btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filter & Search Section -->
+<section class="filter-section">
+    <div class="container">
+        <form asp-action="Users" method="get" id="filterForm">
+            <div class="filter-card">
+                <div class="filter-header">
+                    <h3 class="filter-title">
+                        <i class="fas fa-filter"></i>
+                        Filters
+                    </h3>
+                </div>
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-search"></i>
+                            Search Users
+                        </label>
+                        <input type="text" name="search" class="filter-input" placeholder="Search by name, email, or username..." value="@ViewBag.SearchTerm">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-user-tag"></i>
+                            Role
+                        </label>
+                        <select name="role" class="filter-select">
+                            <option value="">All Roles</option>
+                            <option value="Client" selected="@(ViewBag.RoleFilter == "Client")">Client</option>
+                            <option value="Seller" selected="@(ViewBag.RoleFilter == "Seller")">Seller</option>
+                            <option value="Delivery" selected="@(ViewBag.RoleFilter == "Delivery")">Delivery</option>
+                            <option value="Admin" selected="@(ViewBag.RoleFilter == "Admin")">Admin</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-toggle-on"></i>
+                            Status
+                        </label>
+                        <select name="status" class="filter-select">
+                            <option value="">All Status</option>
+                            <option value="Active" selected="@(ViewBag.StatusFilter == "Active")">Active</option>
+                            <option value="Suspended" selected="@(ViewBag.StatusFilter == "Suspended")">Suspended</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button type="submit" class="btn-filter">
+                            <i class="fas fa-search"></i>
+                            Apply Filters
+                        </button>
+                        <a href="@Url.Action("Users")" class="btn-clear">
+                            <i class="fas fa-times"></i>
+                            Clear
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- Users Statistics -->
+<section class="user-stats-section">
+    <div class="container">
+        <div class="stats-grid-small">
+            <div class="stat-card-small card-all">
+                <div class="stat-icon-small">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Total Users</p>
+                    <p class="stat-value-small">@ViewBag.TotalUsers</p>
+                </div>
+            </div>
+            <div class="stat-card-small card-clients">
+                <div class="stat-icon-small">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Clients</p>
+                    <p class="stat-value-small">@ViewBag.TotalClients</p>
+                </div>
+            </div>
+            <div class="stat-card-small card-sellers">
+                <div class="stat-icon-small">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Sellers</p>
+                    <p class="stat-value-small">@ViewBag.TotalSellers</p>
+                </div>
+            </div>
+            <div class="stat-card-small card-delivery">
+                <div class="stat-icon-small">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Delivery</p>
+                    <p class="stat-value-small">@ViewBag.TotalDelivery</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Users Table -->
+<section class="users-table-section">
+    <div class="container">
+        <div class="table-card">
+            <div class="table-header">
+                <h2 class="table-title">
+                    <i class="fas fa-list"></i>
+                    All Users
+                    @if (!string.IsNullOrEmpty(ViewBag.SearchTerm) || !string.IsNullOrEmpty(ViewBag.RoleFilter) || !string.IsNullOrEmpty(ViewBag.StatusFilter))
+                    {
+                        <span class="filter-badge">Filtered</span>
+                    }
+                </h2>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var user in Model)
+                            {
+                                var roles = ViewBag.UserRoles as Dictionary<string, List<string>>;
+                                var userRoles = roles?.ContainsKey(user.Id) == true ? roles[user.Id] : new List<string>();
+                                var primaryRole = userRoles.FirstOrDefault() ?? "User";
+                                
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-avatar">
+                                                @if (!string.IsNullOrEmpty(user.Image))
+                                                {
+                                                    <img src="~/images/users/@user.Image" alt="@user.FullName">
+                                                }
+                                                else
+                                                {
+                                                    <img src="~/images/default-user.jpg" alt="@user.FullName">
+                                                }
+                                            </div>
+                                            <div class="user-info">
+                                                <p class="user-name">@user.FullName</p>
+                                                <span class="user-username">@@@user.UserName</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="email-text">@user.Email</span>
+                                    </td>
+                                    <td>
+                                        @{
+                                            var roleClass = primaryRole.ToLower();
+                                            var roleIcon = primaryRole switch
+                                            {
+                                                "Client" => "fa-user",
+                                                "Seller" => "fa-store",
+                                                "Delivery" => "fa-shipping-fast",
+                                                "Admin" => "fa-shield-alt",
+                                                _ => "fa-user"
+                                            };
+                                        }
+                                        <span class="role-badge role-@roleClass">
+                                            <i class="fas @roleIcon"></i>
+                                            @primaryRole
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="phone-text">@(user.PhoneNumber ?? "N/A")</span>
+                                    </td>
+                                    <td>
+                                        @{
+                                            var isLocked = user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.Now;
+                                        }
+                                        <span class="status-badge-small @(isLocked ? "status-inactive" : "status-active")">
+                                            <i class="fas fa-circle"></i>
+                                            @(isLocked ? "Suspended" : "Active")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a asp-action="UserDetails" asp-route-id="@user.Id" class="btn-action btn-view" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            @if (primaryRole != "Admin")
+                                            {
+                                                <button class="btn-action btn-suspend" title="@(isLocked ? "Unsuspend" : "Suspend") User" onclick="toggleSuspendUser('@user.Id', '@user.UserName', @(isLocked ? "true" : "false"))">
+                                                    <i class="fas @(isLocked ? "fa-check" : "fa-ban")"></i>
+                                                </button>
+                                                <button class="btn-action btn-delete" title="Delete User" onclick="deleteUser('@user.Id', '@user.UserName')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn-action btn-suspend" title="Cannot suspend admin" disabled>
+                                                    <i class="fas fa-ban"></i>
+                                                </button>
+                                                <button class="btn-action btn-delete" title="Cannot delete admin" disabled>
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="empty-table">
+                                    <div class="empty-state">
+                                        <i class="fas fa-users"></i>
+                                        <p>No users found</p>
+                                        <span>
+                                            @if (!string.IsNullOrEmpty(ViewBag.SearchTerm) || !string.IsNullOrEmpty(ViewBag.RoleFilter) || !string.IsNullOrEmpty(ViewBag.StatusFilter))
+                                            {
+                                                <text>Try adjusting your filters</text>
+                                            }
+                                            else
+                                            {
+                                                <text>Users will appear here when registered</text>
+                                            }
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination -->
+            <div class="table-footer">
+                <div class="pagination-info">
+                    @{
+                        var userCount = Model?.Count() ?? 0;
+                        if (userCount > 0)
+                        {
+                            @:Showing 1 to @userCount of @userCount entries
+                        }
+                        else
+                        {
+                            @:No entries to show
+                        }
+                    }
+                </div>
+                <div class="pagination">
+                    <button class="pagination-btn" disabled>
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="pagination-btn active">1</button>
+                    <button class="pagination-btn" disabled>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // User management functionality
+        
+        // Toggle suspend/unsuspend user
+        function toggleSuspendUser(userId, username, isCurrentlySuspended) {
+            const action = isCurrentlySuspended ? 'unsuspend' : 'suspend';
+            const message = isCurrentlySuspended 
+                ? `Are you sure you want to unsuspend @@${username}?` 
+                : `Are you sure you want to suspend @@${username}? They will not be able to access their account.`;
+            
+            if (confirm(message)) {
+                // TODO: Implement suspend/unsuspend endpoint
+                fetch(`/Admin/ToggleSuspendUser/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert(`User ${action}ed successfully!`);
+                        location.reload();
+                    } else {
+                        alert(`Failed to ${action} user.`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert(`An error occurred while trying to ${action} the user.`);
+                });
+            }
+        }
+        
+        // Delete user
+        function deleteUser(userId, username) {
+            const message = `Are you sure you want to delete @@${username}? This action cannot be undone.`;
+            
+            if (confirm(message)) {
+                // TODO: Implement delete endpoint
+                fetch(`/Admin/DeleteUser/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('User deleted successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to delete user.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while trying to delete the user.');
+                });
+            }
+        }
+    </script>
+}

@@ -1,0 +1,197 @@
+@{
+    ViewData["Title"] = "Coupon Management";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" />
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="page-title-section">
+                <h1 class="page-title">
+                    <i class="fas fa-tags"></i>
+                    Coupon Management
+                </h1>
+                <p class="page-subtitle">Create and manage discount coupons</p>
+            </div>
+            <div class="header-actions">
+                <a asp-action="CreateCoupon" class="action-btn btn-primary">
+                    <i class="fas fa-plus-circle"></i>
+                    Create Coupon
+                </a>
+                <a asp-action="Dashboard" class="action-btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Coupon Statistics -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid-small">
+            <div class="stat-card-small card-active">
+                <div class="stat-icon-small">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Active Coupons</p>
+                    <p class="stat-value-small">0</p>
+                </div>
+            </div>
+            <div class="stat-card-small card-expired">
+                <div class="stat-icon-small">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Expired</p>
+                    <p class="stat-value-small">0</p>
+                </div>
+            </div>
+            <div class="stat-card-small card-used">
+                <div class="stat-icon-small">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Times Used</p>
+                    <p class="stat-value-small">0</p>
+                </div>
+            </div>
+            <div class="stat-card-small card-total">
+                <div class="stat-icon-small">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Total Coupons</p>
+                    <p class="stat-value-small">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Coupons Table -->
+<section class="coupons-table-section">
+    <div class="container">
+        <div class="table-card">
+            <div class="table-header">
+                <h2 class="table-title">
+                    <i class="fas fa-list"></i>
+                    All Coupons
+                </h2>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-status="all">
+                        All
+                    </button>
+                    <button class="filter-tab" data-status="active">
+                        Active
+                    </button>
+                    <button class="filter-tab" data-status="expired">
+                        Expired
+                    </button>
+                    <button class="filter-tab" data-status="inactive">
+                        Inactive
+                    </button>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Discount</th>
+                            <th>Min. Total</th>
+                            <th>Expire Date</th>
+                            <th>Times Used</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Empty State -->
+                        <tr>
+                            <td colspan="7" class="empty-table">
+                                <div class="empty-state">
+                                    <i class="fas fa-ticket-alt"></i>
+                                    <p>No coupons found</p>
+                                    <span>Create your first discount coupon</span>
+                                    <a asp-action="CreateCoupon" class="btn-small">
+                                        <i class="fas fa-plus"></i>
+                                        Create Coupon
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Example Coupon Row (Hidden by default) -->
+                        <tr style="display: none;">
+                            <td>
+                                <div class="coupon-code">
+                                    <i class="fas fa-tag"></i>
+                                    <span class="code-text">SAVE20</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="discount-value">$20.00</span>
+                            </td>
+                            <td>
+                                <span class="minimum-text">$100.00</span>
+                            </td>
+                            <td>
+                                <span class="date-text">Dec 31, 2025</span>
+                            </td>
+                            <td>
+                                <span class="usage-count">10 times</span>
+                            </td>
+                            <td>
+                                <span class="status-badge-small status-active">
+                                    <i class="fas fa-circle"></i>
+                                    Active
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="#" class="btn-action btn-edit" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button class="btn-action btn-toggle" title="Toggle Status">
+                                        <i class="fas fa-power-off"></i>
+                                    </button>
+                                    <button class="btn-action btn-delete" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination -->
+            <div class="table-footer">
+                <div class="pagination-info">
+                    Showing 0 to 0 of 0 entries
+                </div>
+                <div class="pagination">
+                    <button class="pagination-btn" disabled>
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="pagination-btn active">1</button>
+                    <button class="pagination-btn" disabled>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Coupon management functionality
+        console.log('Coupon Management loaded');
+    </script>
+}
