@@ -54,7 +54,7 @@
                 </div>
                 <div class="stat-content">
                     <h3 class="stat-label">Total Users</h3>
-                    <p class="stat-value">0</p>
+                    <p class="stat-value">@ViewBag.TotalUsers</p>
                     <span class="stat-change positive">
                         <i class="fas fa-arrow-up"></i> Platform registered users
                     </span>
@@ -68,7 +68,7 @@
                 </div>
                 <div class="stat-content">
                     <h3 class="stat-label">Total Sellers</h3>
-                    <p class="stat-value">0</p>
+                    <p class="stat-value">@ViewBag.TotalSellers</p>
                     <span class="stat-change">
                         <i class="fas fa-check-circle"></i> Active stores
                     </span>
@@ -82,7 +82,7 @@
                 </div>
                 <div class="stat-content">
                     <h3 class="stat-label">Total Orders</h3>
-                    <p class="stat-value">0</p>
+                    <p class="stat-value">@ViewBag.TotalOrders</p>
                     <span class="stat-change">
                         <i class="fas fa-truck"></i> Platform-wide orders
                     </span>
@@ -96,77 +96,10 @@
                 </div>
                 <div class="stat-content">
                     <h3 class="stat-label">Total Revenue</h3>
-                    <p class="stat-value">$0.00</p>
+                    <p class="stat-value">$@(((decimal)ViewBag.TotalRevenue).ToString("N2"))</p>
                     <span class="stat-change positive">
                         <i class="fas fa-coins"></i> Platform earnings
                     </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- User Breakdown Statistics -->
-<section class="breakdown-section">
-    <div class="container">
-        <h2 class="section-title">
-            <i class="fas fa-users-cog"></i>
-            User Breakdown
-        </h2>
-        <div class="breakdown-grid">
-            <!-- Clients -->
-            <div class="breakdown-card card-clients">
-                <div class="breakdown-icon">
-                    <i class="fas fa-user-circle"></i>
-                </div>
-                <div class="breakdown-content">
-                    <h3 class="breakdown-label">Clients</h3>
-                    <p class="breakdown-value">0</p>
-                    <div class="breakdown-bar">
-                        <div class="breakdown-fill" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sellers -->
-            <div class="breakdown-card card-sellers">
-                <div class="breakdown-icon">
-                    <i class="fas fa-store-alt"></i>
-                </div>
-                <div class="breakdown-content">
-                    <h3 class="breakdown-label">Sellers</h3>
-                    <p class="breakdown-value">0</p>
-                    <div class="breakdown-bar">
-                        <div class="breakdown-fill" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Delivery Personnel -->
-            <div class="breakdown-card card-delivery">
-                <div class="breakdown-icon">
-                    <i class="fas fa-shipping-fast"></i>
-                </div>
-                <div class="breakdown-content">
-                    <h3 class="breakdown-label">Delivery Personnel</h3>
-                    <p class="breakdown-value">0</p>
-                    <div class="breakdown-bar">
-                        <div class="breakdown-fill" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Admins -->
-            <div class="breakdown-card card-admins">
-                <div class="breakdown-icon">
-                    <i class="fas fa-user-shield"></i>
-                </div>
-                <div class="breakdown-content">
-                    <h3 class="breakdown-label">Administrators</h3>
-                    <p class="breakdown-value">1</p>
-                    <div class="breakdown-bar">
-                        <div class="breakdown-fill" style="width: 100%"></div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -203,30 +136,6 @@
                 </div>
                 <h3 class="action-title">Coupon Management</h3>
                 <p class="action-description">Create, edit, and manage discount coupons</p>
-            </a>
-
-            <a href="#" class="quick-action-card">
-                <div class="action-icon action-icon-reports">
-                    <i class="fas fa-chart-bar"></i>
-                </div>
-                <h3 class="action-title">Reports & Analytics</h3>
-                <p class="action-description">View detailed platform statistics and reports</p>
-            </a>
-
-            <a href="#" class="quick-action-card">
-                <div class="action-icon action-icon-products">
-                    <i class="fas fa-box"></i>
-                </div>
-                <h3 class="action-title">Product Moderation</h3>
-                <p class="action-description">Review and moderate platform products</p>
-            </a>
-
-            <a href="#" class="quick-action-card">
-                <div class="action-icon action-icon-orders">
-                    <i class="fas fa-receipt"></i>
-                </div>
-                <h3 class="action-title">Order Monitoring</h3>
-                <p class="action-description">Monitor and manage all platform orders</p>
             </a>
         </div>
     </div>
@@ -269,78 +178,33 @@
                     </a>
                 </div>
                 <div class="card-content">
-                    <div class="empty-state-small">
-                        <i class="fas fa-tags"></i>
-                        <p>No active coupons</p>
-                        <a asp-action="CreateCoupon" class="btn-small">
-                            <i class="fas fa-plus"></i>
-                            Create Coupon
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Platform Health & Performance -->
-<section class="overview-section">
-    <div class="container">
-        <div class="overview-grid">
-            <!-- Platform Health -->
-            <div class="overview-card">
-                <h2 class="overview-title">
-                    <i class="fas fa-heartbeat"></i>
-                    Platform Health
-                </h2>
-                <div class="info-list">
-                    <div class="info-item">
-                        <span class="info-label">
-                            <i class="fas fa-check-circle"></i>
-                            System Status
-                        </span>
-                        <span class="info-value status-good">Operational</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">
-                            <i class="fas fa-database"></i>
-                            Database
-                        </span>
-                        <span class="info-value status-good">Connected</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">
-                            <i class="fas fa-server"></i>
-                            Active Stores
-                        </span>
-                        <span class="info-value">0</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">
-                            <i class="fas fa-truck"></i>
-                            Active Deliveries
-                        </span>
-                        <span class="info-value">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity -->
-            <div class="overview-card">
-                <h2 class="overview-title">
-                    <i class="fas fa-history"></i>
-                    Recent Activity
-                </h2>
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-user-plus"></i>
+                    @if (ViewBag.ActiveCouponsCount > 0)
+                    {
+                        <div class="coupon-list-small">
+                            @foreach (var coupon in (List<Orderaty.Models.Coupon>)ViewBag.ActiveCoupons)
+                            {
+                                <div class="coupon-item-small">
+                                    <div class="coupon-code-small">@coupon.Code</div>
+                                    <div class="coupon-value-small">$@coupon.DiscountValue.ToString("0.00")</div>
+                                    <div class="coupon-expiry-small">
+                                        <i class="fas fa-clock"></i>
+                                        Expires: @coupon.ExpireDate.ToString("MMM dd")
+                                    </div>
+                                </div>
+                            }
                         </div>
-                        <div class="activity-content">
-                            <p class="activity-text">System initialized</p>
-                            <span class="activity-time">Just now</span>
+                    }
+                    else
+                    {
+                        <div class="empty-state-small">
+                            <i class="fas fa-tags"></i>
+                            <p>No active coupons</p>
+                            <a asp-action="CreateCoupon" class="btn-small">
+                                <i class="fas fa-plus"></i>
+                                Create Coupon
+                            </a>
                         </div>
-                    </div>
+                    }
                 </div>
             </div>
         </div>

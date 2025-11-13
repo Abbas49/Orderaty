@@ -669,6 +669,55 @@
     box-shadow: 0 4px 12px rgba(31, 154, 58, 0.3);
 }
 
+/* Coupon List Small */
+.coupon-list-small {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.coupon-item-small {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 1px solid #86efac;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.coupon-item-small:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(31, 154, 58, 0.15);
+}
+
+.coupon-code-small {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--primary-color);
+    font-family: 'Courier New', monospace;
+}
+
+.coupon-value-small {
+    font-size: 16px;
+    font-weight: 700;
+    color: #065f46;
+}
+
+.coupon-expiry-small {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.coupon-expiry-small i {
+    font-size: 12px;
+}
+
 /* ===========================
    OVERVIEW SECTION
    =========================== */

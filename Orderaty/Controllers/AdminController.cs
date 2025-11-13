@@ -22,8 +22,29 @@ namespace Orderaty.Controllers
         }
 
         // ===================== DASHBOARD =====================
-        public IActionResult Dashboard()
+        public async Task<IActionResult> Dashboard()
         {
+            // Platform Overview Statistics
+            var totalUsers = await userManager.Users.CountAsync();
+            var totalSellers = await db.Sellers.CountAsync();
+            var totalOrders = await db.Orders.CountAsync();
+            var totalRevenue = await db.Orders.SumAsync(o => (decimal?)o.TotalPrice) ?? 0;
+
+            ViewBag.TotalUsers = totalUsers;
+            ViewBag.TotalSellers = totalSellers;
+            ViewBag.TotalOrders = totalOrders;
+            ViewBag.TotalRevenue = totalRevenue;
+
+            // Active Coupons
+            var activeCoupons = await db.Coupons
+                .Where(c => c.IsActive && c.ExpireDate >= DateTime.Now)
+                .OrderByDescending(c => c.Id)
+                .Take(5)
+                .ToListAsync();
+
+            ViewBag.ActiveCoupons = activeCoupons;
+            ViewBag.ActiveCouponsCount = activeCoupons.Count;
+
             return View();
         }
 
