@@ -1,0 +1,189 @@
+@model Orderaty.Models.Coupon
+
+@{
+    ViewData["Title"] = "Edit Coupon";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" />
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="page-title-section">
+                <h1 class="page-title">
+                    <i class="fas fa-edit"></i>
+                    Edit Coupon
+                </h1>
+                <p class="page-subtitle">Update coupon information</p>
+            </div>
+            <div class="header-actions">
+                <a asp-action="Coupons" class="action-btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Coupons
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Edit Coupon Form -->
+<section class="form-section">
+    <div class="container">
+        <div class="form-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-ticket-alt"></i>
+                    Coupon Details
+                </h2>
+            </div>
+            <div class="card-content">
+                <form asp-action="EditCoupon" method="post" class="coupon-form">
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="All" class="validation-summary"></div>
+                    <div class="form-grid">
+                        <!-- Coupon Code -->
+                        <div class="form-group full-width">
+                            <label asp-for="Code" class="form-label">
+                                <i class="fas fa-tag"></i>
+                                Coupon Code
+                                <span class="required">*</span>
+                            </label>
+                            <input asp-for="Code" class="form-input" placeholder="e.g., SAVE20, SUMMER2025" required>
+                            <span asp-validation-for="Code" class="text-danger"></span>
+                            <small class="form-help">Use uppercase letters and numbers. No spaces allowed.</small>
+                        </div>
+
+                        <!-- Discount Value -->
+                        <div class="form-group">
+                            <label asp-for="DiscountValue" class="form-label">
+                                <i class="fas fa-dollar-sign"></i>
+                                Discount Value
+                                <span class="required">*</span>
+                            </label>
+                            <input asp-for="DiscountValue" class="form-input" placeholder="20.00" step="0.01" min="0" required>
+                            <span asp-validation-for="DiscountValue" class="text-danger"></span>
+                            <small class="form-help">Fixed discount amount in dollars.</small>
+                        </div>
+
+                        <!-- Minimum Total -->
+                        <div class="form-group">
+                            <label asp-for="MinimumTotal" class="form-label">
+                                <i class="fas fa-shopping-cart"></i>
+                                Minimum Order Total
+                                <span class="required">*</span>
+                            </label>
+                            <input asp-for="MinimumTotal" class="form-input" placeholder="100.00" step="0.01" min="0" required>
+                            <span asp-validation-for="MinimumTotal" class="text-danger"></span>
+                            <small class="form-help">Minimum order value to use this coupon.</small>
+                        </div>
+
+                        <!-- Expire Date -->
+                        <div class="form-group">
+                            <label asp-for="ExpireDate" class="form-label">
+                                <i class="fas fa-calendar"></i>
+                                Expiration Date
+                                <span class="required">*</span>
+                            </label>
+                            <input asp-for="ExpireDate" type="date" class="form-input" required>
+                            <span asp-validation-for="ExpireDate" class="text-danger"></span>
+                            <small class="form-help">When this coupon will expire.</small>
+                        </div>
+
+                        <!-- Is Active -->
+                        <div class="form-group">
+                            <label asp-for="IsActive" class="form-label">
+                                <i class="fas fa-toggle-on"></i>
+                                Status
+                            </label>
+                            <div class="toggle-group">
+                                <input asp-for="IsActive" type="checkbox" class="toggle-checkbox">
+                                <label for="IsActive" class="toggle-label">
+                                    <span class="toggle-text">Active</span>
+                                </label>
+                            </div>
+                            <small class="form-help">Enable or disable this coupon.</small>
+                        </div>
+                    </div>
+
+                    <!-- Usage Statistics -->
+                    <div class="usage-stats">
+                        <div class="stats-header">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Usage Statistics</span>
+                        </div>
+                        <div class="stats-grid-inline">
+                            <div class="stat-inline">
+                                <span class="stat-label-inline">Times Used:</span>
+                                <span class="stat-value-inline">@ViewBag.TimesUsed</span>
+                            </div>
+                            <div class="stat-inline">
+                                <span class="stat-label-inline">Total Savings:</span>
+                                <span class="stat-value-inline">$@(((decimal?)ViewBag.TotalSavings ?? 0).ToString("0.00"))</span>
+                            </div>
+                            <div class="stat-inline">
+                                <span class="stat-label-inline">Last Used:</span>
+                                <span class="stat-value-inline">@(ViewBag.LastUsed ?? "Never")</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-save"></i>
+                            Save Changes
+                        </button>
+                        <a asp-action="Coupons" class="btn-cancel">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </a>
+                        <button type="button" class="btn-delete-form" onclick="deleteCouponFromEdit(@Model.Id, '@Model.Code')">
+                            <i class="fas fa-trash"></i>
+                            Delete Coupon
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('ExpireDate').setAttribute('min', today);
+        
+        // Delete coupon function
+        function deleteCouponFromEdit(couponId, couponCode) {
+            const message = `Are you sure you want to delete coupon "${couponCode}"? This action cannot be undone.`;
+            
+            if (confirm(message)) {
+                fetch(`/Admin/DeleteCoupon/${couponId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Coupon deleted successfully!');
+                        window.location.href = '@Url.Action("Coupons")';
+                    } else {
+                        return response.text().then(text => {
+                            alert('Failed to delete coupon: ' + text);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while trying to delete the coupon.');
+                });
+            }
+        }
+    </script>
+}

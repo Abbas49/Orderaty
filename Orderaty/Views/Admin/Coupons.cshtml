@@ -1,0 +1,304 @@
+@model IEnumerable<Orderaty.Models.Coupon>
+
+@{
+    ViewData["Title"] = "Coupon Management";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" />
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="page-title-section">
+                <h1 class="page-title">
+                    <i class="fas fa-tags"></i>
+                    Coupon Management
+                </h1>
+                <p class="page-subtitle">Create and manage discount coupons</p>
+            </div>
+            <div class="header-actions">
+                <a asp-action="CreateCoupon" class="action-btn btn-primary">
+                    <i class="fas fa-plus-circle"></i>
+                    Create Coupon
+                </a>
+                <a asp-action="Dashboard" class="action-btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="container">
+        <div class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle"></i>
+            @TempData["SuccessMessage"]
+        </div>
+    </div>
+}
+
+<!-- Coupon Statistics -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid-small">
+            <div class="stat-card-small card-active">
+                <div class="stat-icon-small">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Active Coupons</p>
+                    <p class="stat-value-small">@ViewBag.ActiveCount</p>
+                </div>
+            </div>
+            <div class="stat-card-small card-expired">
+                <div class="stat-icon-small">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Expired</p>
+                    <p class="stat-value-small">@ViewBag.ExpiredCount</p>
+                </div>
+            </div>
+            <div class="stat-card-small card-used">
+                <div class="stat-icon-small">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Times Used</p>
+                    <p class="stat-value-small">@ViewBag.TotalUsage</p>
+                </div>
+            </div>
+            <div class="stat-card-small card-total">
+                <div class="stat-icon-small">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Total Coupons</p>
+                    <p class="stat-value-small">@ViewBag.TotalCount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Coupons Table -->
+<section class="coupons-table-section">
+    <div class="container">
+        <div class="table-card">
+            <div class="table-header">
+                <h2 class="table-title">
+                    <i class="fas fa-list"></i>
+                    All Coupons
+                </h2>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-status="all">
+                        All
+                    </button>
+                    <button class="filter-tab" data-status="active">
+                        Active
+                    </button>
+                    <button class="filter-tab" data-status="expired">
+                        Expired
+                    </button>
+                    <button class="filter-tab" data-status="inactive">
+                        Inactive
+                    </button>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Discount</th>
+                            <th>Min. Total</th>
+                            <th>Expire Date</th>
+                            <th>Times Used</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var coupon in Model)
+                            {
+                                var isExpired = coupon.ExpireDate < DateTime.Now;
+                                var usageCount = ViewBag.CouponUsage as Dictionary<int, int>;
+                                var timesUsed = usageCount?.ContainsKey(coupon.Id) == true ? usageCount[coupon.Id] : 0;
+                                
+                                <tr>
+                                    <td>
+                                        <div class="coupon-code">
+                                            <i class="fas fa-tag"></i>
+                                            <span class="code-text">@coupon.Code</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="discount-value">$@coupon.DiscountValue.ToString("0.00")</span>
+                                    </td>
+                                    <td>
+                                        <span class="minimum-text">$@coupon.MinimumTotal.ToString("0.00")</span>
+                                    </td>
+                                    <td>
+                                        <span class="date-text @(isExpired ? "text-danger" : "")">@coupon.ExpireDate.ToString("MMM dd, yyyy")</span>
+                                    </td>
+                                    <td>
+                                        <span class="usage-count">@timesUsed @(timesUsed == 1 ? "time" : "times")</span>
+                                    </td>
+                                    <td>
+                                        @{
+                                            string statusClass, statusText, statusIcon;
+                                            if (isExpired)
+                                            {
+                                                statusClass = "status-expired";
+                                                statusText = "Expired";
+                                                statusIcon = "fa-clock";
+                                            }
+                                            else if (coupon.IsActive)
+                                            {
+                                                statusClass = "status-active";
+                                                statusText = "Active";
+                                                statusIcon = "fa-circle";
+                                            }
+                                            else
+                                            {
+                                                statusClass = "status-inactive";
+                                                statusText = "Inactive";
+                                                statusIcon = "fa-circle";
+                                            }
+                                        }
+                                        <span class="status-badge-small @statusClass">
+                                            <i class="fas @statusIcon"></i>
+                                            @statusText
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a asp-action="EditCoupon" asp-route-id="@coupon.Id" class="btn-action btn-edit" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            @if (!isExpired)
+                                            {
+                                                <button class="btn-action btn-toggle" title="@(coupon.IsActive ? "Deactivate" : "Activate")" onclick="toggleCoupon(@coupon.Id, @coupon.IsActive.ToString().ToLower())">
+                                                    <i class="fas fa-power-off"></i>
+                                                </button>
+                                            }
+                                            <button class="btn-action btn-delete" title="Delete" onclick="deleteCoupon(@coupon.Id, '@coupon.Code')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="empty-table">
+                                    <div class="empty-state">
+                                        <i class="fas fa-ticket-alt"></i>
+                                        <p>No coupons found</p>
+                                        <span>Create your first discount coupon</span>
+                                        <a asp-action="CreateCoupon" class="btn-small">
+                                            <i class="fas fa-plus"></i>
+                                            Create Coupon
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination -->
+            <div class="table-footer">
+                <div class="pagination-info">
+                    @{
+                        var couponCount = Model?.Count() ?? 0;
+                        if (couponCount > 0)
+                        {
+                            @:Showing 1 to @couponCount of @couponCount entries
+                        }
+                        else
+                        {
+                            @:No entries to show
+                        }
+                    }
+                </div>
+                <div class="pagination">
+                    <button class="pagination-btn" disabled>
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="pagination-btn active">1</button>
+                    <button class="pagination-btn" disabled>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Toggle coupon active status
+        function toggleCoupon(couponId, isCurrentlyActive) {
+            const action = isCurrentlyActive ? 'deactivate' : 'activate';
+            const message = `Are you sure you want to ${action} this coupon?`;
+            
+            if (confirm(message)) {
+                fetch(`/Admin/ToggleCoupon/${couponId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert(`Coupon ${action}d successfully!`);
+                        location.reload();
+                    } else {
+                        alert(`Failed to ${action} coupon.`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert(`An error occurred while trying to ${action} the coupon.`);
+                });
+            }
+        }
+        
+        // Delete coupon
+        function deleteCoupon(couponId, couponCode) {
+            const message = `Are you sure you want to delete coupon "${couponCode}"? This action cannot be undone.`;
+            
+            if (confirm(message)) {
+                fetch(`/Admin/DeleteCoupon/${couponId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Coupon deleted successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to delete coupon.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while trying to delete the coupon.');
+                });
+            }
+        }
+    </script>
+}

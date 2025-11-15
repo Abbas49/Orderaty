@@ -1,0 +1,159 @@
+@{
+    ViewData["Title"] = "User Details";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" />
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="page-title-section">
+                <h1 class="page-title">
+                    <i class="fas fa-user-circle"></i>
+                    User Details
+                </h1>
+                <p class="page-subtitle">View and manage user information</p>
+            </div>
+            <div class="header-actions">
+                <a asp-action="Users" class="action-btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Users
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- User Profile Section -->
+<section class="details-section">
+    <div class="container">
+        <div class="details-grid">
+            <!-- User Information Card -->
+            <div class="details-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-id-card"></i>
+                        User Information
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <div class="user-profile-header">
+                        <div class="user-avatar-large">
+                            <img src="~/images/default-avatar.png" alt="User">
+                        </div>
+                        <div class="user-profile-info">
+                            <h3 class="user-profile-name">User Name</h3>
+                            <p class="user-profile-username">@@username</p>
+                            <span class="role-badge role-client">
+                                <i class="fas fa-user"></i>
+                                Client
+                            </span>
+                        </div>
+                    </div>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-envelope"></i>
+                                Email
+                            </span>
+                            <span class="info-value">user@example.com</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-phone"></i>
+                                Phone Number
+                            </span>
+                            <span class="info-value">+1234567890</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-calendar-plus"></i>
+                                Joined Date
+                            </span>
+                            <span class="info-value">November 13, 2025</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-circle"></i>
+                                Status
+                            </span>
+                            <span class="status-badge-small status-active">
+                                <i class="fas fa-check-circle"></i>
+                                Active
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Card -->
+            <div class="details-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-cog"></i>
+                        User Actions
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <div class="action-list">
+                        <button class="action-item-btn action-suspend">
+                            <div class="action-item-icon">
+                                <i class="fas fa-ban"></i>
+                            </div>
+                            <div class="action-item-content">
+                                <h4 class="action-item-title">Suspend User</h4>
+                                <p class="action-item-description">Temporarily disable this user account</p>
+                            </div>
+                        </button>
+                        
+                        <button class="action-item-btn action-delete">
+                            <div class="action-item-icon">
+                                <i class="fas fa-trash"></i>
+                            </div>
+                            <div class="action-item-content">
+                                <h4 class="action-item-title">Delete User</h4>
+                                <p class="action-item-description">Permanently remove this user account</p>
+                            </div>
+                        </button>
+                        
+                        <button class="action-item-btn action-reset">
+                            <div class="action-item-icon">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <div class="action-item-content">
+                                <h4 class="action-item-title">Reset Password</h4>
+                                <p class="action-item-description">Send password reset email to user</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Section -->
+        <div class="activity-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-history"></i>
+                    Recent Activity
+                </h2>
+            </div>
+            <div class="card-content">
+                <div class="empty-state-small">
+                    <i class="fas fa-clock"></i>
+                    <p>No recent activity</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // User details functionality
+        console.log('User Details loaded');
+    </script>
+}

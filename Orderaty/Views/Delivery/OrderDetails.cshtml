@@ -1,37 +1,466 @@
 ﻿@model Orderaty.Models.Order
 
 @{
-    ViewData["Title"] = "Order Details";
+    ViewData["Title"] = "Delivery Order Details - #" + Model.Id.ToString("D5");
 }
 
-<h2 class="mb-4">📦 Order #@Model.Id</h2>
+@section Styles {
+    <link rel="stylesheet" href="~/css/order-details.css" asp-append-version="true" />
+    <style>
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 1.25rem 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            z-index: 9999;
+            min-width: 350px;
+            max-width: 450px;
+            animation: slideInRight 0.4s ease-out;
+        }
 
-<div class="card shadow-sm mb-4">
-    <div class="card-body">
-        <p><strong>Status:</strong> <span class="badge bg-info text-dark">@Model.Status</span></p>
-        <p><strong>Created At:</strong> @Model.CreatedAt.ToString("g")</p>
-        <p><strong>Total Price:</strong> @Model.TotalPrice.ToString("C")</p>
-        <hr />
-        <p><strong>Client Address:</strong> @Model.Client.User?.Email ?? "N/A"</p>
-        <p><strong>Seller Address:</strong> @Model.Seller.Address</p>
+        .toast-notification i {
+            font-size: 1.75rem;
+            flex-shrink: 0;
+        }
+
+        .toast-notification .message-content {
+            flex: 1;
+        }
+
+        .toast-notification .message-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .toast-notification .message-text {
+            font-size: 0.9rem;
+            opacity: 0.95;
+            line-height: 1.4;
+        }
+
+        .toast-notification .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .toast-notification .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .toast-notification.fade-out {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+
+        @@keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @@keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .toast-notification {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+                max-width: none;
+            }
+        }
+    </style>
+}
+
+<section class="order-details-section">
+    <!-- Toast Notification -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="toast-notification" id="successToast">
+            <i class="fas fa-check-circle"></i>
+            <div class="message-content">
+                <div class="message-title">Status Updated Successfully!</div>
+                <div class="message-text">@TempData["SuccessMessage"]</div>
+            </div>
+            <button class="close-btn" onclick="closeToast()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    }
+    
+    <!-- Order Header -->
+    <div class="order-details-header">
+        <div class="order-details-header-content">
+            <div class="header-main">
+                <a href="@Url.Action("MyDeliveries", "Delivery")" class="back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to My Deliveries
+                </a>
+                <h1 class="order-details-title">Order #@Model.Id.ToString("D5")</h1>
+                <span class="order-status-badge status-@Model.Status.ToString().ToLower()">
+                    <i class="fas @GetStatusIcon(Model.Status)"></i>
+                    @GetStatusText(Model.Status)
+                </span>
+            </div>
+            <div class="header-meta">
+                <span class="order-date">
+                    <i class="fas fa-calendar"></i>
+                    Created on @Model.CreatedAt.ToString("MMMM d, yyyy 'at' h:mm tt")
+                </span>
+            </div>
+        </div>
     </div>
-</div>
 
-<form asp-action="UpdateStatus" method="post" class="text-center">
-    <input type="hidden" name="id" value="@Model.Id" />
+    <div class="order-details-container">
+        <div class="order-details-grid">
+            
+            <!-- Main Content Area -->
+            <div class="order-main-content">
+                
+                <!-- Order Progress Tracker -->
+                @if (Model.Status != Orderaty.Models.OrderStatus.Cancelled)
+                {
+                    <div class="order-progress-card">
+                        <h2 class="card-title">Delivery Progress</h2>
+                        <div class="progress-tracker">
+                            <div class="progress-step @(GetStepStatus(1, Model.Status))">
+                                <div class="step-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="step-info">
+                                    <div class="step-title">Pending Delivery</div>
+                                    @if (Model.Status >= Orderaty.Models.OrderStatus.PendingDelivery)
+                                    {
+                                        <div class="step-time">@Model.CreatedAt.ToString("MMM d, h:mm tt")</div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="progress-line @(GetLineStatus(1, Model.Status))"></div>
 
-    @if (Model.Status != Orderaty.Models.OrderStatus.Delivered)
+                            <div class="progress-step @(GetStepStatus(2, Model.Status))">
+                                <div class="step-icon">
+                                    <i class="fas fa-box"></i>
+                                </div>
+                                <div class="step-info">
+                                    <div class="step-title">Processing</div>
+                                    @if (Model.Status >= Orderaty.Models.OrderStatus.Processing)
+                                    {
+                                        <div class="step-time">@Model.CreatedAt.AddMinutes(5).ToString("MMM d, h:mm tt")</div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="progress-line @(GetLineStatus(2, Model.Status))"></div>
+
+                            <div class="progress-step @(GetStepStatus(3, Model.Status))">
+                                <div class="step-icon">
+                                    <i class="fas fa-truck"></i>
+                                </div>
+                                <div class="step-info">
+                                    <div class="step-title">Out for Delivery</div>
+                                    @if (Model.Status >= Orderaty.Models.OrderStatus.Shipped)
+                                    {
+                                        <div class="step-time">@Model.CreatedAt.AddMinutes(15).ToString("MMM d, h:mm tt")</div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="progress-line @(GetLineStatus(3, Model.Status))"></div>
+
+                            <div class="progress-step @(GetStepStatus(4, Model.Status))">
+                                <div class="step-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="step-info">
+                                    <div class="step-title">Delivered</div>
+                                    @if (Model.Status == Orderaty.Models.OrderStatus.Delivered)
+                                    {
+                                        <div class="step-time">@Model.CreatedAt.AddMinutes(25).ToString("MMM d, h:mm tt")</div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="order-cancelled-card">
+                        <i class="fas fa-times-circle"></i>
+                        <h3>Order Cancelled</h3>
+                        <p>This order was cancelled on @Model.CreatedAt.ToString("MMMM d, yyyy")</p>
+                    </div>
+                }
+
+                <!-- Store Information -->
+                <div class="store-info-card">
+                    <h2 class="card-title">
+                        <i class="fas fa-store"></i>
+                        Store Information
+                    </h2>
+                    <div class="delivery-info-content">
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-building"></i>
+                                Store Name
+                            </span>
+                            <span class="info-value">@Model.Seller.User.FullName</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Address
+                            </span>
+                            <span class="info-value">@Model.Seller.Address</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-phone"></i>
+                                Phone Number
+                            </span>
+                            <span class="info-value">@Model.Seller.User.PhoneNumber</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client Information -->
+                <div class="store-info-card">
+                    <h2 class="card-title">
+                        <i class="fas fa-user"></i>
+                        Client Information
+                    </h2>
+                    <div class="delivery-info-content">
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-user-circle"></i>
+                                Client Name
+                            </span>
+                            <span class="info-value">@Model.Client.User.FullName</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Delivery Address
+                            </span>
+                            <span class="info-value">@Model.Client.Address</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-phone"></i>
+                                Phone Number
+                            </span>
+                            <span class="info-value">@Model.Client.User.PhoneNumber</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar -->
+            <div class="order-sidebar">
+                
+                <!-- Order Summary -->
+                <div class="summary-card">
+                    <h2 class="card-title">Order Summary</h2>
+                    <div class="summary-content">
+                        <div class="summary-row">
+                            <span class="summary-label">Number of Products</span>
+                            <span class="summary-value">@Model.OrderedItems.Sum(oi => oi.Quantity) items</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Subtotal</span>
+                            <span class="summary-value">@Model.OrderedItems.Sum(oi => oi.Product.Price * oi.Quantity).ToString("C2")</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Delivery Fee</span>
+                            <span class="summary-value">$5.00</span>
+                        </div>
+                        @if (Model.Coupon != null)
+                        {
+                            <div class="summary-row discount">
+                                <span class="summary-label">
+                                    <i class="fas fa-tag"></i>
+                                    Discount (@Model.Coupon.Code)
+                                </span>
+                                <span class="summary-value">-@Model.Coupon.DiscountValue.ToString("C2")</span>
+                            </div>
+                        }
+                        <div class="summary-divider"></div>
+                        <div class="summary-row total">
+                            <span class="summary-label">Total</span>
+                            <span class="summary-value">@Model.TotalPrice.ToString("C2")</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Update Action -->
+                @if (Model.Status != Orderaty.Models.OrderStatus.Delivered && Model.Status != Orderaty.Models.OrderStatus.Cancelled)
+                {
+                    <div class="order-actions-card">
+                        <h2 class="card-title">Update Status</h2>
+                        <form asp-action="UpdateStatus" asp-controller="Delivery" method="post" style="width: 100%;">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button type="submit" class="action-btn primary-action">
+                                <i class="fas fa-arrow-right"></i>
+                                @GetNextStatusAction(Model.Status)
+                            </button>
+                        </form>
+                        <a href="@Url.Action("MyDeliveries", "Delivery")" class="action-btn outline-action">
+                            <i class="fas fa-list"></i>
+                            Back to My Deliveries
+                        </a>
+                    </div>
+                }
+                else if (Model.Status == Orderaty.Models.OrderStatus.Delivered)
+                {
+                    <div class="order-actions-card">
+                        <div class="delivery-complete-badge">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>Delivery Completed!</h3>
+                            <p>Great job completing this delivery</p>
+                        </div>
+                        <a href="@Url.Action("MyDeliveries", "Delivery")" class="action-btn outline-action">
+                            <i class="fas fa-list"></i>
+                            Back to My Deliveries
+                        </a>
+                    </div>
+                }
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Auto-dismiss toast after 5 seconds
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+            setTimeout(function() {
+                closeToast();
+            }, 5000);
+            </text>
+        }
+
+        function closeToast() {
+            const toast = document.getElementById('successToast');
+            if (toast) {
+                toast.classList.add('fade-out');
+                setTimeout(function() {
+                    toast.remove();
+                }, 300);
+            }
+        }
+    </script>
+
+    @* <script>
+        // Auto-refresh page every 30 seconds if order is in progress
+        @if (Model.Status != Orderaty.Models.OrderStatus.Delivered && Model.Status != Orderaty.Models.OrderStatus.Cancelled)
+        {
+            <text>
+            setInterval(function() {
+                location.reload();
+            }, 30000); // 30 seconds
+            </text>
+        }
+    </script> *@
+}
+
+@functions {
+    string GetStatusIcon(Orderaty.Models.OrderStatus status)
     {
-        <button type="submit" class="btn btn-success px-4">
-            Advance to Next Status →
-        </button>
-    }
-    else
-    {
-        <button type="button" class="btn btn-secondary px-4" disabled>
-            ✅ Delivered
-        </button>
+        return status switch
+        {
+            Orderaty.Models.OrderStatus.PendingDelivery => "fa-clock",
+            Orderaty.Models.OrderStatus.Processing => "fa-box",
+            Orderaty.Models.OrderStatus.Shipped => "fa-truck",
+            Orderaty.Models.OrderStatus.Delivered => "fa-check-circle",
+            Orderaty.Models.OrderStatus.Cancelled => "fa-times-circle",
+            _ => "fa-circle"
+        };
     }
 
-    <a asp-action="Orders" class="btn btn-outline-dark ms-3">Back to Orders</a>
-</form>
+    string GetStatusText(Orderaty.Models.OrderStatus status)
+    {
+        return status switch
+        {
+            Orderaty.Models.OrderStatus.PendingDelivery => "Pending Delivery",
+            Orderaty.Models.OrderStatus.Processing => "Processing",
+            Orderaty.Models.OrderStatus.Shipped => "Out for Delivery",
+            Orderaty.Models.OrderStatus.Delivered => "Delivered",
+            Orderaty.Models.OrderStatus.Cancelled => "Cancelled",
+            _ => status.ToString()
+        };
+    }
+
+    string GetStepStatus(int step, Orderaty.Models.OrderStatus status)
+    {
+        int currentStep = status switch
+        {
+            Orderaty.Models.OrderStatus.PendingDelivery => 1,
+            Orderaty.Models.OrderStatus.Processing => 2,
+            Orderaty.Models.OrderStatus.Shipped => 3,
+            Orderaty.Models.OrderStatus.Delivered => 4,
+            _ => 0
+        };
+
+        if (step < currentStep) return "completed";
+        if (step == currentStep) return "active";
+        return "pending";
+    }
+
+    string GetLineStatus(int lineNumber, Orderaty.Models.OrderStatus status)
+    {
+        int currentStep = status switch
+        {
+            Orderaty.Models.OrderStatus.PendingDelivery => 1,
+            Orderaty.Models.OrderStatus.Processing => 2,
+            Orderaty.Models.OrderStatus.Shipped => 3,
+            Orderaty.Models.OrderStatus.Delivered => 4,
+            _ => 0
+        };
+
+        return lineNumber < currentStep ? "completed" : "pending";
+    }
+
+    string GetNextStatusAction(Orderaty.Models.OrderStatus status)
+    {
+        return status switch
+        {
+            Orderaty.Models.OrderStatus.PendingDelivery => "Start Processing",
+            Orderaty.Models.OrderStatus.Processing => "Mark as Shipped",
+            Orderaty.Models.OrderStatus.Shipped => "Mark as Delivered",
+            _ => "Update Status"
+        };
+    }
+}

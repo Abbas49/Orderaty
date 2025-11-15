@@ -1,0 +1,482 @@
+@{
+    ViewData["Title"] = "Seller Approval";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" />
+}
+
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="page-title-section">
+                <h1 class="page-title">
+                    <i class="fas fa-user-check"></i>
+                    Seller Approval
+                </h1>
+                <p class="page-subtitle">Review and approve seller registrations</p>
+            </div>
+            <div class="header-actions">
+                <a asp-action="Dashboard" class="action-btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filter & Stats Section -->
+<section class="filter-section">
+    <div class="container">
+        <div class="stats-grid-small">
+            <div class="stat-card-small card-pending">
+                <div class="stat-icon-small">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Pending Approval</p>
+                    <p class="stat-value-small">3</p>
+                </div>
+            </div>
+            <div class="stat-card-small card-approved">
+                <div class="stat-icon-small">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Approved</p>
+                    <p class="stat-value-small">12</p>
+                </div>
+            </div>
+            <div class="stat-card-small card-rejected">
+                <div class="stat-icon-small">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Rejected</p>
+                    <p class="stat-value-small">2</p>
+                </div>
+            </div>
+            <div class="stat-card-small card-total">
+                <div class="stat-icon-small">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div class="stat-content-small">
+                    <p class="stat-label-small">Total Sellers</p>
+                    <p class="stat-value-small">17</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sellers List -->
+<section class="sellers-section">
+    <div class="container">
+        <div class="table-card">
+            <div class="table-header">
+                <h2 class="table-title">
+                    <i class="fas fa-list"></i>
+                    Seller Applications
+                </h2>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-status="all">
+                        All
+                    </button>
+                    <button class="filter-tab" data-status="pending">
+                        Pending
+                    </button>
+                    <button class="filter-tab" data-status="approved">
+                        Approved
+                    </button>
+                    <button class="filter-tab" data-status="rejected">
+                        Rejected
+                    </button>
+                </div>
+            </div>
+            <div class="sellers-grid">
+                <!-- Seller Card 1 - Pending -->
+                <div class="seller-approval-card" data-status="pending">
+                    <div class="seller-card-header">
+                        <div class="seller-avatar">
+                            <img src="~/images/default-avatar.png" alt="Tech Haven">
+                        </div>
+                        <div class="seller-info">
+                            <h3 class="seller-name">Tech Haven</h3>
+                            <p class="seller-owner">by Ahmed Mohamed</p>
+                            <span class="seller-category">
+                                <i class="fas fa-tag"></i>
+                                Electronics
+                            </span>
+                        </div>
+                        <div class="seller-status">
+                            <span class="approval-badge badge-pending">
+                                <i class="fas fa-clock"></i>
+                                Pending
+                            </span>
+                        </div>
+                    </div>
+                    <div class="seller-card-body">
+                        <div class="seller-details-grid">
+                            <div class="seller-detail">
+                                <i class="fas fa-envelope"></i>
+                                <span>Email: ahmed@techhaven.com</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-phone"></i>
+                                <span>Phone: +20 100 123 4567</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Address: 123 Tech Street, Cairo</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-calendar"></i>
+                                <span>Applied: Nov 10, 2025</span>
+                            </div>
+                        </div>
+                        <div class="seller-description">
+                            <h4 class="description-title">
+                                <i class="fas fa-info-circle"></i>
+                                Description
+                            </h4>
+                            <p class="description-text">Premium electronics store specializing in laptops, smartphones, and gaming accessories. Authorized dealer for major brands.</p>
+                        </div>
+                    </div>
+                    <div class="seller-card-footer">
+                        <button class="btn-approve">
+                            <i class="fas fa-check"></i>
+                            Approve
+                        </button>
+                        <button class="btn-reject">
+                            <i class="fas fa-times"></i>
+                            Reject
+                        </button>
+                        <a href="#" class="btn-view-details">
+                            <i class="fas fa-eye"></i>
+                            View Details
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Seller Card 2 - Pending -->
+                <div class="seller-approval-card" data-status="pending">
+                    <div class="seller-card-header">
+                        <div class="seller-avatar">
+                            <img src="~/images/default-avatar.png" alt="Fashion Hub">
+                        </div>
+                        <div class="seller-info">
+                            <h3 class="seller-name">Fashion Hub</h3>
+                            <p class="seller-owner">by Sara Ali</p>
+                            <span class="seller-category">
+                                <i class="fas fa-tag"></i>
+                                Clothing
+                            </span>
+                        </div>
+                        <div class="seller-status">
+                            <span class="approval-badge badge-pending">
+                                <i class="fas fa-clock"></i>
+                                Pending
+                            </span>
+                        </div>
+                    </div>
+                    <div class="seller-card-body">
+                        <div class="seller-details-grid">
+                            <div class="seller-detail">
+                                <i class="fas fa-envelope"></i>
+                                <span>Email: sara@fashionhub.com</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-phone"></i>
+                                <span>Phone: +20 101 234 5678</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Address: 456 Fashion Ave, Alexandria</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-calendar"></i>
+                                <span>Applied: Nov 11, 2025</span>
+                            </div>
+                        </div>
+                        <div class="seller-description">
+                            <h4 class="description-title">
+                                <i class="fas fa-info-circle"></i>
+                                Description
+                            </h4>
+                            <p class="description-text">Trendy clothing and accessories for men and women. Offering latest fashion trends at competitive prices.</p>
+                        </div>
+                    </div>
+                    <div class="seller-card-footer">
+                        <button class="btn-approve">
+                            <i class="fas fa-check"></i>
+                            Approve
+                        </button>
+                        <button class="btn-reject">
+                            <i class="fas fa-times"></i>
+                            Reject
+                        </button>
+                        <a href="#" class="btn-view-details">
+                            <i class="fas fa-eye"></i>
+                            View Details
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Seller Card 3 - Pending -->
+                <div class="seller-approval-card" data-status="pending">
+                    <div class="seller-card-header">
+                        <div class="seller-avatar">
+                            <img src="~/images/default-avatar.png" alt="Book Corner">
+                        </div>
+                        <div class="seller-info">
+                            <h3 class="seller-name">Book Corner</h3>
+                            <p class="seller-owner">by Mahmoud Hassan</p>
+                            <span class="seller-category">
+                                <i class="fas fa-tag"></i>
+                                Books
+                            </span>
+                        </div>
+                        <div class="seller-status">
+                            <span class="approval-badge badge-pending">
+                                <i class="fas fa-clock"></i>
+                                Pending
+                            </span>
+                        </div>
+                    </div>
+                    <div class="seller-card-body">
+                        <div class="seller-details-grid">
+                            <div class="seller-detail">
+                                <i class="fas fa-envelope"></i>
+                                <span>Email: mahmoud@bookcorner.com</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-phone"></i>
+                                <span>Phone: +20 102 345 6789</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Address: 789 Library Road, Giza</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-calendar"></i>
+                                <span>Applied: Nov 12, 2025</span>
+                            </div>
+                        </div>
+                        <div class="seller-description">
+                            <h4 class="description-title">
+                                <i class="fas fa-info-circle"></i>
+                                Description
+                            </h4>
+                            <p class="description-text">Wide selection of books including novels, educational materials, and children's books. Rare book collections available.</p>
+                        </div>
+                    </div>
+                    <div class="seller-card-footer">
+                        <button class="btn-approve">
+                            <i class="fas fa-check"></i>
+                            Approve
+                        </button>
+                        <button class="btn-reject">
+                            <i class="fas fa-times"></i>
+                            Reject
+                        </button>
+                        <a href="#" class="btn-view-details">
+                            <i class="fas fa-eye"></i>
+                            View Details
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Seller Card 4 - Approved -->
+                <div class="seller-approval-card" data-status="approved">
+                    <div class="seller-card-header">
+                        <div class="seller-avatar">
+                            <img src="~/images/default-avatar.png" alt="Home Essentials">
+                        </div>
+                        <div class="seller-info">
+                            <h3 class="seller-name">Home Essentials</h3>
+                            <p class="seller-owner">by Fatma Ibrahim</p>
+                            <span class="seller-category">
+                                <i class="fas fa-tag"></i>
+                                Home & Garden
+                            </span>
+                        </div>
+                        <div class="seller-status">
+                            <span class="approval-badge badge-approved">
+                                <i class="fas fa-check-circle"></i>
+                                Approved
+                            </span>
+                        </div>
+                    </div>
+                    <div class="seller-card-body">
+                        <div class="seller-details-grid">
+                            <div class="seller-detail">
+                                <i class="fas fa-envelope"></i>
+                                <span>Email: fatma@homeessentials.com</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-phone"></i>
+                                <span>Phone: +20 103 456 7890</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Address: 321 Home Street, Mansoura</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-calendar"></i>
+                                <span>Applied: Nov 5, 2025</span>
+                            </div>
+                        </div>
+                        <div class="seller-description">
+                            <h4 class="description-title">
+                                <i class="fas fa-info-circle"></i>
+                                Description
+                            </h4>
+                            <p class="description-text">Quality home furnishings, kitchen appliances, and garden tools. Everything you need for a comfortable home.</p>
+                        </div>
+                    </div>
+                    <div class="seller-card-footer">
+                        <button class="btn-approve" disabled>
+                            <i class="fas fa-check"></i>
+                            Approved
+                        </button>
+                        <button class="btn-reject">
+                            <i class="fas fa-times"></i>
+                            Revoke
+                        </button>
+                        <a href="#" class="btn-view-details">
+                            <i class="fas fa-eye"></i>
+                            View Details
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Seller Card 5 - Rejected -->
+                <div class="seller-approval-card" data-status="rejected">
+                    <div class="seller-card-header">
+                        <div class="seller-avatar">
+                            <img src="~/images/default-avatar.png" alt="Cheap Deals">
+                        </div>
+                        <div class="seller-info">
+                            <h3 class="seller-name">Cheap Deals</h3>
+                            <p class="seller-owner">by Unknown Seller</p>
+                            <span class="seller-category">
+                                <i class="fas fa-tag"></i>
+                                General
+                            </span>
+                        </div>
+                        <div class="seller-status">
+                            <span class="approval-badge badge-rejected">
+                                <i class="fas fa-times-circle"></i>
+                                Rejected
+                            </span>
+                        </div>
+                    </div>
+                    <div class="seller-card-body">
+                        <div class="seller-details-grid">
+                            <div class="seller-detail">
+                                <i class="fas fa-envelope"></i>
+                                <span>Email: unknown@cheapdeals.com</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-phone"></i>
+                                <span>Phone: +20 100 000 0000</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Address: Not provided</span>
+                            </div>
+                            <div class="seller-detail">
+                                <i class="fas fa-calendar"></i>
+                                <span>Applied: Nov 8, 2025</span>
+                            </div>
+                        </div>
+                        <div class="seller-description">
+                            <h4 class="description-title">
+                                <i class="fas fa-info-circle"></i>
+                                Description
+                            </h4>
+                            <p class="description-text">Incomplete application. Missing required documentation.</p>
+                        </div>
+                    </div>
+                    <div class="seller-card-footer">
+                        <button class="btn-approve">
+                            <i class="fas fa-check"></i>
+                            Reconsider
+                        </button>
+                        <button class="btn-reject" disabled>
+                            <i class="fas fa-times"></i>
+                            Rejected
+                        </button>
+                        <a href="#" class="btn-view-details">
+                            <i class="fas fa-eye"></i>
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Filter tabs functionality
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        const sellerCards = document.querySelectorAll('.seller-approval-card');
+
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                filterTabs.forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tab
+                this.classList.add('active');
+
+                const status = this.getAttribute('data-status');
+
+                // Filter seller cards
+                sellerCards.forEach(card => {
+                    if (status === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        const cardStatus = card.getAttribute('data-status');
+                        if (cardStatus === status) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Approve/Reject button handlers
+        document.querySelectorAll('.btn-approve').forEach(btn => {
+            if (!btn.disabled) {
+                btn.addEventListener('click', function() {
+                    const card = this.closest('.seller-approval-card');
+                    const sellerName = card.querySelector('.seller-name').textContent;
+                    if (confirm(`Are you sure you want to approve "${sellerName}"?`)) {
+                        alert(`Seller "${sellerName}" approved successfully!`);
+                        // In real implementation, this would make an API call
+                    }
+                });
+            }
+        });
+
+        document.querySelectorAll('.btn-reject').forEach(btn => {
+            if (!btn.disabled) {
+                btn.addEventListener('click', function() {
+                    const card = this.closest('.seller-approval-card');
+                    const sellerName = card.querySelector('.seller-name').textContent;
+                    const action = this.textContent.trim() === 'Reject' ? 'reject' : 'revoke approval for';
+                    if (confirm(`Are you sure you want to ${action} "${sellerName}"?`)) {
+                        alert(`Seller "${sellerName}" ${action === 'reject' ? 'rejected' : 'revoked'} successfully!`);
+                        // In real implementation, this would make an API call
+                    }
+                });
+            }
+        });
+    </script>
+}

@@ -46,6 +46,10 @@ namespace Orderaty.Controllers
                 );
                 if (result.Succeeded)
                 {
+                    if (await userManager.IsInRoleAsync(userData, "Admin"))
+                    {
+                        return RedirectToAction("Dashboard", "Admin");
+                    }
                     if (await userManager.IsInRoleAsync(userData, "Seller"))
                     {
                         return RedirectToAction("Dashboard", "Seller");

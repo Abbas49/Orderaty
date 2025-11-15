@@ -41,6 +41,7 @@ namespace Orderaty.Controllers
             var seller = await db.Sellers
                 .Include(s => s.User)
                 .Include(s => s.Products)
+                    .ThenInclude(p => p.OrderedItems)
                 .Include(s => s.Orders)
                     .ThenInclude(o => o.OrderedItems)
                         .ThenInclude(oi => oi.Product)
@@ -74,7 +75,7 @@ namespace Orderaty.Controllers
 
             // Top products by orders
             ViewBag.TopProducts = seller.Products
-                .OrderByDescending(p => p.OrderedItems.Sum(oi => oi.Quantity))
+                .OrderByDescending(p => p.OrderedItems?.Sum(oi => oi.Quantity) ?? 0)
                 .Take(5)
                 .ToList();
 

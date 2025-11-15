@@ -186,6 +186,7 @@ namespace Orderaty.Controllers
             var pendingOrders = await db.Orders
                 .Include(o => o.Seller).ThenInclude(s => s.User)
                 .Include(o => o.Client).ThenInclude(c => c.User)
+                .Include(o => o.OrderedItems)
                 .Where(o => o.Status == OrderStatus.PendingDelivery)
                 .ToListAsync();
 
@@ -198,6 +199,9 @@ namespace Orderaty.Controllers
             var order = await db.Orders
                 .Include(o => o.Seller).ThenInclude(s => s.User)
                 .Include(o => o.Client).ThenInclude(c => c.User)
+                .Include(o => o.OrderedItems).ThenInclude(oi => oi.Product)
+                .Include(o => o.Coupon)
+                .Include(o => o.Delivery).ThenInclude(d => d.User)
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
@@ -215,21 +219,27 @@ namespace Orderaty.Controllers
             if (order == null)
                 return NotFound();
 
+            string successMessage = "";
+            
             switch (order.Status)
             {
                 case OrderStatus.PendingDelivery:
                     order.Status = OrderStatus.Processing;
                     order.DeliveryId = user.Id; // ✅ يسجل الدليفري الحالي
+                    successMessage = "Order is now being processed. You can proceed to ship it when ready.";
                     break;
                 case OrderStatus.Processing:
                     order.Status = OrderStatus.Shipped;
+                    successMessage = "Order has been marked as shipped and is now out for delivery!";
                     break;
                 case OrderStatus.Shipped:
                     order.Status = OrderStatus.Delivered;
+                    successMessage = "Congratulations! Order has been successfully delivered to the customer.";
                     break;
             }
 
             await db.SaveChangesAsync();
+            TempData["SuccessMessage"] = successMessage;
             return RedirectToAction("OrderDetails", new { id });
         }
 
@@ -245,8 +255,9 @@ namespace Orderaty.Controllers
             var myOrders = await db.Orders
                 .Include(o => o.Seller).ThenInclude(s => s.User)
                 .Include(o => o.Client).ThenInclude(c => c.User)
+                .Include(o => o.OrderedItems)
                 .Where(o =>
-                    o.DeliveryId == user.Id ||
+                    o.DeliveryId == user.Id &&
                     (o.Status == OrderStatus.Processing || o.Status == OrderStatus.Shipped))
                 .ToListAsync();
 
