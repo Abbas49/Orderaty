@@ -139,8 +139,8 @@
                                     <div class="item-quantity">Quantity: @item.Quantity</div>
                                 </div>
                                 <div class="item-price" data-quantity="@item.Quantity">
-                                    <div class="item-unit-price">@item.Product.Price.ToString("C2")</div>
-                                    <div class="item-total-price">@((item.Product.Price * item.Quantity).ToString("C2"))</div>
+                                    <div class="item-unit-price">@item.Product.Price.ToString("N2") EGP</div>
+                                    <div class="item-total-price">@((item.Product.Price * item.Quantity).ToString("N2") + " EGP")</div>
                                 </div>
                             </div>
                         }
@@ -158,11 +158,11 @@
                     <div class="summary-content">
                         <div class="summary-row">
                             <span class="summary-label">Subtotal</span>
-                            <span class="summary-value">@Model.OrderedItems.Sum(oi => oi.Product.Price * oi.Quantity).ToString("C2")</span>
+                            <span class="summary-value">@Model.OrderedItems.Sum(oi => oi.Product.Price * oi.Quantity).ToString("N2") EGP</span>
                         </div>
                         <div class="summary-row">
                             <span class="summary-label">Delivery Fee</span>
-                            <span class="summary-value">$0.00</span>
+                            <span class="summary-value">15.00 EGP</span>
                         </div>
                         @if (Model.Coupon != null)
                         {
@@ -177,7 +177,7 @@
                         <div class="summary-divider"></div>
                         <div class="summary-row total">
                             <span class="summary-label">Total</span>
-                            <span class="summary-value">@Model.TotalPrice.ToString("C2")</span>
+                            <span class="summary-value">@Model.TotalPrice.ToString("N2") EGP</span>
                         </div>
                     </div>
                 </div>
