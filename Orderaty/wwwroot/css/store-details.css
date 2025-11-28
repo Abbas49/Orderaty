@@ -426,7 +426,7 @@ hr.separator {
 /* --- Store Info Header Specific (UPDATED shadows/transitions) --- */
 .store-info-header-wrapper {
     position: relative;
-    margin-top: -4rem;
+    margin-top: 2rem;
     margin-bottom: 2rem;
 }
 
