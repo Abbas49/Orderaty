@@ -182,7 +182,7 @@
                                             </p>
                                         </div>
                                         <div class="order-meta">
-                                            <p class="order-total">@order.TotalPrice.ToString("C")</p>
+                                            <p class="order-total">@order.TotalPrice.ToString("N2") EGP</p>
                                             <span class="order-status status-@order.Status.ToString().ToLower()">
                                                 @order.Status.ToString().Replace("_", " ")
                                             </span>
@@ -239,7 +239,7 @@
                                     </div>
                                     <div class="product-details">
                                         <h4 class="product-name">@product.Name</h4>
-                                        <p class="product-price">@product.Price.ToString("C")</p>
+                                        <p class="product-price">@product.Price.ToString("N2") EGP</p>
                                         <div class="product-stats">
                                             <span class="product-stock @(product.Available_Amount < 10 ? "low-stock" : "")">
                                                 <i class="fas fa-warehouse"></i>
@@ -359,40 +359,6 @@
                         </div>
                         <div class="metric-progress">
                             <div class="progress-bar" style="width: @completionRate%"></div>
-                        </div>
-                    </div>
-
-                    <div class="metric-item">
-                        <div class="metric-header">
-                            <span class="metric-label">Customer Satisfaction</span>
-                            <span class="metric-percentage">
-                                @{
-                                    var satisfaction = ViewBag.AverageRating > 0 
-                                        ? (ViewBag.AverageRating / 5 * 100) 
-                                        : 0;
-                                }
-                                @satisfaction.ToString("0")%
-                            </span>
-                        </div>
-                        <div class="metric-progress">
-                            <div class="progress-bar" style="width: @satisfaction%"></div>
-                        </div>
-                    </div>
-
-                    <div class="metric-item">
-                        <div class="metric-header">
-                            <span class="metric-label">Stock Availability</span>
-                            <span class="metric-percentage">
-                                @{
-                                    var stockRate = ViewBag.TotalProducts > 0 
-                                        ? ((decimal)(ViewBag.TotalProducts - ViewBag.LowStockProducts) / ViewBag.TotalProducts * 100) 
-                                        : 0;
-                                }
-                                @stockRate.ToString("0")%
-                            </span>
-                        </div>
-                        <div class="metric-progress">
-                            <div class="progress-bar" style="width: @stockRate%"></div>
                         </div>
                     </div>
                 </div>

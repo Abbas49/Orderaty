@@ -116,41 +116,70 @@
                 </div>
             </div>
 
-            <!-- Stats Section -->
+            <!-- Reviews Section -->
             <div class="profile-stats">
-                <h3 class="stats-title">Store Statistics</h3>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-icon">
-                            <i class="fas fa-box"></i>
+                <div class="reviews-section-header">
+                    <h3 class="stats-title">Store Reviews (@(Model.SellerReviews?.Count ?? 0))</h3>
+                </div>
+                <div class="reviews-list-container">
+                    @if (Model.SellerReviews == null || !Model.SellerReviews.Any())
+                    {
+                        <div class="no-reviews-message">
+                            <i class="fas fa-star" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem; display: block;"></i>
+                            <p style="font-size: 1.125rem; margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 600;">No reviews yet</p>
+                            <p style="margin: 0; color: var(--text-secondary);">Your store hasn't received any reviews yet.</p>
                         </div>
-                        <div class="stat-value">@(Model.Products?.Count() ?? 0)</div>
-                        <div class="stat-label">Products</div>
-                    </div>
-
-                    <div class="stat-item">
-                        <div class="stat-icon">
-                            <i class="fas fa-shopping-cart"></i>
-                        </div>
-                        <div class="stat-value">@(Model.Orders?.Count() ?? 0)</div>
-                        <div class="stat-label">Orders</div>
-                    </div>
-
-                    <div class="stat-item">
-                        <div class="stat-icon">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="stat-value">@Model.Rating.ToString("0.0")</div>
-                        <div class="stat-label">Rating</div>
-                    </div>
-
-                    <div class="stat-item">
-                        <div class="stat-icon">
-                            <i class="fas fa-heart"></i>
-                        </div>
-                        <div class="stat-value">@(Model.SellerReviews?.Count() ?? 0)</div>
-                        <div class="stat-label">Reviews</div>
-                    </div>
+                    }
+                    else
+                    {
+                        @foreach (var review in Model.SellerReviews.OrderByDescending(r => r.Id))
+                        {
+                            var authorName = review.Client?.User?.FullName ?? "Anonymous";
+                            var initials = !string.IsNullOrEmpty(authorName) && authorName != "Anonymous" 
+                                ? string.Join("", authorName.Split(' ').Take(2).Select(n => n[0])).ToUpper()
+                                : "?";
+                            
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <div class="review-author-section">
+                                        <div class="review-author-avatar">
+                                            @initials
+                                        </div>
+                                        <div class="review-author-info">
+                                            <h4 class="review-author">@authorName</h4>
+                                            <span class="review-date">Verified Customer</span>
+                                        </div>
+                                    </div>
+                                    <div class="review-rating">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            @if (i <= review.Rating)
+                                            {
+                                                <svg class="icon star-icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                                </svg>
+                                            }
+                                            else
+                                            {
+                                                <svg class="icon" style="color: #d1d5db;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                                </svg>
+                                            }
+                                        }
+                                        <span class="review-rating-value">@review.Rating.ToString("F1")</span>
+                                    </div>
+                                </div>
+                                @if (!string.IsNullOrEmpty(review.Comment))
+                                {
+                                    <p class="review-comment">@review.Comment</p>
+                                }
+                                else
+                                {
+                                    <p class="review-comment" style="font-style: italic; color: var(--text-secondary);">No comment provided.</p>
+                                }
+                            </div>
+                        }
+                    }
                 </div>
             </div>
         </div>

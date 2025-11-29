@@ -42,10 +42,6 @@
                             <i class="fas fa-users"></i>
                             <span>Users</span>
                         </a>
-                        <a href="/Admin/SellerApproval" class="navbar-item">
-                            <i class="fas fa-user-check"></i>
-                            <span>Sellers</span>
-                        </a>
                         <a href="/Admin/Coupons" class="navbar-item">
                             <i class="fas fa-ticket-alt"></i>
                             <span>Coupons</span>
@@ -61,8 +57,8 @@
                     else if (User.Identity.IsAuthenticated && User.IsInRole("Delivery"))
                     {
                         <a href="/Delivery/Dashboard" class="navbar-item">
-                            <i class="fas fa-home"></i>
-                            <span>Home</span>
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
                         </a>
 						<a href="@Url.Action("Orders", "Delivery")" class="navbar-item">
 							<i class="fas fa-receipt"></i>
@@ -119,9 +115,9 @@
                         }
                         else if (User.IsInRole("Delivery"))
                         {
-                            <a href="/Delivery/Home" class="navbar-item navbar-profile">
-                                <i class="fas fa-shipping-fast"></i>
-                                <span>Deliveries</span>
+                            <a href="/Delivery/Profile" class="navbar-item navbar-profile">
+                                <i class="fas fa-user-circle"></i>
+                                <span>Profile</span>
                             </a>
                         }
                         <a asp-controller="User" asp-action="Logout" class="navbar-item navbar-logout">

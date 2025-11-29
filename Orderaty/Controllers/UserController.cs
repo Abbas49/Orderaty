@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Orderaty.Data;
@@ -117,12 +118,14 @@ namespace Orderaty.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         public IActionResult AddSeller()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddSeller(RegisterSeller _user)
         {
             if (ModelState.IsValid)
@@ -154,7 +157,8 @@ namespace Orderaty.Controllers
 
                     await db.Sellers.AddAsync(seller);
                     await db.SaveChangesAsync();
-                    return RedirectToAction("Login");
+                    TempData["SuccessMessage"] = $"Seller '{user.FullName}' has been successfully added.";
+                    return RedirectToAction("Users", "Admin");
                 }
                 else
                 {
@@ -166,12 +170,14 @@ namespace Orderaty.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         public IActionResult AddDelivery()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddDelivery(RegisterDelivery _user)
         {
             if (ModelState.IsValid)
@@ -198,7 +204,8 @@ namespace Orderaty.Controllers
 
                     await db.Deliveries.AddAsync(delivery);
                     await db.SaveChangesAsync();
-                    return RedirectToAction("Login");
+                    TempData["SuccessMessage"] = $"Delivery personnel '{user.FullName}' has been successfully added.";
+                    return RedirectToAction("Users", "Admin");
                 }
                 else
                 {

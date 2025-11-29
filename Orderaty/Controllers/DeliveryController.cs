@@ -62,12 +62,12 @@ namespace Orderaty.Controllers
             ViewBag.TotalDeliveriesMonth = allDeliveries.Count(o => o.CreatedAt >= startOfMonth);
             ViewBag.TotalDeliveriesAll = allDeliveries.Count;
 
-            // Earnings (assuming delivery fee is 10% of order total)
-            decimal deliveryFeePercentage = 0.10m;
-            ViewBag.EarningsToday = allDeliveries.Where(o => o.CreatedAt >= startOfToday).Sum(o => o.TotalPrice * deliveryFeePercentage);
-            ViewBag.EarningsWeek = allDeliveries.Where(o => o.CreatedAt >= startOfWeek).Sum(o => o.TotalPrice * deliveryFeePercentage);
-            ViewBag.EarningsMonth = allDeliveries.Where(o => o.CreatedAt >= startOfMonth).Sum(o => o.TotalPrice * deliveryFeePercentage);
-            ViewBag.EarningsAll = allDeliveries.Sum(o => o.TotalPrice * deliveryFeePercentage);
+            // Earnings (flat $15 per delivery)
+            const decimal deliveryFeePerOrder = 15.00m;
+            ViewBag.EarningsToday = allDeliveries.Where(o => o.CreatedAt >= startOfToday).Count() * deliveryFeePerOrder;
+            ViewBag.EarningsWeek = allDeliveries.Where(o => o.CreatedAt >= startOfWeek).Count() * deliveryFeePerOrder;
+            ViewBag.EarningsMonth = allDeliveries.Where(o => o.CreatedAt >= startOfMonth).Count() * deliveryFeePerOrder;
+            ViewBag.EarningsAll = allDeliveries.Count * deliveryFeePerOrder;
 
             // Active deliveries (Processing + Shipped)
             ViewBag.ActiveDeliveries = delivery.Orders.Count(o => o.Status == OrderStatus.Processing || o.Status == OrderStatus.Shipped);

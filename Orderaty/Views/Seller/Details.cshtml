@@ -1,26 +1,113 @@
 ﻿@model Orderaty.Models.Seller
+@using Orderaty.ViewModels
 @{
     // NULL CHECK: Use ?.FullName and provide a fallback title
     ViewData["Title"] = $"Store Profile - {Model.User?.FullName ?? "Details"}";
+    var hasReviewed = ViewBag.HasReviewed as bool? ?? false;
+    var existingReview = ViewBag.ExistingReview as Orderaty.Models.SellerReview;
 }
 
 <link rel="stylesheet" href="~/css/store-details.css">
 
+<style>
+    /* Toast Notification Styles */
+    .toast-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 1.25rem 1.5rem;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        z-index: 9999;
+        min-width: 350px;
+        max-width: 450px;
+        animation: slideInRight 0.4s ease-out;
+    }
+
+    .toast-notification i {
+        font-size: 1.75rem;
+        flex-shrink: 0;
+    }
+
+    .toast-notification .message-content {
+        flex: 1;
+    }
+
+    .toast-notification .message-title {
+        font-weight: 700;
+        font-size: 1.05rem;
+        margin-bottom: 0.35rem;
+    }
+
+    .toast-notification .message-text {
+        font-size: 0.9rem;
+        opacity: 0.95;
+        line-height: 1.4;
+    }
+
+    .toast-notification .close-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+        flex-shrink: 0;
+    }
+
+    .toast-notification .close-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .toast-notification.fade-out {
+        animation: fadeOut 0.3s ease-out forwards;
+    }
+
+    @@keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .toast-notification {
+            top: 10px;
+            right: 10px;
+            left: 10px;
+            min-width: auto;
+            max-width: none;
+        }
+    }
+</style>
+
 <div id="store-profile-page-container">
     <div class="page-wrapper pb-20 md:pb-8">
-
-        <div class="cover-image-container">
-            @*<img id="store-cover-image" src="" alt="@(Model.User?.FullName ?? "Store") cover image" class="cover-image image-with-fallback">*@
-            <div class="cover-gradient"></div>
-            <div class="cover-actions">
-                <button class="action-button" aria-label="Add to favorites">
-                    <svg class="icon icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.04 3 5.5l7 7Z" /></svg>
-                </button>
-                <button class="action-button" aria-label="Share">
-                    <svg class="icon icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" x2="15.42" y1="13.51" y2="17.49" /><line x1="15.41" x2="8.59" y1="6.51" y2="10.49" /></svg>
-                </button>
-            </div>
-        </div>
 
         <div class="container">
             <div class="store-info-header-wrapper">
@@ -86,7 +173,7 @@
                                         <h3 class="card-title mb-2">@product.Name</h3>
                                         <div class="product-info-flex">
                                             <div>
-                                                <p class="product-price">@product.Price.ToString("C")</p>
+                                                <p class="product-price">@product.Price.ToString("N2") EGP</p>
                                             </div>
                                             <button class="add-to-cart-button" aria-label="Add @product.Name to cart">
                                                 <svg class="icon icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="5" y2="19" /><line x1="5" x2="19" y1="12" y2="12" /></svg>
@@ -100,36 +187,108 @@
                 </div>
 
                 <div id="content-reviews" class="tab-content hidden">
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Client"))
+                    {
+                        <div class="review-form-card card">
+                            <div class="card-content">
+                                <h3 class="review-form-title">@(hasReviewed ? "Update Your Review" : "Write a Review")</h3>
+                                <form asp-action="CreateReview" asp-controller="Seller" method="post" id="review-form">
+                                    <input type="hidden" name="SellerId" value="@Model.Id" />
+                                    
+                                    <div class="rating-input-container">
+                                        <label class="rating-label">Rating <span style="color: var(--error-color);">*</span></label>
+                                        <div class="rating-input">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <button type="button" class="star-button" data-rating="@i" aria-label="Rate @i stars">
+                                                    <svg class="icon star-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                                    </svg>
+                                                </button>
+                                            }
+                                        </div>
+                                        <input type="hidden" name="Rating" id="rating-input" value="@(existingReview?.Rating ?? 0)" required />
+                                        <span id="rating-error" class="rating-error" style="display: none;">Please select a rating</span>
+                                    </div>
+
+                                    <div class="comment-input-container">
+                                        <label for="Comment" class="comment-label">Comment <span style="color: var(--text-secondary); font-weight: 400;">(Optional)</span></label>
+                                        <textarea name="Comment" id="Comment" class="comment-textarea" rows="4" placeholder="Share your experience with this store... What did you like? What could be improved?" maxlength="500">@(existingReview?.Comment ?? "")</textarea>
+                                        <small class="comment-hint">Maximum 500 characters</small>
+                                    </div>
+
+                                    <button type="submit" class="review-submit-button">
+                                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                        </svg>
+                                        @(hasReviewed ? "Update Review" : "Submit Review")
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="reviews-section-header">
+                        <h2 class="reviews-section-title">Customer Reviews (@(Model.SellerReviews?.Count ?? 0))</h2>
+                    </div>
+
                     <div id="reviews-list-container" class="reviews-list">
                         @if (Model.SellerReviews == null || !Model.SellerReviews.Any())
                         {
-                            <p class="text-muted-foreground text-center">No reviews yet.</p>
+                            <div class="no-reviews-message">
+                                <p style="font-size: 1.125rem; margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 600;">No reviews yet</p>
+                                <p style="margin: 0;">@(User.Identity.IsAuthenticated && User.IsInRole("Client") ? "Be the first to share your experience with this store!" : "This store hasn't received any reviews yet.")</p>
+                            </div>
                         }
                         else
                         {
-                            @foreach (var review in Model.SellerReviews)
+                            @foreach (var review in Model.SellerReviews.OrderByDescending(r => r.Id))
                             {
-                                <div class="card review-card">
-                                    <div class="card-content p-6">
+                                var authorName = review.Client?.User?.FullName ?? "Anonymous";
+                                var initials = !string.IsNullOrEmpty(authorName) && authorName != "Anonymous" 
+                                    ? string.Join("", authorName.Split(' ').Take(2).Select(n => n[0])).ToUpper()
+                                    : "?";
+                                
+                                <div class="review-card card">
+                                    <div class="card-content">
                                         <div class="review-header">
-                                            <div>
-                                                <h4 class="review-author">@(review.Client?.User?.FullName ?? "Anonymous")</h4>
+                                            <div class="review-author-section">
+                                                <div class="review-author-avatar">
+                                                    @initials
+                                                </div>
+                                                <div class="review-author-info">
+                                                    <h4 class="review-author">@authorName</h4>
+                                                    <span class="review-date">Verified Customer</span>
+                                                </div>
                                             </div>
                                             <div class="review-rating">
                                                 @for (int i = 1; i <= 5; i++)
                                                 {
                                                     @if (i <= review.Rating)
                                                     {
-                                                        <svg class="icon icon-sm star-icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                                                        <svg class="icon star-icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                                        </svg>
                                                     }
                                                     else
                                                     {
-                                                        <svg class="icon icon-sm" style="color: var(--muted-foreground);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                                                        <svg class="icon" style="color: #d1d5db;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                                        </svg>
                                                     }
                                                 }
+                                                <span class="review-rating-value">@review.Rating.ToString("F1")</span>
                                             </div>
                                         </div>
-                                        <p class="review-comment">@review.Comment</p>
+                                        @if (!string.IsNullOrEmpty(review.Comment))
+                                        {
+                                            <p class="review-comment">@review.Comment</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="review-comment" style="font-style: italic; color: var(--text-secondary);">No comment provided.</p>
+                                        }
                                     </div>
                                 </div>
                             }
@@ -142,6 +301,7 @@
 </div>
 
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
     <script>
         // Function to set up tab switching logic
         function setupTabs() {
@@ -181,5 +341,163 @@
 
         // Initialize the tab logic
         setupTabs();
+
+        // Rating star selection
+        const starButtons = document.querySelectorAll('.star-button');
+        const ratingInput = document.getElementById('rating-input');
+        const ratingError = document.getElementById('rating-error');
+        const existingRating = @(existingReview?.Rating ?? 0);
+
+        // Initialize all stars as empty first
+        function initializeStars() {
+            starButtons.forEach((button) => {
+                const starIcon = button.querySelector('svg');
+                starIcon.setAttribute('fill', 'none');
+                starIcon.style.fill = 'none';
+                starIcon.style.color = '#d1d5db';
+                starIcon.classList.remove('filled');
+                starIcon.classList.add('empty');
+            });
+        }
+
+        // Initialize stars on page load
+        initializeStars();
+
+        // Update stars based on rating
+        function updateStars(rating) {
+            starButtons.forEach((button, index) => {
+                const starIcon = button.querySelector('svg');
+                if (index < rating) {
+                    // Fill the star
+                    starIcon.setAttribute('fill', 'currentColor');
+                    starIcon.style.fill = 'currentColor';
+                    starIcon.style.color = '#fbbf24';
+                    starIcon.classList.remove('empty');
+                    starIcon.classList.add('filled');
+                } else {
+                    // Empty star
+                    starIcon.setAttribute('fill', 'none');
+                    starIcon.style.fill = 'none';
+                    starIcon.style.color = '#d1d5db';
+                    starIcon.classList.remove('filled');
+                    starIcon.classList.add('empty');
+                }
+            });
+        }
+
+        // Initialize stars based on existing rating if available
+        if (existingRating > 0) {
+            ratingInput.value = existingRating;
+            updateStars(existingRating);
+        } else {
+            ratingInput.value = 0;
+        }
+
+        starButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                const rating = index + 1;
+                ratingInput.value = rating;
+                updateStars(rating);
+                if (ratingError) {
+                    ratingError.style.display = 'none';
+                }
+            });
+
+            button.addEventListener('mouseenter', () => {
+                const rating = index + 1;
+                updateStars(rating);
+            });
+        });
+
+        // Reset stars on mouse leave to show current selection
+        const ratingContainer = document.querySelector('.rating-input');
+        if (ratingContainer) {
+            ratingContainer.addEventListener('mouseleave', () => {
+                const currentRating = parseInt(ratingInput.value) || 0;
+                updateStars(currentRating);
+            });
+        }
+
+        // Form validation
+        const reviewForm = document.getElementById('review-form');
+        if (reviewForm) {
+            reviewForm.addEventListener('submit', function(e) {
+                const rating = parseInt(ratingInput.value) || 0;
+                if (rating < 1 || rating > 5) {
+                    e.preventDefault();
+                    if (ratingError) {
+                        ratingError.style.display = 'block';
+                    }
+                    return false;
+                }
+            });
+        }
+
+        // Toast notification functions
+        function showToast(message, type = 'success') {
+            // Remove any existing toast
+            const existingToast = document.getElementById('reviewToast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.id = 'reviewToast';
+            
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            const bgColor = type === 'success' 
+                ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' 
+                : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+            
+            toast.style.background = bgColor;
+            toast.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <div class="message-content">
+                    <div class="message-title">${type === 'success' ? 'Success!' : 'Error!'}</div>
+                    <div class="message-text">${message}</div>
+                </div>
+                <button class="close-btn" onclick="closeReviewToast()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            // Add toast to body
+            document.body.appendChild(toast);
+
+            // Auto-dismiss after 5 seconds
+            setTimeout(function() {
+                closeReviewToast();
+            }, 5000);
+        }
+
+        function closeReviewToast() {
+            const toast = document.getElementById('reviewToast');
+            if (toast) {
+                toast.classList.add('fade-out');
+                setTimeout(function() {
+                    toast.remove();
+                }, 300);
+            }
+        }
+
+        // Show success/error messages from TempData
+        @if (TempData["Success"] != null)
+        {
+            <text>
+            setTimeout(function() {
+                showToast('@Html.Raw(TempData["Success"])', 'success');
+            }, 300);
+            </text>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <text>
+            setTimeout(function() {
+                showToast('@Html.Raw(TempData["Error"])', 'error');
+            }, 300);
+            </text>
+        }
     </script>
 }

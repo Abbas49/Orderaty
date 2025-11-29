@@ -21,6 +21,7 @@ namespace Orderaty.Controllers
                    .FirstOrDefault()?.Id;
                var orders = db.Orders.Include(o => o.OrderedItems).ThenInclude(oi => oi.Product)
                    .Include(o => o.Seller).ThenInclude(s => s.User)
+                   .Include(o => o.Coupon)
                    .Where(c => c.ClientId == clientId)
                    .OrderByDescending(o => o.CreatedAt)
                    .ToList();
@@ -47,12 +48,13 @@ namespace Orderaty.Controllers
             {
                 var clientId = db.Users.FirstOrDefault(c => c.UserName == User.Identity.Name)?.Id;
                 var cartItems = db.CartItems.Include(t => t.Product).Where(ci => ci.ClientId == clientId).ToList();
+                const decimal deliveryFee = 15.00m;
                 var order = new Order
                 {
                     ClientId = clientId,
                     CreatedAt = DateTime.Now,
                     Status = OrderStatus.PendingDelivery,
-                    TotalPrice = cartItems.Sum(ci => ci.Product.Price * ci.Quantity),
+                    TotalPrice = cartItems.Sum(ci => ci.Product.Price * ci.Quantity) + deliveryFee,
                     SellerId = cartItems.FirstOrDefault()?.Product.SellerId,
                 };
                 db.Orders.Add(order);
@@ -60,6 +62,17 @@ namespace Orderaty.Controllers
                 List<OrderedItem> orderItems = new List<OrderedItem>();
                 foreach (var item in cartItems)
                 {
+                    // Decrease product stock
+                    var product = db.Products.Find(item.ProductId);
+                    if (product != null)
+                    {
+                        product.Available_Amount -= item.Quantity;
+                        if (product.Available_Amount < 0)
+                        {
+                            product.Available_Amount = 0; // Prevent negative stock
+                        }
+                    }
+
                     orderItems.Add(new OrderedItem
                     {
                         OrderId = order.Id,

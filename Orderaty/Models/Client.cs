@@ -13,7 +13,7 @@ namespace Orderaty.Models
         public List<Order> Orders { get; set; }
         public List<CartItem> CartItems { get; set; }
         public List<SellerReview> SellerReviews { get; set; }
-        //public List<ProductReview> ProductReviews { get; set; }  //---> Error adding product
+        public List<ProductReview> ProductReviews { get; set; }
         public List<Favourite> Favourites { get; set; }
     }
 }
