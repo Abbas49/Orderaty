@@ -87,8 +87,12 @@ namespace Orderaty.Controllers
         public async Task<IActionResult> Profile()
         {
             var user = await userManager.GetUserAsync(User);
-            var seller = await db.Sellers.Include(s => s.User)
-                                         .FirstOrDefaultAsync(s => s.Id == user.Id);
+            var seller = await db.Sellers
+                .Include(s => s.User)
+                .Include(s => s.SellerReviews)
+                    .ThenInclude(sr => sr.Client)
+                        .ThenInclude(c => c.User)
+                .FirstOrDefaultAsync(s => s.Id == user.Id);
 
             if (seller == null)
                 return NotFound();
