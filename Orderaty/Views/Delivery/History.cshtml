@@ -43,7 +43,7 @@
                 <div class="stats-item">
                     <i class="fas fa-dollar-sign"></i>
                     <div class="stats-content">
-                        <span class="stats-number">@Model.Sum(o => o.TotalPrice * 0.10m).ToString("N2") EGP</span>
+                        <span class="stats-number">@(Model.Count * 15.00m).ToString("N2") EGP</span>
                         <span class="stats-label">Total Earnings</span>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                                     </div>
                                     <div class="items-info-inline" style="background: var(--success-bg); border-color: var(--success-color);">
                                         <i class="fas fa-dollar-sign" style="color: var(--success-color);"></i>
-                                        <span><strong>@((order.TotalPrice * 0.10m).ToString("N2") + " EGP")</strong> earned</span>
+                                        <span><strong>15.00 EGP</strong> earned</span>
                                     </div>
                                 </div>
                                 <a href="@Url.Action("OrderDetails", "Delivery", new { id = order.Id })" class="view-details-btn-inline">
