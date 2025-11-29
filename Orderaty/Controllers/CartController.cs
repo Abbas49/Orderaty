@@ -35,7 +35,7 @@ namespace Orderaty.Controllers
             {
                 var item = db.CartItems
                     .FirstOrDefault(c => c.ClientId == clientId && c.ProductId == id);
-                if(item != null)
+                if (item != null)
                 {
                     item.Quantity += quantity;
                     db.SaveChanges();
@@ -50,7 +50,7 @@ namespace Orderaty.Controllers
                     };
                     db.Add(item);
                     db.SaveChanges();
-                }  
+                }
             }
             var cnt = db.CartItems
                 .Where(c => c.ClientId == clientId)
@@ -92,6 +92,51 @@ namespace Orderaty.Controllers
             db.RemoveRange(items);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult GetCartCount()
+        {
+            var clientId = db.Users.FirstOrDefault(c => c.UserName == User.Identity.Name)?.Id;
+            var cnt = db.CartItems
+                .Where(c => c.ClientId == clientId)
+                .Count();
+            return Json(new { cartCount = cnt });
+        }
+
+        [HttpPost]
+        public IActionResult ValidateCoupon(string code, decimal total)
+        {
+            var coupon = db.Coupons.FirstOrDefault(x => x.Code == code);
+
+            if (coupon == null)
+            {
+                return Json(new { success = false, message = "Invalid coupon code." });
+            }
+
+            if (coupon.ExpireDate < DateTime.Now)
+            {
+                return Json(new { success = false, message = "This coupon has expired." });
+            }
+
+            if (!coupon.IsActive)
+            {
+                return Json(new { success = false, message = "This coupon is not valid now." });
+            }
+
+            if (coupon.MinimumTotal > total)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = $"Minimum order for this coupon is {coupon.MinimumTotal} EGP.",
+                });
+            }
+            return Json(new
+            {
+                success = true,
+                discount = coupon.DiscountValue,
+            });
         }
     }
 }

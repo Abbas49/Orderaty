@@ -42,19 +42,25 @@ namespace Orderaty.Controllers
             return View(order);
         }
 
-        public IActionResult Checkout()
+        public IActionResult Checkout(string appliedCoupon)
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 var clientId = db.Users.FirstOrDefault(c => c.UserName == User.Identity.Name)?.Id;
                 var cartItems = db.CartItems.Include(t => t.Product).Where(ci => ci.ClientId == clientId).ToList();
+                var totalPrice = cartItems.Sum(ci => ci.Product.Price * ci.Quantity);
+                var coupon = db.Coupons.FirstOrDefault(c => c.Code == appliedCoupon);
+                if(coupon != null && coupon.ExpireDate > DateTime.Now && coupon.MinimumTotal <= totalPrice)
+                {
+                    totalPrice -= coupon.DiscountValue;
+                }
                 const decimal deliveryFee = 15.00m;
                 var order = new Order
                 {
                     ClientId = clientId,
                     CreatedAt = DateTime.Now,
                     Status = OrderStatus.PendingDelivery,
-                    TotalPrice = cartItems.Sum(ci => ci.Product.Price * ci.Quantity) + deliveryFee,
+                    TotalPrice = totalPrice,
                     SellerId = cartItems.FirstOrDefault()?.Product.SellerId,
                 };
                 db.Orders.Add(order);
