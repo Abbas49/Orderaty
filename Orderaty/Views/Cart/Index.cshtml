@@ -110,31 +110,6 @@
                         </div>
                     </div>
 
-                    <!-- Delivery Options -->
-                    <div class="delivery-section">
-                        <label class="delivery-label">Delivery Option</label>
-                        <div class="delivery-options">
-                            <div class="delivery-option active" onclick="selectDelivery(this, 2.99)">
-                                <div class="delivery-option-content">
-                                    <div class="delivery-radio"></div>
-                                    <div class="delivery-info">
-                                        <span class="delivery-type">Standard (20-30 min)</span>
-                                    </div>
-                                </div>
-                                <span class="delivery-price">15.00 EGP</span>
-                            </div>
-                            <div class="delivery-option" onclick="selectDelivery(this, 5.99)">
-                                <div class="delivery-option-content">
-                                    <div class="delivery-radio"></div>
-                                    <div class="delivery-info">
-                                        <span class="delivery-type">Express (10-15 min)</span>
-                                    </div>
-                                </div>
-                                <span class="delivery-price">30.00 EGP</span>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Summary Details -->
                     <div class="summary-details">
                         <div class="summary-row">
@@ -194,23 +169,6 @@
                 }
             })
             // Update totals (you may want to implement AJAX call to update server)
-            updateCartTotals();
-        }
-
-        // Select delivery option
-        function selectDelivery(element, price) {
-            // Remove active class from all options
-            document.querySelectorAll('.delivery-option').forEach(option => {
-                option.classList.remove('active');
-            });
-            
-            // Add active class to selected option
-            element.classList.add('active');
-            
-            // Update delivery fee
-            document.getElementById('delivery-fee').textContent = `${price.toFixed(2)} EGP`;
-            
-            // Update total
             updateCartTotals();
         }
 

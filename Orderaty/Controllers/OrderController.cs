@@ -21,6 +21,7 @@ namespace Orderaty.Controllers
                    .FirstOrDefault()?.Id;
                var orders = db.Orders.Include(o => o.OrderedItems).ThenInclude(oi => oi.Product)
                    .Include(o => o.Seller).ThenInclude(s => s.User)
+                   .Include(o => o.Coupon)
                    .Where(c => c.ClientId == clientId)
                    .OrderByDescending(o => o.CreatedAt)
                    .ToList();

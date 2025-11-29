@@ -58,7 +58,13 @@
                                     </span>
                                 </div>
                                 <div class="order-meta">
-                                    <span class="order-price">@order.TotalPrice.ToString("N2") EGP</span>
+                                    @{
+                                        var activeSubtotal = order.OrderedItems.Sum(oi => oi.Product.Price * oi.Quantity);
+                                        const decimal activeDeliveryFee = 15.00m;
+                                        var activeCouponDiscount = order.Coupon?.DiscountValue ?? 0m;
+                                        var activeCalculatedTotal = activeSubtotal + activeDeliveryFee - activeCouponDiscount;
+                                    }
+                                    <span class="order-price">@activeCalculatedTotal.ToString("N2") EGP</span>
                                     <span class="order-date">@order.CreatedAt.ToString("MMM d, yyyy")</span>
                                 </div>
                             </div>
@@ -125,7 +131,13 @@
                                     </span>
                                 </div>
                                 <div class="order-meta">
-                                    <span class="order-price">@order.TotalPrice.ToString("N2") EGP</span>
+                                    @{
+                                        var historySubtotal = order.OrderedItems.Sum(oi => oi.Product.Price * oi.Quantity);
+                                        const decimal historyDeliveryFee = 15.00m;
+                                        var historyCouponDiscount = order.Coupon?.DiscountValue ?? 0m;
+                                        var historyCalculatedTotal = historySubtotal + historyDeliveryFee - historyCouponDiscount;
+                                    }
+                                    <span class="order-price">@historyCalculatedTotal.ToString("N2") EGP</span>
                                     <span class="order-date">@order.CreatedAt.ToString("MMM d, yyyy")</span>
                                 </div>
                             </div>
