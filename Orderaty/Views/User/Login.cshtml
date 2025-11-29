@@ -39,6 +39,11 @@
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
 
+                <!-- Forgot password link -->
+                <div class="form-group forgot-password">
+                    <a href="/User/ForgotPassword" class="forgot-link">Forgot your password?</a>
+                </div>
+
                 <button type="submit" class="login-btn">
                     <i class="fas fa-sign-in-alt"></i>
                     Sign In
@@ -58,4 +63,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-

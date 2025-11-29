@@ -3,10 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.WebUtilities;
 using Orderaty.Data;
 using Orderaty.Models;
 using Orderaty.ViewModels;
+using System.Linq;
 using System.Security.Claims;
+using System.Text;
 
 namespace Orderaty.Controllers
 {
@@ -79,7 +82,7 @@ namespace Orderaty.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterUser _user)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
                 var user = new User
                 {
@@ -99,7 +102,7 @@ namespace Orderaty.Controllers
                         Address = _user.Address
                     };
 
-                    
+
                     if (_user.Image != null)
                         user.Image = await SaveImage(_user.Image);
 
@@ -110,7 +113,7 @@ namespace Orderaty.Controllers
                 }
                 else
                 {
-                    foreach(var error in result.Errors)
+                    foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
@@ -224,10 +227,6 @@ namespace Orderaty.Controllers
             return RedirectToAction("Login");
         }
 
-
-
-
-
         private async Task<string> SaveImage(IFormFile image)
         {
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}";
@@ -259,15 +258,17 @@ namespace Orderaty.Controllers
             var user = await userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                // ما نكشفش إذا الإيميل موجود أو لا
+                TempData["InboxUrl"] = GetMailInboxUrl(model.Email);
                 return RedirectToAction("ForgotPasswordConfirmation");
             }
 
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
-            var resetLink = Url.Action("ResetPassword", "User", new { email = model.Email, token = token }, Request.Scheme);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var resetLink = Url.Action("ResetPassword", "User", new { email = model.Email, token = encodedToken }, Request.Scheme);
 
-            // إرسال الإيميل
             await _emailSender.SendEmailAsync(model.Email, "Reset Password", $"Click here to reset your password: <a href='{resetLink}'>Reset Password</a>");
+
+            TempData["InboxUrl"] = GetMailInboxUrl(model.Email);
 
             return RedirectToAction("ForgotPasswordConfirmation");
         }
@@ -296,7 +297,10 @@ namespace Orderaty.Controllers
             var user = await userManager.FindByEmailAsync(model.Email);
             if (user == null) return RedirectToAction("ResetPasswordConfirmation");
 
-            var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
+            var decodedBytes = WebEncoders.Base64UrlDecode(model.Token);
+            var decodedToken = Encoding.UTF8.GetString(decodedBytes);
+
+            var result = await userManager.ResetPasswordAsync(user, decodedToken, model.Password);
             if (result.Succeeded)
                 return RedirectToAction("ResetPasswordConfirmation");
 
@@ -312,5 +316,23 @@ namespace Orderaty.Controllers
             return View();
         }
 
+        private string GetMailInboxUrl(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email) || !email.Contains("@"))
+                return "mailto:";
+
+            var domain = email.Split('@').Last().ToLowerInvariant();
+
+            return domain switch
+            {
+                "gmail.com" or "googlemail.com" => "https://mail.google.com/mail/u/0/#inbox",
+                "yahoo.com" or "yahoo.eg" => "https://mail.yahoo.com",
+                "outlook.com" or "hotmail.com" or "live.com" or "msn.com" => "https://outlook.live.com/mail/inbox",
+                "icloud.com" or "me.com" or "mac.com" => "https://www.icloud.com/mail",
+                "aol.com" => "https://mail.aol.com/webmail",
+                "yandex.com" or "yandex.ru" => "https://mail.yandex.com",
+                _ => $"mailto:{email}"
+            };
+        }
     }
 }

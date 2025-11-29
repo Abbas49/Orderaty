@@ -28,21 +28,21 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.login-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 40px var(--shadow-lg);
-}
+    .login-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px var(--shadow-lg);
+    }
 
 .login-header {
     text-align: center;
     margin-bottom: 32px;
 }
 
-.login-header i {
-    font-size: 48px;
-    color: var(--primary-color);
-    margin-bottom: 16px;
-}
+    .login-header i {
+        font-size: 48px;
+        color: var(--primary-color);
+        margin-bottom: 16px;
+    }
 
 .login-title {
     font-size: 24px;
@@ -75,11 +75,11 @@
     margin-bottom: 8px;
 }
 
-.form-label i {
-    font-size: 14px;
-    color: var(--primary-color);
-    width: 16px;
-}
+    .form-label i {
+        font-size: 14px;
+        color: var(--primary-color);
+        width: 16px;
+    }
 
 .form-input {
     width: 100%;
@@ -93,15 +93,15 @@
     font-family: inherit;
 }
 
-.form-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(31, 154, 58, 0.1);
-}
+    .form-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(31, 154, 58, 0.1);
+    }
 
-.form-input::placeholder {
-    color: var(--text-secondary);
-}
+    .form-input::placeholder {
+        color: var(--text-secondary);
+    }
 
 .validation-error,
 .text-danger {
@@ -122,27 +122,106 @@ div[asp-validation-summary] {
     margin-bottom: 20px;
 }
 
-/* Hide validation summary if it's empty or has only hidden/empty li elements */
-.validation-summary:has(ul > li:only-child:empty),
-.validation-summary:has(ul > li:only-child[style*="display: none"]),
-.validation-summary:has(ul > li:only-child[style*="display:none"]),
-.validation-summary.validation-summary-valid {
-    display: none !important;
+    /* Hide validation summary if it's empty or has only hidden/empty li elements */
+    .validation-summary:has(ul > li:only-child:empty),
+    .validation-summary:has(ul > li:only-child[style*="display: none"]),
+    .validation-summary:has(ul > li:only-child[style*="display:none"]),
+    .validation-summary.validation-summary-valid {
+        display: none !important;
+    }
+
+    .validation-summary ul,
+    .validation-summary-errors ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .validation-summary li,
+    .validation-summary-errors li {
+        color: var(--error-color);
+        font-size: 13px;
+        margin-bottom: 4px;
+    }
+
+/* Forgot password styles */
+.form-group.forgot-password {
+    margin-top: -8px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: safe center;
 }
 
-.validation-summary ul,
-.validation-summary-errors ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.validation-summary li,
-.validation-summary-errors li {
-    color: var(--error-color);
+.forgot-link {
     font-size: 13px;
-    margin-bottom: 4px;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: transform 0.14s ease, box-shadow 0.14s ease, color 0.14s ease;
+    position: relative;
+    /* subtle gradient text effect with fallback to solid color */
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
+    /* Fallback so text is visible in UAs that don't support background-clip:text */
+    .forgot-link::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 8px;
+        pointer-events: none;
+        background: transparent;
+    }
+
+    /* Underline effect */
+    .forgot-link::after {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+        border-radius: 2px;
+        margin-left: 8px;
+        transition: width 0.22s ease;
+    }
+
+    .forgot-link:hover,
+    .forgot-link:focus {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(31, 154, 58, 0.12);
+        outline: none;
+        -webkit-text-fill-color: initial;
+        color: var(--primary-light);
+    }
+
+        .forgot-link:hover::after,
+        .forgot-link:focus::after {
+            width: 20px;
+        }
+
+    .forgot-link:focus-visible {
+        box-shadow: 0 0 0 4px rgba(31, 154, 58, 0.12);
+        border-radius: 8px;
+    }
+
+/* Success variant*/
+    .validation-summary.validation-success {
+        background: rgba(46, 204, 113, 0.08);
+        border: 1px solid #2ecc71;
+        color: #1e7b33;
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+    }
+
+/* Login button */
 .login-btn {
     width: 100%;
     padding: 14px 20px;
@@ -162,19 +241,19 @@ div[asp-validation-summary] {
     box-shadow: 0 4px 12px rgba(31, 154, 58, 0.3);
 }
 
-.login-btn:hover {
-    background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(31, 154, 58, 0.4);
-}
+    .login-btn:hover {
+        background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(31, 154, 58, 0.4);
+    }
 
-.login-btn:active {
-    transform: translateY(0);
-}
+    .login-btn:active {
+        transform: translateY(0);
+    }
 
-.login-btn i {
-    font-size: 16px;
-}
+    .login-btn i {
+        font-size: 16px;
+    }
 
 .login-footer {
     text-align: center;
@@ -196,27 +275,34 @@ div[asp-validation-summary] {
     transition: color 0.2s ease;
 }
 
-.footer-link:hover {
-    color: var(--primary-light);
-    text-decoration: underline;
-}
+    .footer-link:hover {
+        color: var(--primary-light);
+        text-decoration: underline;
+    }
 
 /* Responsive styles for login page */
 @media (max-width: 768px) {
     .login-section {
         padding: 20px 16px;
     }
-    
+
     .login-card {
         padding: 32px 24px;
     }
-    
+
     .login-title {
         font-size: 22px;
     }
-    
+
     .login-header i {
         font-size: 40px;
+    }
+
+    /* Center forgot link on smaller screens for better reachability */
+    .form-group.forgot-password {
+        justify-content: center;
+        margin-top: 0;
+        margin-bottom: 10px;
     }
 }
 
@@ -224,16 +310,21 @@ div[asp-validation-summary] {
     .login-card {
         padding: 24px 20px;
     }
-    
+
     .login-title {
         font-size: 20px;
     }
-    
+
     .login-subtitle {
         font-size: 13px;
     }
-    
+
     .form-group {
         margin-bottom: 16px;
+    }
+
+    .forgot-link {
+        padding: 6px 8px;
+        font-size: 13px;
     }
 }
