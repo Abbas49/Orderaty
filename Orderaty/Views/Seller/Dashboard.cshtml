@@ -361,23 +361,6 @@
                             <div class="progress-bar" style="width: @completionRate%"></div>
                         </div>
                     </div>
-
-                    <div class="metric-item">
-                        <div class="metric-header">
-                            <span class="metric-label">Stock Availability</span>
-                            <span class="metric-percentage">
-                                @{
-                                    var stockRate = ViewBag.TotalProducts > 0 
-                                        ? ((decimal)(ViewBag.TotalProducts - ViewBag.LowStockProducts) / ViewBag.TotalProducts * 100) 
-                                        : 0;
-                                }
-                                @stockRate.ToString("0")%
-                            </span>
-                        </div>
-                        <div class="metric-progress">
-                            <div class="progress-bar" style="width: @stockRate%"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

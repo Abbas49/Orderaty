@@ -62,6 +62,17 @@ namespace Orderaty.Controllers
                 List<OrderedItem> orderItems = new List<OrderedItem>();
                 foreach (var item in cartItems)
                 {
+                    // Decrease product stock
+                    var product = db.Products.Find(item.ProductId);
+                    if (product != null)
+                    {
+                        product.Available_Amount -= item.Quantity;
+                        if (product.Available_Amount < 0)
+                        {
+                            product.Available_Amount = 0; // Prevent negative stock
+                        }
+                    }
+
                     orderItems.Add(new OrderedItem
                     {
                         OrderId = order.Id,
