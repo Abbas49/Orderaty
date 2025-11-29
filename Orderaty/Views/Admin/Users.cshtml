@@ -110,6 +110,9 @@
                 </div>
             </div>
             <div class="stat-card-small card-sellers">
+                <a href="/User/AddSeller" class="stat-add-circle" title="Add Seller" aria-label="Add Seller">
+                    <i class="fas fa-plus"></i>
+                </a>
                 <div class="stat-icon-small">
                     <i class="fas fa-store"></i>
                 </div>
@@ -118,7 +121,11 @@
                     <p class="stat-value-small">@ViewBag.TotalSellers</p>
                 </div>
             </div>
+
             <div class="stat-card-small card-delivery">
+                <a href="/User/AddDelivery" class="stat-add-circle" title="Add Delivery" aria-label="Add Delivery">
+                    <i class="fas fa-plus"></i>
+                </a>
                 <div class="stat-icon-small">
                     <i class="fas fa-shipping-fast"></i>
                 </div>
@@ -165,7 +172,7 @@
                                 var roles = ViewBag.UserRoles as Dictionary<string, List<string>>;
                                 var userRoles = roles?.ContainsKey(user.Id) == true ? roles[user.Id] : new List<string>();
                                 var primaryRole = userRoles.FirstOrDefault() ?? "User";
-                                
+
                                 <tr>
                                     <td>
                                         <div class="user-cell">
@@ -298,14 +305,14 @@
 @section Scripts {
     <script>
         // User management functionality
-        
+
         // Toggle suspend/unsuspend user
         function toggleSuspendUser(userId, username, isCurrentlySuspended) {
             const action = isCurrentlySuspended ? 'unsuspend' : 'suspend';
-            const message = isCurrentlySuspended 
-                ? `Are you sure you want to unsuspend @@${username}?` 
+            const message = isCurrentlySuspended
+                ? `Are you sure you want to unsuspend @@${username}?`
                 : `Are you sure you want to suspend @@${username}? They will not be able to access their account.`;
-            
+
             if (confirm(message)) {
                 // TODO: Implement suspend/unsuspend endpoint
                 fetch(`/Admin/ToggleSuspendUser/${userId}`, {
@@ -328,11 +335,11 @@
                 });
             }
         }
-        
+
         // Delete user
         function deleteUser(userId, username) {
             const message = `Are you sure you want to delete @@${username}? This action cannot be undone.`;
-            
+
             if (confirm(message)) {
                 // TODO: Implement delete endpoint
                 fetch(`/Admin/DeleteUser/${userId}`, {
