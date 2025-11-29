@@ -92,35 +92,39 @@
                 <div id="content-reviews" class="tab-content hidden">
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Client"))
                     {
-                        <div class="card mb-6">
-                            <div class="card-content p-6">
-                                <h3 class="text-xl font-semibold mb-4">@(hasReviewed ? "Update Your Review" : "Write a Review")</h3>
+                        <div class="review-form-card card">
+                            <div class="card-content">
+                                <h3 class="review-form-title">@(hasReviewed ? "Update Your Review" : "Write a Review")</h3>
                                 <form asp-action="CreateReview" asp-controller="Seller" method="post" id="review-form">
                                     <input type="hidden" name="SellerId" value="@Model.Id" />
                                     
-                                    <div class="mb-4">
-                                        <label class="block mb-2 font-medium">Rating <span class="text-danger">*</span></label>
-                                        <div class="rating-input flex gap-2 mb-2">
+                                    <div class="rating-input-container">
+                                        <label class="rating-label">Rating <span style="color: var(--error-color);">*</span></label>
+                                        <div class="rating-input">
                                             @for (int i = 1; i <= 5; i++)
                                             {
                                                 <button type="button" class="star-button" data-rating="@i" aria-label="Rate @i stars">
-                                                    <svg class="icon icon-lg star-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <svg class="icon star-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                                                     </svg>
                                                 </button>
                                             }
                                         </div>
                                         <input type="hidden" name="Rating" id="rating-input" value="@(existingReview?.Rating ?? 0)" required />
-                                        <span id="rating-error" class="text-danger" style="display: none;">Please select a rating</span>
+                                        <span id="rating-error" class="rating-error" style="display: none;">Please select a rating</span>
                                     </div>
 
-                                    <div class="mb-4">
-                                        <label for="Comment" class="block mb-2 font-medium">Comment (Optional)</label>
-                                        <textarea name="Comment" id="Comment" class="w-full p-3 border rounded-lg" rows="4" placeholder="Share your experience with this store..." maxlength="500">@(existingReview?.Comment ?? "")</textarea>
-                                        <small class="text-muted-foreground">Maximum 500 characters</small>
+                                    <div class="comment-input-container">
+                                        <label for="Comment" class="comment-label">Comment <span style="color: var(--text-secondary); font-weight: 400;">(Optional)</span></label>
+                                        <textarea name="Comment" id="Comment" class="comment-textarea" rows="4" placeholder="Share your experience with this store... What did you like? What could be improved?" maxlength="500">@(existingReview?.Comment ?? "")</textarea>
+                                        <small class="comment-hint">Maximum 500 characters</small>
                                     </div>
 
-                                    <button type="submit" class="button primary-button">
+                                    <button type="submit" class="review-submit-button">
+                                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                        </svg>
                                         @(hasReviewed ? "Update Review" : "Submit Review")
                                     </button>
                                 </form>
@@ -128,38 +132,65 @@
                         </div>
                     }
 
+                    <div class="reviews-section-header">
+                        <h2 class="reviews-section-title">Customer Reviews (@(Model.SellerReviews?.Count ?? 0))</h2>
+                    </div>
+
                     <div id="reviews-list-container" class="reviews-list">
                         @if (Model.SellerReviews == null || !Model.SellerReviews.Any())
                         {
-                            <p class="text-muted-foreground text-center">No reviews yet.@(User.Identity.IsAuthenticated && User.IsInRole("Client") ? " Be the first to review!" : "")</p>
+                            <div class="no-reviews-message">
+                                <p style="font-size: 1.125rem; margin-bottom: 0.5rem; color: var(--text-primary); font-weight: 600;">No reviews yet</p>
+                                <p style="margin: 0;">@(User.Identity.IsAuthenticated && User.IsInRole("Client") ? "Be the first to share your experience with this store!" : "This store hasn't received any reviews yet.")</p>
+                            </div>
                         }
                         else
                         {
                             @foreach (var review in Model.SellerReviews.OrderByDescending(r => r.Id))
                             {
-                                <div class="card review-card">
-                                    <div class="card-content p-6">
+                                var authorName = review.Client?.User?.FullName ?? "Anonymous";
+                                var initials = !string.IsNullOrEmpty(authorName) && authorName != "Anonymous" 
+                                    ? string.Join("", authorName.Split(' ').Take(2).Select(n => n[0])).ToUpper()
+                                    : "?";
+                                
+                                <div class="review-card card">
+                                    <div class="card-content">
                                         <div class="review-header">
-                                            <div>
-                                                <h4 class="review-author">@(review.Client?.User?.FullName ?? "Anonymous")</h4>
+                                            <div class="review-author-section">
+                                                <div class="review-author-avatar">
+                                                    @initials
+                                                </div>
+                                                <div class="review-author-info">
+                                                    <h4 class="review-author">@authorName</h4>
+                                                    <span class="review-date">Verified Customer</span>
+                                                </div>
                                             </div>
                                             <div class="review-rating">
                                                 @for (int i = 1; i <= 5; i++)
                                                 {
                                                     @if (i <= review.Rating)
                                                     {
-                                                        <svg class="icon icon-sm star-icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                                                        <svg class="icon star-icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                                        </svg>
                                                     }
                                                     else
                                                     {
-                                                        <svg class="icon icon-sm" style="color: var(--muted-foreground);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                                                        <svg class="icon" style="color: #d1d5db;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                                        </svg>
                                                     }
                                                 }
+                                                <span class="review-rating-value">@review.Rating.ToString("F1")</span>
                                             </div>
                                         </div>
                                         @if (!string.IsNullOrEmpty(review.Comment))
                                         {
                                             <p class="review-comment">@review.Comment</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="review-comment" style="font-style: italic; color: var(--text-secondary);">No comment provided.</p>
                                         }
                                     </div>
                                 </div>
@@ -220,9 +251,49 @@
         const ratingError = document.getElementById('rating-error');
         const existingRating = @(existingReview?.Rating ?? 0);
 
-        // Initialize stars based on existing rating
+        // Initialize all stars as empty first
+        function initializeStars() {
+            starButtons.forEach((button) => {
+                const starIcon = button.querySelector('svg');
+                starIcon.setAttribute('fill', 'none');
+                starIcon.style.fill = 'none';
+                starIcon.style.color = '#d1d5db';
+                starIcon.classList.remove('filled');
+                starIcon.classList.add('empty');
+            });
+        }
+
+        // Initialize stars on page load
+        initializeStars();
+
+        // Update stars based on rating
+        function updateStars(rating) {
+            starButtons.forEach((button, index) => {
+                const starIcon = button.querySelector('svg');
+                if (index < rating) {
+                    // Fill the star
+                    starIcon.setAttribute('fill', 'currentColor');
+                    starIcon.style.fill = 'currentColor';
+                    starIcon.style.color = '#fbbf24';
+                    starIcon.classList.remove('empty');
+                    starIcon.classList.add('filled');
+                } else {
+                    // Empty star
+                    starIcon.setAttribute('fill', 'none');
+                    starIcon.style.fill = 'none';
+                    starIcon.style.color = '#d1d5db';
+                    starIcon.classList.remove('filled');
+                    starIcon.classList.add('empty');
+                }
+            });
+        }
+
+        // Initialize stars based on existing rating if available
         if (existingRating > 0) {
+            ratingInput.value = existingRating;
             updateStars(existingRating);
+        } else {
+            ratingInput.value = 0;
         }
 
         starButtons.forEach((button, index) => {
@@ -241,25 +312,12 @@
             });
         });
 
-        // Reset stars on mouse leave (unless form is being submitted)
+        // Reset stars on mouse leave to show current selection
         const ratingContainer = document.querySelector('.rating-input');
         if (ratingContainer) {
             ratingContainer.addEventListener('mouseleave', () => {
-                const currentRating = parseInt(ratingInput.value) || existingRating;
+                const currentRating = parseInt(ratingInput.value) || 0;
                 updateStars(currentRating);
-            });
-        }
-
-        function updateStars(rating) {
-            starButtons.forEach((button, index) => {
-                const starIcon = button.querySelector('svg');
-                if (index < rating) {
-                    starIcon.setAttribute('fill', 'currentColor');
-                    starIcon.style.color = '#fbbf24'; // gold color
-                } else {
-                    starIcon.setAttribute('fill', 'none');
-                    starIcon.style.color = '#9ca3af'; // gray color
-                }
             });
         }
 
