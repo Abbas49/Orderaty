@@ -32,11 +32,12 @@ hr.separator {
 }
 
 /* --- Theme variables (using site.css colors) --- */
+/* Note: Primary color variables (--primary-color, --primary-light, --primary-lighter, etc.) 
+   are defined in site.css and available globally. We only define local aliases here. */
 :root {
+    /* Local aliases for convenience - these reference global variables from site.css */
     --primary: var(--primary-color);
     --primary-foreground: var(--text-white);
-    --primary-light: var(--primary-light);
-    --primary-lighter: var(--primary-lighter);
     --secondary: var(--warning-color);
     --secondary-foreground: var(--text-primary);
     --muted: var(--bg-gray-light);
@@ -46,7 +47,6 @@ hr.separator {
     --destructive: var(--error-color);
     --destructive-foreground: var(--text-white);
     --border: var(--border-color);
-    --border-light: var(--border-light);
     --card: var(--bg-white);
     --card-foreground: var(--text-primary);
     --background: var(--bg-white);
@@ -59,10 +59,6 @@ hr.separator {
     --shadow-sm: 0 1px 2px 0 var(--shadow-sm);
     --shadow-lg: 0 4px 12px var(--shadow-md);
     --shadow-xl: 0 12px 32px var(--shadow-lg);
-    /* small friendly aliases */
-    --primary-bg-light: var(--primary-bg-light);
-    --text-white: var(--text-white);
-    --text-white-soft: var(--text-white-soft);
 }
 
 
@@ -150,6 +146,36 @@ label {
 .py-8 {
     padding-top: 2rem;
     padding-bottom: 2rem;
+}
+
+.px-3 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+.py-1 {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
+.ml-4 {
+    margin-left: 1rem;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}
+
+.mt-12 {
+    margin-top: 3rem;
+}
+
+.bg-gray-200 {
+    background-color: var(--bg-gray-light);
+}
+
+.text-gray-800 {
+    color: var(--text-primary);
 }
 
 .mr-2 {
@@ -540,23 +566,31 @@ label {
     justify-content: center;
     width: 2.5rem;
     height: 2.5rem;
-    background: none;
-    border: none;
+    background: var(--bg-gray-light);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
     cursor: pointer;
     color: var(--text-primary);
-    transition: background-color 0.15s ease, transform 0.12s ease, box-shadow 0.12s ease;
+    font-size: 1.125rem;
+    font-weight: 600;
+    transition: all 0.15s ease;
 }
 
-    .quantity-button:hover {
-        background-color: var(--primary-bg);
+    .quantity-button:hover:not(:disabled) {
+        background-color: var(--primary-bg-light);
         color: var(--primary-color);
+        border-color: var(--primary-color);
         transform: translateY(-2px);
-        box-shadow: 0 1px 2px 0 var(--shadow-sm);
+        box-shadow: 0 2px 4px var(--shadow-sm);
     }
 
-    .quantity-button:active {
+    .quantity-button:active:not(:disabled) {
         transform: scale(0.98);
-        box-shadow: 0 1px 2px 0 var(--shadow-sm);
+    }
+
+    .quantity-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 
 .quantity-value {
@@ -592,10 +626,10 @@ label {
     }
 
     .button.primary-button {
-        background: var(--primary-color);
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
         color: var(--text-white);
         border: 1px solid transparent;
-        box-shadow: 0 4px 12px var(--shadow-md);
+        box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
     }
 
         .button.primary-button::before {
@@ -614,10 +648,21 @@ label {
         }
 
         .button.primary-button:hover:not(:disabled) {
-            background: var(--primary-color);
-            opacity: 0.9;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
+            opacity: 1;
             transform: translateY(-3px);
-            box-shadow: 0 4px 12px var(--shadow-md);
+            box-shadow: 0 6px 16px rgba(30, 64, 175, 0.35);
+        }
+
+        .button.primary-button:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .button.primary-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: var(--bg-gray-light);
+            color: var(--text-secondary);
         }
 
     .button.outline-button {
@@ -855,25 +900,54 @@ label {
         height: 1.25rem;
     }
 
+/* --- Card Base Styles --- */
+.card {
+    background-color: var(--bg-white);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 4px 16px var(--shadow-md);
+    border: 1px solid var(--border-light);
+    transition: all 0.3s ease;
+}
+
+.card-content {
+    padding: 1.5rem;
+}
+
 /* --- Reviews --- */
+.reviews-section {
+    margin-top: 3rem;
+}
+
+.reviews-section-header {
+    margin-bottom: 1.5rem;
+}
+
+.reviews-section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
 .reviews-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.25rem;
 }
 
 .review-card {
     border-radius: var(--radius-xl);
-    padding: 1rem;
     background-color: var(--bg-white);
     border: 1px solid var(--border-light);
-    box-shadow: 0 4px 12px var(--shadow-md);
-    transition: all 0.15s ease-in-out;
+    box-shadow: 0 4px 16px var(--shadow-md);
+    transition: all 0.3s ease;
+    overflow: hidden;
 }
 
     .review-card:hover {
-        box-shadow: 0 12px 32px var(--shadow-lg);
+        box-shadow: 0 6px 24px var(--shadow-lg);
         transform: translateY(-4px);
+        border-color: var(--primary-color);
     }
 
     .review-card .card-content {
@@ -884,22 +958,57 @@ label {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.review-author-section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.review-author-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-white);
+    font-weight: 600;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.review-author-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 }
 
 .review-author {
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
 }
 
 .review-date {
     font-size: 0.875rem;
-    color: var(--text-muted);
+    color: var(--text-secondary);
 }
 
 .review-rating {
     display: flex;
     align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--primary-bg-light);
+    border-radius: 8px;
 }
 
     .review-rating svg {
@@ -907,9 +1016,300 @@ label {
         height: 1rem;
     }
 
+    .review-rating .star-icon {
+        color: #fbbf24;
+    }
+
+.review-rating-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-left: 0.25rem;
+}
+
 .review-comment {
-    color: var(--text-muted);
-    margin-top: 0.75rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.6;
+    font-size: 0.9375rem;
+}
+
+/* Review Form Styles */
+.review-form-card {
+    background: linear-gradient(135deg, var(--bg-white) 0%, var(--primary-bg-light) 100%) !important;
+    border: 2px solid var(--primary-color) !important;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 4px 20px rgba(30, 64, 175, 0.15) !important;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+    .review-form-card:hover {
+        box-shadow: 0 6px 28px rgba(30, 64, 175, 0.2) !important;
+        transform: translateY(-2px);
+    }
+
+    .review-form-card .card-content {
+        padding: 1.75rem;
+    }
+
+.review-form-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    .review-form-title::before {
+        content: '';
+        width: 4px;
+        height: 1.5rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        border-radius: 2px;
+    }
+
+.rating-input-container {
+    margin-bottom: 1.5rem;
+}
+
+.rating-label {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.rating-input {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.star-button {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: var(--radius-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .star-button:hover {
+        transform: scale(1.15);
+        background: var(--primary-bg-light);
+    }
+
+    .star-button:active {
+        transform: scale(1.05);
+    }
+
+    .star-button svg {
+        width: 1.75rem;
+        height: 1.75rem;
+        transition: all 0.2s ease;
+        fill: none;
+        stroke: currentColor;
+        color: #d1d5db;
+    }
+
+    .star-button svg.filled {
+        fill: currentColor;
+        color: #fbbf24;
+    }
+
+    .star-button svg.empty {
+        fill: none;
+        stroke: currentColor;
+        color: #d1d5db;
+    }
+
+.rating-error {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--error-color);
+    margin-top: 0.5rem;
+}
+
+.comment-input-container {
+    margin-bottom: 1.5rem;
+}
+
+.comment-label {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.comment-textarea {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    font-size: 0.9375rem;
+    font-family: inherit;
+    color: var(--text-primary);
+    background: var(--bg-white);
+    transition: all 0.3s ease;
+    resize: vertical;
+    min-height: 120px;
+}
+
+    .comment-textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    }
+
+.comment-hint {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
+
+.review-submit-button {
+    padding: 0.875rem 2rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: var(--text-white);
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+    .review-submit-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+        transition: left 0.5s;
+    }
+
+    .review-submit-button:hover::before {
+        left: 100%;
+    }
+
+    .review-submit-button:hover {
+        background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(30, 64, 175, 0.35);
+    }
+
+    .review-submit-button:active {
+        transform: translateY(0);
+    }
+
+.no-reviews-message {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: var(--bg-white);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-xl);
+    color: var(--text-secondary);
+}
+
+/* Responsive adjustments for reviews */
+@media (max-width: 768px) {
+    .review-form-card .card-content {
+        padding: 1.25rem;
+    }
+
+    .review-form-title {
+        font-size: 1.125rem;
+    }
+
+    .review-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .review-author-section {
+        width: 100%;
+    }
+
+    .review-rating {
+        align-self: flex-start;
+    }
+
+    .review-card .card-content {
+        padding: 1.25rem;
+    }
+
+    .reviews-section-title {
+        font-size: 1.25rem;
+    }
+
+    .star-button svg {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    .review-submit-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .review-form-card .card-content {
+        padding: 1rem;
+    }
+
+    .review-author-avatar {
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.875rem;
+    }
+
+    .review-author {
+        font-size: 0.9375rem;
+    }
+
+    .review-date {
+        font-size: 0.8125rem;
+    }
+
+    .review-rating {
+        padding: 0.375rem 0.5rem;
+    }
+
+    .review-rating svg {
+        width: 0.875rem;
+        height: 0.875rem;
+    }
+
+    .review-rating-value {
+        font-size: 0.8125rem;
+    }
+
+    .review-comment {
+        font-size: 0.875rem;
+    }
+
+    .no-reviews-message {
+        padding: 2rem 1rem;
+    }
 }
 
 /* --- Misc small UI / fallback --- */
