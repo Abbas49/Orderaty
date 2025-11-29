@@ -1,9 +1,7 @@
-﻿/* client-product-details.css */
-
-/* --- Reset & Basic Styles --- */
+﻿/* Reset & base styles */
 body {
     margin: 0;
-    font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", "Noto Color Emoji";
     background: var(--bg-section);
     color: var(--text-primary);
     line-height: 1.5;
@@ -31,11 +29,8 @@ hr.separator {
     background-color: var(--border-color);
 }
 
-/* --- Theme variables (using site.css colors) --- */
-/* Note: Primary color variables (--primary-color, --primary-light, --primary-lighter, etc.) 
-   are defined in site.css and available globally. We only define local aliases here. */
+/* Theme variables (local aliases) */
 :root {
-    /* Local aliases for convenience - these reference global variables from site.css */
     --primary: var(--primary-color);
     --primary-foreground: var(--text-white);
     --secondary: var(--warning-color);
@@ -55,19 +50,17 @@ hr.separator {
     --radius-2xl: 1rem;
     --radius-lg: 0.5rem;
     --radius-md: calc(var(--radius-xl) - 2px);
-    /* Shadows from site.css */
     --shadow-sm: 0 1px 2px 0 var(--shadow-sm);
     --shadow-lg: 0 4px 12px var(--shadow-md);
     --shadow-xl: 0 12px 32px var(--shadow-lg);
 }
 
-
+/* Media and typographic resets */
 img {
     max-width: 100%;
     display: block;
     vertical-align: middle;
 }
-
 
 h1, h2, h3, h4, p, label {
     margin: 0;
@@ -75,17 +68,11 @@ h1, h2, h3, h4, p, label {
     font-weight: inherit;
 }
 
-hr.separator {
-    border: none;
-    height: 1px;
-    background-color: var(--border-color);
-}
-
 label {
     display: block;
 }
 
-/* --- Border radius utilities (used throughout the page) --- */
+/* Border radius utilities */
 :root {
     --radius-xl: 0.75rem;
     --radius-2xl: 1rem;
@@ -93,7 +80,7 @@ label {
     --radius-md: calc(var(--radius-xl) - 2px);
 }
 
-/* --- Utility & layout classes (sizes from code2 preserved) --- */
+/* Layout utilities */
 .container {
     max-width: 80rem;
     margin-left: auto;
@@ -399,7 +386,7 @@ label {
     display: none;
 }
 
-/* --- SVG Icon sizing --- */
+/* Icon sizing */
 .icon {
     display: inline-block;
     vertical-align: middle;
@@ -423,16 +410,16 @@ label {
     fill: currentColor;
 }
 
-/* --- Product layout & image column (sizes from code2 preserved) --- */
+/* Product layout */
 .product-layout-grid {
     display: grid;
-    grid-template-columns: repeat(1,minmax(0,1fr));
+    grid-template-columns: repeat(1, minmax(0, 1fr));
     gap: 2rem;
 }
 
-@media (min-width:1024px) {
+@media (min-width: 1024px) {
     .product-layout-grid {
-        grid-template-columns: repeat(2,minmax(0,1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -489,7 +476,7 @@ label {
         height: 1.25rem;
     }
 
-/* --- Details column sizes (from code2) --- */
+/* Details column */
 .product-title {
     font-size: 1.875rem;
     font-weight: 600;
@@ -530,7 +517,7 @@ label {
     font-size: 2.25rem;
     color: var(--primary-color);
 }
-/* preserved size from code2 */
+
 .unit-text {
     font-size: 1rem;
 }
@@ -545,7 +532,7 @@ label {
     font-weight: 500;
 }
 
-/* --- Quantity controls (from code2) but with code1 hover/shine) --- */
+/* Quantity controls */
 .quantity-controls-wrapper {
     display: flex;
     align-items: center;
@@ -603,7 +590,7 @@ label {
     font-size: 1.25rem;
 }
 
-/* --- Buttons (sizes preserved from code2, effects from code1) --- */
+/* Buttons */
 .button {
     display: inline-flex;
     align-items: center;
@@ -676,13 +663,12 @@ label {
             color: var(--text-white);
         }
 
-/* Ensure buttons and inline controls don't force page-wide width */
 .button, .quantity-input-group, .action-button {
     max-width: 100%;
     box-sizing: border-box;
 }
 
-/* --- Badge --- */
+/* Badge */
 .badge {
     display: inline-flex;
     align-items: center;
@@ -701,6 +687,7 @@ label {
         transform: translateY(-1px);
     }
 
+/* Product cards */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -710,14 +697,13 @@ label {
 
 .product-card {
     background: var(--bg-white);
-    border-radius: 16px; /* preserve code2 feel */
+    border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 12px var(--shadow-md);
     border: 1px solid var(--border-light);
     transition: all 0.18s ease-in-out;
     cursor: pointer;
     position: relative;
-    /* ensure card controls its own content width */
     box-sizing: border-box;
     display: block;
 }
@@ -761,14 +747,12 @@ label {
     padding: 20px;
     position: relative;
     z-index: 2;
-    /* CONSTRAINT: keep content inside card width */
     max-width: 100%;
     box-sizing: border-box;
     overflow: hidden;
     word-break: break-word;
 }
 
-/* Product title already constrained to card width */
 .product-title {
     font-size: 18px;
     font-weight: 700;
@@ -777,7 +761,7 @@ label {
     line-height: 1.3;
 }
 
-/* DESCRIPTION: ensure it stays within the card and truncates appropriately */
+/* Description constraints */
 .product-description {
     font-size: 14px;
     color: var(--text-muted);
@@ -788,8 +772,8 @@ label {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: normal; /* allow wrapping inside the card */
-    max-width: 100%; /* don't exceed card */
+    white-space: normal;
+    max-width: 100%;
     width: 100%;
     box-sizing: border-box;
     overflow-wrap: break-word;
@@ -797,15 +781,14 @@ label {
     hyphens: auto;
 }
 
-    /* ensure any paragraph inside product-description doesn't force page width */
     .product-description > * {
-    max-width: 100%;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+        max-width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
-/* keep meta and values constrained */
+/* Meta and values */
 .product-meta {
     display: flex;
     flex-direction: column;
@@ -850,7 +833,7 @@ label {
         font-weight: 600;
     }
 
-/* --- Add-to-cart small button --- */
+/* Small add-to-cart */
 .add-to-cart-button {
     width: 2.25rem;
     height: 2.25rem;
@@ -900,7 +883,7 @@ label {
         height: 1.25rem;
     }
 
-/* --- Card Base Styles --- */
+/* Card base */
 .card {
     background-color: var(--bg-white);
     border-radius: var(--radius-xl);
@@ -913,7 +896,7 @@ label {
     padding: 1.5rem;
 }
 
-/* --- Reviews --- */
+/* Reviews */
 .reviews-section {
     margin-top: 3rem;
 }
@@ -1034,7 +1017,7 @@ label {
     font-size: 0.9375rem;
 }
 
-/* Review Form Styles */
+/* Review form */
 .review-form-card {
     background: linear-gradient(135deg, var(--bg-white) 0%, var(--primary-bg-light) 100%) !important;
     border: 2px solid var(--primary-color) !important;
@@ -1119,16 +1102,16 @@ label {
         color: #d1d5db;
     }
 
-    .star-button svg.filled {
-        fill: currentColor;
-        color: #fbbf24;
-    }
+        .star-button svg.filled {
+            fill: currentColor;
+            color: #fbbf24;
+        }
 
-    .star-button svg.empty {
-        fill: none;
-        stroke: currentColor;
-        color: #d1d5db;
-    }
+        .star-button svg.empty {
+            fill: none;
+            stroke: currentColor;
+            color: #d1d5db;
+        }
 
 .rating-error {
     display: block;
@@ -1228,7 +1211,7 @@ label {
     color: var(--text-secondary);
 }
 
-/* Responsive adjustments for reviews */
+/* Responsive adjustments: reviews and small screens */
 @media (max-width: 768px) {
     .review-form-card .card-content {
         padding: 1.25rem;
@@ -1294,10 +1277,10 @@ label {
         padding: 0.375rem 0.5rem;
     }
 
-    .review-rating svg {
-        width: 0.875rem;
-        height: 0.875rem;
-    }
+        .review-rating svg {
+            width: 0.875rem;
+            height: 0.875rem;
+        }
 
     .review-rating-value {
         font-size: 0.8125rem;
@@ -1312,7 +1295,7 @@ label {
     }
 }
 
-/* --- Misc small UI / fallback --- */
+/* Small UI / fallback */
 .image-with-fallback {
     display: block;
 }
@@ -1335,7 +1318,7 @@ label {
     text-align: center;
 }
 
-/* --- Animations --- */
+/* Animations */
 @keyframes headerPatternFloat {
     0%,100% {
         opacity: 1;
@@ -1362,28 +1345,28 @@ label {
 
 @keyframes loadingSkeleton {
     0% {
-        background-position: 200% 0
+        background-position: 200% 0;
     }
 
     100% {
-        background-position: -200% 0
+        background-position: -200% 0;
     }
 }
 
 @keyframes emptyIconPulse {
     0%,100% {
         opacity: 0.5;
-        transform: scale(1)
+        transform: scale(1);
     }
 
     50% {
         opacity: 0.8;
-        transform: scale(1.05)
+        transform: scale(1.05);
     }
 }
 
-/* --- Responsive breakpoints --- */
-@media (max-width:992px) {
+/* Responsive breakpoints */
+@media (max-width: 992px) {
     .page-title {
         font-size: 32px;
     }
@@ -1407,7 +1390,7 @@ label {
     }
 }
 
-@media (max-width:768px) {
+@media (max-width: 768px) {
     .products-header {
         padding: 40px 0;
     }
@@ -1463,7 +1446,7 @@ label {
     }
 }
 
-@media (max-width:480px) {
+@media (max-width: 480px) {
     .page-title {
         font-size: 24px;
     }
@@ -1485,7 +1468,7 @@ label {
     }
 }
 
-/* --- Print styles preserved --- */
+/* Print */
 @media print {
     .filters-section, .products-header {
         display: none;
@@ -1496,6 +1479,7 @@ label {
     }
 }
 
+/* Toast notifications */
 .toast-notification {
     position: fixed;
     top: 20px;
@@ -1591,4 +1575,3 @@ label {
         max-width: none;
     }
 }
-

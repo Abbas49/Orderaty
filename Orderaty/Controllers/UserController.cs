@@ -319,7 +319,7 @@ namespace Orderaty.Controllers
         private string GetMailInboxUrl(string email)
         {
             if (string.IsNullOrWhiteSpace(email) || !email.Contains("@"))
-                return "mailto:";
+                return "https://mail.google.com"; // fallback
 
             var domain = email.Split('@').Last().ToLowerInvariant();
 
@@ -331,7 +331,7 @@ namespace Orderaty.Controllers
                 "icloud.com" or "me.com" or "mac.com" => "https://www.icloud.com/mail",
                 "aol.com" => "https://mail.aol.com/webmail",
                 "yandex.com" or "yandex.ru" => "https://mail.yandex.com",
-                _ => $"mailto:{email}"
+                _ => "https://www.google.com/gmail" // fallback إذا إيميل دومين غير معروف
             };
         }
     }

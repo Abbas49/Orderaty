@@ -96,7 +96,7 @@
                 </div>
                 <div class="stat-content">
                     <h3 class="stat-label">Total Revenue</h3>
-                    <p class="stat-value">$@(((decimal)ViewBag.TotalRevenue).ToString("N2"))</p>
+                    <p class="stat-value">@(((decimal)ViewBag.TotalRevenue).ToString("N2")) EGP</p>
                     <span class="stat-change positive">
                         <i class="fas fa-coins"></i> Platform earnings
                     </span>
@@ -201,7 +201,7 @@
                             {
                                 <div class="coupon-item-small">
                                     <div class="coupon-code-small">@coupon.Code</div>
-                                    <div class="coupon-value-small">$@coupon.DiscountValue.ToString("0.00")</div>
+                                    <div class="coupon-value-small">@coupon.DiscountValue.ToString("0.00") EGP</div>
                                     <div class="coupon-expiry-small">
                                         <i class="fas fa-clock"></i>
                                         Expires: @coupon.ExpireDate.ToString("MMM dd")
