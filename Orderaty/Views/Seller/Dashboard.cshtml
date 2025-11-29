@@ -364,23 +364,6 @@
 
                     <div class="metric-item">
                         <div class="metric-header">
-                            <span class="metric-label">Customer Satisfaction</span>
-                            <span class="metric-percentage">
-                                @{
-                                    var satisfaction = ViewBag.AverageRating > 0 
-                                        ? (ViewBag.AverageRating / 5 * 100) 
-                                        : 0;
-                                }
-                                @satisfaction.ToString("0")%
-                            </span>
-                        </div>
-                        <div class="metric-progress">
-                            <div class="progress-bar" style="width: @satisfaction%"></div>
-                        </div>
-                    </div>
-
-                    <div class="metric-item">
-                        <div class="metric-header">
                             <span class="metric-label">Stock Availability</span>
                             <span class="metric-percentage">
                                 @{

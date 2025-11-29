@@ -592,7 +592,7 @@ label {
     }
 
     .button.primary-button {
-        background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        background: var(--primary-color);
         color: var(--text-white);
         border: 1px solid transparent;
         box-shadow: 0 4px 12px var(--shadow-md);
@@ -614,7 +614,8 @@ label {
         }
 
         .button.primary-button:hover:not(:disabled) {
-            background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
+            background: var(--primary-color);
+            opacity: 0.9;
             transform: translateY(-3px);
             box-shadow: 0 4px 12px var(--shadow-md);
         }
@@ -815,7 +816,7 @@ label {
     cursor: pointer;
     border: none;
     color: var(--text-white);
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    background: var(--primary-color);
     box-shadow: 0 4px 12px var(--shadow-md);
     transition: all 0.15s ease-in-out;
     position: relative;
@@ -838,7 +839,8 @@ label {
     }
 
     .add-to-cart-button:hover {
-        background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
+        background: var(--primary-color);
+        opacity: 0.9;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px var(--shadow-md);
     }
