@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Orderaty.Data;
 using Orderaty.Models;
+using Orderaty.ViewModels;
 
 namespace Orderaty.Controllers
 {
@@ -205,17 +206,100 @@ namespace Orderaty.Controllers
         }
 
         // --------------------- ✏️ details about store and his products ---------------------
-        public IActionResult Details(string id)
+        public async Task<IActionResult> Details(string id)
         {
-            var seller = db.Sellers.Include(s => s.Products).Include(s => s.User)
-                .Where(s => s.Id == id).FirstOrDefault();
+            var seller = await db.Sellers
+                .Include(s => s.Products)
+                .Include(s => s.User)
+                .Include(s => s.SellerReviews)
+                    .ThenInclude(sr => sr.Client)
+                        .ThenInclude(c => c.User)
+                .FirstOrDefaultAsync(s => s.Id == id);
 
-            if(seller != null)
+            if(seller == null)
+                return NotFound();
+
+            // Check if current user is a client and has already reviewed this seller
+            if (User.Identity.IsAuthenticated)
             {
-                return View(seller);
+                var user = await userManager.GetUserAsync(User);
+                if (user != null && await userManager.IsInRoleAsync(user, "Client"))
+                {
+                    var client = await db.Clients.FirstOrDefaultAsync(c => c.Id == user.Id);
+                    if (client != null)
+                    {
+                        var existingReview = await db.SellerReviews
+                            .FirstOrDefaultAsync(sr => sr.SellerId == id && sr.ClientId == client.Id);
+                        ViewBag.HasReviewed = existingReview != null;
+                        ViewBag.ExistingReview = existingReview;
+                    }
+                }
             }
 
-            return NotFound();
+            return View(seller);
+        }
+
+        // --------------------- ⭐ Create Review ---------------------
+        [Authorize(Roles = "Client")]
+        [HttpPost]
+        public async Task<IActionResult> CreateReview(SellerReviewVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["Error"] = "Please provide a valid rating.";
+                return RedirectToAction("Details", new { id = model.SellerId });
+            }
+
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction("Login", "User");
+
+            var client = await db.Clients.FirstOrDefaultAsync(c => c.Id == user.Id);
+            if (client == null)
+                return RedirectToAction("Login", "User");
+
+            // Check if seller exists
+            var seller = await db.Sellers.FirstOrDefaultAsync(s => s.Id == model.SellerId);
+            if (seller == null)
+                return NotFound();
+
+            // Check if client has already reviewed this seller
+            var existingReview = await db.SellerReviews
+                .FirstOrDefaultAsync(sr => sr.SellerId == model.SellerId && sr.ClientId == client.Id);
+
+            if (existingReview != null)
+            {
+                // Update existing review
+                existingReview.Rating = model.Rating;
+                existingReview.Comment = model.Comment;
+            }
+            else
+            {
+                // Create new review
+                var review = new SellerReview
+                {
+                    Rating = model.Rating,
+                    Comment = model.Comment,
+                    ClientId = client.Id,
+                    SellerId = model.SellerId
+                };
+                await db.SellerReviews.AddAsync(review);
+            }
+
+            // Update seller's average rating
+            var reviews = await db.SellerReviews
+                .Where(sr => sr.SellerId == model.SellerId)
+                .ToListAsync();
+
+            if (reviews.Any())
+            {
+                seller.Rating = reviews.Average(r => r.Rating);
+            }
+
+            await db.SaveChangesAsync();
+
+            TempData["Success"] = existingReview != null ? "Review updated successfully!" : "Review submitted successfully!";
+            return RedirectToAction("Details", new { id = model.SellerId });
         }
     }
 }

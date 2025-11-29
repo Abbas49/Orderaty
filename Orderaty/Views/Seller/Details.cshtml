@@ -1,7 +1,10 @@
 ﻿@model Orderaty.Models.Seller
+@using Orderaty.ViewModels
 @{
     // NULL CHECK: Use ?.FullName and provide a fallback title
     ViewData["Title"] = $"Store Profile - {Model.User?.FullName ?? "Details"}";
+    var hasReviewed = ViewBag.HasReviewed as bool? ?? false;
+    var existingReview = ViewBag.ExistingReview as Orderaty.Models.SellerReview;
 }
 
 <link rel="stylesheet" href="~/css/store-details.css">
@@ -87,14 +90,52 @@
                 </div>
 
                 <div id="content-reviews" class="tab-content hidden">
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Client"))
+                    {
+                        <div class="card mb-6">
+                            <div class="card-content p-6">
+                                <h3 class="text-xl font-semibold mb-4">@(hasReviewed ? "Update Your Review" : "Write a Review")</h3>
+                                <form asp-action="CreateReview" asp-controller="Seller" method="post" id="review-form">
+                                    <input type="hidden" name="SellerId" value="@Model.Id" />
+                                    
+                                    <div class="mb-4">
+                                        <label class="block mb-2 font-medium">Rating <span class="text-danger">*</span></label>
+                                        <div class="rating-input flex gap-2 mb-2">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <button type="button" class="star-button" data-rating="@i" aria-label="Rate @i stars">
+                                                    <svg class="icon icon-lg star-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                                    </svg>
+                                                </button>
+                                            }
+                                        </div>
+                                        <input type="hidden" name="Rating" id="rating-input" value="@(existingReview?.Rating ?? 0)" required />
+                                        <span id="rating-error" class="text-danger" style="display: none;">Please select a rating</span>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="Comment" class="block mb-2 font-medium">Comment (Optional)</label>
+                                        <textarea name="Comment" id="Comment" class="w-full p-3 border rounded-lg" rows="4" placeholder="Share your experience with this store..." maxlength="500">@(existingReview?.Comment ?? "")</textarea>
+                                        <small class="text-muted-foreground">Maximum 500 characters</small>
+                                    </div>
+
+                                    <button type="submit" class="button primary-button">
+                                        @(hasReviewed ? "Update Review" : "Submit Review")
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+
                     <div id="reviews-list-container" class="reviews-list">
                         @if (Model.SellerReviews == null || !Model.SellerReviews.Any())
                         {
-                            <p class="text-muted-foreground text-center">No reviews yet.</p>
+                            <p class="text-muted-foreground text-center">No reviews yet.@(User.Identity.IsAuthenticated && User.IsInRole("Client") ? " Be the first to review!" : "")</p>
                         }
                         else
                         {
-                            @foreach (var review in Model.SellerReviews)
+                            @foreach (var review in Model.SellerReviews.OrderByDescending(r => r.Id))
                             {
                                 <div class="card review-card">
                                     <div class="card-content p-6">
@@ -116,7 +157,10 @@
                                                 }
                                             </div>
                                         </div>
-                                        <p class="review-comment">@review.Comment</p>
+                                        @if (!string.IsNullOrEmpty(review.Comment))
+                                        {
+                                            <p class="review-comment">@review.Comment</p>
+                                        }
                                     </div>
                                 </div>
                             }
@@ -129,6 +173,7 @@
 </div>
 
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
     <script>
         // Function to set up tab switching logic
         function setupTabs() {
@@ -168,5 +213,83 @@
 
         // Initialize the tab logic
         setupTabs();
+
+        // Rating star selection
+        const starButtons = document.querySelectorAll('.star-button');
+        const ratingInput = document.getElementById('rating-input');
+        const ratingError = document.getElementById('rating-error');
+        const existingRating = @(existingReview?.Rating ?? 0);
+
+        // Initialize stars based on existing rating
+        if (existingRating > 0) {
+            updateStars(existingRating);
+        }
+
+        starButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                const rating = index + 1;
+                ratingInput.value = rating;
+                updateStars(rating);
+                if (ratingError) {
+                    ratingError.style.display = 'none';
+                }
+            });
+
+            button.addEventListener('mouseenter', () => {
+                const rating = index + 1;
+                updateStars(rating);
+            });
+        });
+
+        // Reset stars on mouse leave (unless form is being submitted)
+        const ratingContainer = document.querySelector('.rating-input');
+        if (ratingContainer) {
+            ratingContainer.addEventListener('mouseleave', () => {
+                const currentRating = parseInt(ratingInput.value) || existingRating;
+                updateStars(currentRating);
+            });
+        }
+
+        function updateStars(rating) {
+            starButtons.forEach((button, index) => {
+                const starIcon = button.querySelector('svg');
+                if (index < rating) {
+                    starIcon.setAttribute('fill', 'currentColor');
+                    starIcon.style.color = '#fbbf24'; // gold color
+                } else {
+                    starIcon.setAttribute('fill', 'none');
+                    starIcon.style.color = '#9ca3af'; // gray color
+                }
+            });
+        }
+
+        // Form validation
+        const reviewForm = document.getElementById('review-form');
+        if (reviewForm) {
+            reviewForm.addEventListener('submit', function(e) {
+                const rating = parseInt(ratingInput.value) || 0;
+                if (rating < 1 || rating > 5) {
+                    e.preventDefault();
+                    if (ratingError) {
+                        ratingError.style.display = 'block';
+                    }
+                    return false;
+                }
+            });
+        }
+
+        // Show success/error messages
+        @if (TempData["Success"] != null)
+        {
+            <text>
+            alert('@TempData["Success"]');
+            </text>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <text>
+            alert('@TempData["Error"]');
+            </text>
+        }
     </script>
 }
