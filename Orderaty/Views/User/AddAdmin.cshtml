@@ -1,0 +1,124 @@
+﻿@model Orderaty.ViewModels.RegisterAdmin
+@{
+    ViewData["Title"] = "Add Admin";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/register.css" asp-append-version="true" />
+}
+
+<section class="register-section">
+    <div class="register-container">
+        <div class="register-card">
+            <div class="register-header">
+                <i class="fas fa-user-shield"></i>
+                <h1 class="register-title">Add Admin</h1>
+                <p class="register-subtitle">Create a new administrator account for Orderaty</p>
+            </div>
+
+            <form asp-action="AddAdmin" method="post" enctype="multipart/form-data" class="register-form" novalidate>
+                <div class="form-group">
+                    <label asp-for="FullName" class="form-label">
+                        <i class="fas fa-user"></i>
+                        Full Name
+                    </label>
+                    <input asp-for="FullName" class="form-input" value="@Model?.FullName" placeholder="Enter full name" />
+                    <span asp-validation-for="FullName" class="validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="UserName" class="form-label">
+                        <i class="fas fa-at"></i>
+                        Username
+                    </label>
+                    <input asp-for="UserName" class="form-input" value="@Model?.UserName" placeholder="Choose a username" />
+                    <span asp-validation-for="UserName" class="validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </label>
+                    <input asp-for="Email" class="form-input" value="@Model?.Email" placeholder="your.email@example.com" />
+                    <span asp-validation-for="Email" class="validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Phone" class="form-label">
+                        <i class="fas fa-phone"></i>
+                        Phone Number
+                    </label>
+                    <input asp-for="Phone" class="form-input" value="@Model?.Phone" placeholder="(123) 456-7890" />
+                    <span asp-validation-for="Phone" class="validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Password
+                    </label>
+                    <input asp-for="Password" type="password" class="form-input" placeholder="Create a strong password" />
+                    <span asp-validation-for="Password" class="validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Confirm Password
+                    </label>
+                    <input asp-for="ConfirmPassword" type="password" class="form-input" placeholder="Re-enter your password" />
+                    <span asp-validation-for="ConfirmPassword" class="validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Image" class="form-label">
+                        <i class="fas fa-image"></i>
+                        Profile Picture
+                    </label>
+                    <div class="file-input-wrapper">
+                        <input asp-for="Image" type="file" value="@Model?.Image" class="file-input" id="profile-image-admin" />
+                        <label for="profile-image-admin" class="file-input-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span class="file-input-text">Choose a file</span>
+                        </label>
+                    </div>
+                    <span asp-validation-for="Image" class="validation-error"></span>
+                </div>
+
+                <div asp-validation-summary="All" class="validation-summary"></div>
+
+                <button type="submit" class="register-btn">
+                    <i class="fas fa-user-shield"></i>
+                    Add Admin
+                </button>
+                <div class="register-footer">
+                    <p class="footer-text">
+                        <button class="back-btn" type="button" onclick="history.back()">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('profile-image-admin');
+            const fileInputText = document.querySelector('.file-input-text');
+            if (fileInput && fileInputText) {
+                fileInput.addEventListener('change', function(e) {
+                    if (e.target.files && e.target.files.length > 0) {
+                        fileInputText.textContent = e.target.files[0].name;
+                    } else {
+                        fileInputText.textContent = 'Choose a file';
+                    }
+                });
+            }
+        });
+    </script>
+}
