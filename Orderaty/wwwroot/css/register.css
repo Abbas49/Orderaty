@@ -241,6 +241,65 @@ textarea.form-input {
     text-decoration: underline;
 }
 
+.back-btn {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    background: var(--bg-white);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+    .back-btn:hover {
+        background: var(--primary-color);
+        color: var(--text-white);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(31, 154, 58, 0.3);
+    }
+
+    .back-btn:active {
+        transform: translateY(0);
+    }
+
+    .back-btn i {
+        font-size: 16px;
+    }
+
+.back-footer {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+
+.footer-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.footer-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+    .footer-link:hover {
+        color: var(--primary-light);
+        text-decoration: underline;
+    }
+
 /* Responsive styles for register page */
 @media (max-width: 768px) {
     .register-section {

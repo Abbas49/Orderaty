@@ -221,6 +221,52 @@ namespace Orderaty.Controllers
             }
             return View(_user);
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult AddAdmin()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddAdmin(RegisterAdmin _user)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new User
+                {
+                    UserName = _user.UserName,
+                    FullName = _user.FullName,
+                    Email = _user.Email,
+                    PhoneNumber = _user.Phone,
+                };
+
+                var result = await userManager.CreateAsync(user, _user.Password);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, UserRole.Admin.ToString());
+                    await userManager.AddClaimAsync(user, new Claim("FullName", user.FullName));
+
+                    if (_user.Image != null)
+                        user.Image = await SaveImage(_user.Image);
+
+                    // No extra DB entity for Admin; but ensure any changes are persisted
+                    await db.SaveChangesAsync();
+
+                    TempData["SuccessMessage"] = $"Admin '{user.FullName}' has been successfully added.";
+                    return RedirectToAction("Users", "Admin");
+                }
+
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+
+                return View(_user);
+            }
+            return View(_user);
+        }
+
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
@@ -319,7 +365,7 @@ namespace Orderaty.Controllers
         private string GetMailInboxUrl(string email)
         {
             if (string.IsNullOrWhiteSpace(email) || !email.Contains("@"))
-                return "https://mail.google.com"; // fallback
+                return "https://mail.google.com";
 
             var domain = email.Split('@').Last().ToLowerInvariant();
 
@@ -331,7 +377,7 @@ namespace Orderaty.Controllers
                 "icloud.com" or "me.com" or "mac.com" => "https://www.icloud.com/mail",
                 "aol.com" => "https://mail.aol.com/webmail",
                 "yandex.com" or "yandex.ru" => "https://mail.yandex.com",
-                _ => "https://www.google.com/gmail" // fallback إذا إيميل دومين غير معروف
+                _ => "https://www.google.com/gmail"
             };
         }
     }
