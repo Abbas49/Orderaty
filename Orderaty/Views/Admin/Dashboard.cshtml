@@ -122,20 +122,20 @@
                 <p class="action-description">View, suspend, or manage all platform users</p>
             </a>
 
-            @* <a asp-action="SellerApproval" class="quick-action-card">
-                <div class="action-icon action-icon-approval">
-                    <i class="fas fa-user-check"></i>
-                </div>
-                <h3 class="action-title">Seller Approval</h3>
-                <p class="action-description">Review and approve new seller registrations</p>
-            </a> *@
-
             <a asp-action="Coupons" class="quick-action-card">
                 <div class="action-icon action-icon-coupons">
                     <i class="fas fa-tags"></i>
                 </div>
                 <h3 class="action-title">Coupon Management</h3>
                 <p class="action-description">Create, edit, and manage discount coupons</p>
+            </a>
+
+            <a asp-controller="User" asp-action="AddAdmin" class="quick-action-card">
+                <div class="action-icon action-icon-admin">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="action-title">Add Admin</h3>
+                <p class="action-description">Register new adminstrator to the platform</p>
             </a>
 
             <a asp-controller="User" asp-action="AddDelivery" class="quick-action-card">
