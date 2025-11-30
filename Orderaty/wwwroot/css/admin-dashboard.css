@@ -1541,17 +1541,6 @@
         cursor: not-allowed;
     }
 
-.btn-edit {
-    background-color: #28a745;
-    color: #fff;
-}
-
-    .btn-edit:hover {
-        background-color: #218838;
-        color: #fff;
-    }
-
-
 /* ===========================
    COUPON SPECIFIC
    =========================== */
@@ -2121,16 +2110,19 @@
     }
 
 .form-label {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 8px;
 }
 
     .form-label i {
+        font-size: 14px;
         color: var(--primary-color);
+        width: 16px;
     }
 
 .required {
@@ -2138,18 +2130,25 @@
 }
 
 .form-input {
-    padding: 12px;
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
     font-size: 14px;
     color: var(--text-primary);
-    transition: all 0.3s ease;
+    background: var(--bg-white);
+    transition: all 0.2s ease;
+    font-family: inherit;
 }
 
     .form-input:focus {
         outline: none;
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px var(--primary-bg-light);
+    }
+
+    .form-input[type="date"] {
+        color: var(--text-primary);
     }
 
 .form-help {
@@ -2168,6 +2167,7 @@
     width: 20px;
     height: 20px;
     cursor: pointer;
+    accent-color: var(--primary-color);
 }
 
 .toggle-label {

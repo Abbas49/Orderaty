@@ -17,7 +17,7 @@
                         <i class="fas fa-shipping-fast"></i>
                         Delivery Dashboard
                     </h1>
-                    <p class="dashboard-subtitle">Welcome back, <strong>@Model.User.FullName</strong>! 🚚</p>
+                    <p class="dashboard-subtitle">Welcome back, <strong>@Model.User.FullName</strong></p>
                 </div>
                 <div class="delivery-status">
                     <span class="status-badge status-active">
@@ -70,13 +70,13 @@
                 </div>
                 <div class="stat-content">
                     <h3 class="stat-label">Total Earnings</h3>
-                    <p class="stat-value">@ViewBag.EarningsAll.ToString("C")</p>
+                    <p class="stat-value">@ViewBag.EarningsAll.ToString("N2") EGP</p>
                     <div class="stat-breakdown">
                         <span class="breakdown-item">
-                            <i class="fas fa-calendar-day"></i> Today: @ViewBag.EarningsToday.ToString("C")
+                            <i class="fas fa-calendar-day"></i> Today: @ViewBag.EarningsToday.ToString("N2") EGP
                         </span>
                         <span class="breakdown-item">
-                            <i class="fas fa-calendar-alt"></i> Month: @ViewBag.EarningsMonth.ToString("C")
+                            <i class="fas fa-calendar-alt"></i> Month: @ViewBag.EarningsMonth.ToString("N2") EGP
                         </span>
                     </div>
                 </div>
@@ -321,7 +321,7 @@
                             </div>
                             <div class="earning-details">
                                 <h4 class="earning-label">Today</h4>
-                                <p class="earning-value">@ViewBag.EarningsToday.ToString("C")</p>
+                                <p class="earning-value">@ViewBag.EarningsToday.ToString("N2") EGP</p>
                                 <span class="earning-count">@ViewBag.TotalDeliveriesToday deliveries</span>
                             </div>
                         </div>
@@ -332,7 +332,7 @@
                             </div>
                             <div class="earning-details">
                                 <h4 class="earning-label">This Week</h4>
-                                <p class="earning-value">@ViewBag.EarningsWeek.ToString("C")</p>
+                                <p class="earning-value">@ViewBag.EarningsWeek.ToString("N2") EGP</p>
                                 <span class="earning-count">@ViewBag.TotalDeliveriesWeek deliveries</span>
                             </div>
                         </div>
@@ -343,7 +343,7 @@
                             </div>
                             <div class="earning-details">
                                 <h4 class="earning-label">This Month</h4>
-                                <p class="earning-value">@ViewBag.EarningsMonth.ToString("C")</p>
+                                <p class="earning-value">@ViewBag.EarningsMonth.ToString("N2") EGP</p>
                                 <span class="earning-count">@ViewBag.TotalDeliveriesMonth deliveries</span>
                             </div>
                         </div>
@@ -354,7 +354,7 @@
                             </div>
                             <div class="earning-details">
                                 <h4 class="earning-label">Total Earnings</h4>
-                                <p class="earning-value">@ViewBag.EarningsAll.ToString("C")</p>
+                                <p class="earning-value">@ViewBag.EarningsAll.ToString("N2") EGP</p>
                                 <span class="earning-count">@ViewBag.TotalDeliveriesAll total deliveries</span>
                             </div>
                         </div>
