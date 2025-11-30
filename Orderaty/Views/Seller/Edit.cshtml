@@ -113,6 +113,43 @@
                     </div>
                 </div>
 
+                <!-- Change Password Section -->
+                <div class="form-group password-section">
+
+                    <h3 class="section-title">
+                        <i class="fas fa-lock"></i>
+                        Change Password
+                    </h3>
+
+                    <div class="form-group">
+                        <label class="form-label" for="currentPassword">
+                            <i class="fas fa-lock"></i>
+                            Current Password
+                        </label>
+                        <input type="password" name="currentPassword" id="currentPassword" class="form-input" placeholder="Current password" />
+                        <span id="currentPasswordError" class="validation-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="newPassword">
+                            <i class="fas fa-key"></i>
+                            New Password
+                        </label>
+                        <input type="password" name="newPassword" id="newPassword" class="form-input" placeholder="New password" />
+                        <span id="newPasswordError" class="validation-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">
+                            <i class="fas fa-key"></i>
+                            Confirm New Password
+                        </label>
+                        <input type="password" name="confirmPassword" id="confirmPassword" class="form-input" placeholder="Confirm new password" />
+                        <span id="confirmPasswordError" class="validation-error"></span>
+                    </div>
+                    <p class="password-note"><small>Leave these fields empty if you don't want to change your password.</small></p>
+                </div>
+
                 <div asp-validation-summary="All" class="validation-summary"></div>
 
                 <!-- Action Buttons -->

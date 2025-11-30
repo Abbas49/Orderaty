@@ -1,0 +1,63 @@
+﻿@model Orderaty.Models.User
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-profile.css" asp-append-version="true" />
+}
+
+<!-- Profile Section -->
+<section class="profile-section">
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-img-wrapper">
+                    <img src="@(string.IsNullOrEmpty(Model.Image) ? Url.Content("~/images/default-user.png") : Url.Content("~/images/users/" + Model.Image))" alt="Profile Picture" class="profile-img" />
+                    <a asp-action="EditProfile" class="edit-profile-link">
+                        <div class="upload-overlay">
+                            <span class="upload-text">
+                                <i class="fas fa-pen"></i> Edit Profile
+                            </span>
+                        </div>
+                    </a>
+                </div>
+
+                <h2 class="profile-name">@Model.FullName</h2>
+                <span class="profile-role">Admin</span>
+            </div>
+
+            <div class="profile-info">
+                <div class="info-group">
+                    <label class="info-label">
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </label>
+                    <div class="info-value">@Model.Email</div>
+                </div>
+
+                <div class="info-group">
+                    <label class="info-label">
+                        <i class="fas fa-at"></i>
+                        Username
+                    </label>
+                    <div class="info-value">@Model.UserName</div>
+                </div>
+
+                <div class="info-group">
+                    <label class="info-label">
+                        <i class="fas fa-phone"></i>
+                        Phone Number
+                    </label>
+                    <div class="info-value">@Model.PhoneNumber</div>
+                </div>
+
+                <a asp-action="EditProfile" class="btn-edit">
+                    <i class="fas fa-user-edit"></i>
+                    Edit Profile
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

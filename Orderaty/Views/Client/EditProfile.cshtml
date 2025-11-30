@@ -1,0 +1,178 @@
+﻿@model Orderaty.ViewModels.ClientProfile
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/client-profile.css" asp-append-version="true" />
+}
+
+<!-- Profile Section -->
+<section class="profile-section">
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <form asp-action="ChangePhoto" method="post" enctype="multipart/form-data" class="photo-form">
+                    <div class="profile-img-wrapper">
+                        <img src="~/images/users/@Model?.ImagePath" alt="Profile Picture" class="profile-img" />
+                        <div class="upload-overlay">
+                            <input type="file" name="image" id="newImage" accept="image/*" onchange="this.form.submit()" hidden />
+                            <label for="newImage" class="upload-text">
+                                <i class="fas fa-camera"></i> Change Photo
+                            </label>
+                        </div>
+                    </div>
+                </form>
+
+                <h2 class="profile-name">@Model.FullName</h2>
+                <span class="profile-role">Client</span>
+            </div>
+
+            <form asp-action="Update" method="post" enctype="multipart/form-data" class="profile-form">
+                <div asp-validation-summary="All" class="validation-summary"></div>
+
+                <div class="form-group">
+                    <label asp-for="FullName" class="form-label">
+                        <i class="fas fa-user"></i>
+                        Full Name
+                    </label>
+                    <input asp-for="FullName" class="form-input" placeholder="Enter your full name" />
+                    <span asp-validation-for="FullName" class="validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </label>
+                    <input asp-for="Email" class="form-input" readonly />
+                    <span asp-validation-for="Email" class="validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="UserName" class="form-label">
+                        <i class="fas fa-at"></i>
+                        Username
+                    </label>
+                    <input asp-for="UserName" class="form-input" readonly />
+                    <span asp-validation-for="UserName" class="validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Phone" class="form-label">
+                        <i class="fas fa-phone"></i>
+                        Phone Number
+                    </label>
+                    <input asp-for="Phone" class="form-input" placeholder="(123) 456-7890" />
+                    <span asp-validation-for="Phone" class="validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Address" class="form-label">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Address
+                    </label>
+                    <input asp-for="Address" class="form-input" placeholder="123 Main St, New York" />
+                    <span asp-validation-for="Address" class="validation-error"></span>
+                </div>
+
+                <!-- Change Password Section -->
+                <div class="form-group password-section">
+                    
+                    <h3 class="section-title">
+                        <i class="fas fa-lock"></i>
+						Change Password</h3>
+
+                    <div class="form-group">
+                        <label class="form-label" for="currentPassword">
+                            <i class="fas fa-lock"></i>
+                            Current Password
+                        </label>
+                        <input type="password" name="currentPassword" id="currentPassword" class="form-input" placeholder="Current password" />
+                        <span id="currentPasswordError" class="validation-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="newPassword">
+                            <i class="fas fa-key"></i>
+                            New Password
+                        </label>
+                        <input type="password" name="newPassword" id="newPassword" class="form-input" placeholder="New password" />
+                        <span id="newPasswordError" class="validation-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">
+                            <i class="fas fa-key"></i>
+                            Confirm New Password
+                        </label>
+                        <input type="password" name="confirmPassword" id="confirmPassword" class="form-input" placeholder="Confirm new password" />
+                        <span id="confirmPasswordError" class="validation-error"></span>
+                    </div>
+                    <p class="password-note"><small>Leave these fields empty if you don't want to change your password.</small></p>
+                </div>
+
+                <button type="submit" class="btn-update">
+                    <i class="fas fa-save"></i>
+                    Update Profile
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (function () {
+            const form = document.querySelector('.profile-form');
+            if (!form) return;
+
+            const currentEl = document.getElementById('currentPassword');
+            const newEl = document.getElementById('newPassword');
+            const confirmEl = document.getElementById('confirmPassword');
+
+            const currentErr = document.getElementById('currentPasswordError');
+            const newErr = document.getElementById('newPasswordError');
+            const confirmErr = document.getElementById('confirmPasswordError');
+
+            function clearErrors() {
+                currentErr.textContent = '';
+                newErr.textContent = '';
+                confirmErr.textContent = '';
+            }
+
+            form.addEventListener('submit', function (e) {
+                clearErrors();
+
+                const current = currentEl.value.trim();
+                const nw = newEl.value.trim();
+                const cnf = confirmEl.value.trim();
+
+                // If any password field filled, require all and require match
+                if (current || nw || cnf) {
+                    let blocked = false;
+                    if (!current) {
+                        currentErr.textContent = 'Current password is required to change password.';
+                        blocked = true;
+                    }
+                    if (!nw) {
+                        newErr.textContent = 'New password is required.';
+                        blocked = true;
+                    }
+                    if (nw !== cnf) {
+                        confirmErr.textContent = 'New password and confirmation do not match.';
+                        blocked = true;
+                    }
+
+                    if (blocked) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+            });
+        })();
+    </script>
+}

@@ -8,84 +8,77 @@
     <link rel="stylesheet" href="~/css/client-profile.css" asp-append-version="true" />
 }
 
-<!-- Profile Section -->
+<!-- Profile Section (View-only) -->
 <section class="profile-section">
     <div class="profile-container">
         <div class="profile-card">
             <div class="profile-header">
-                <form asp-action="ChangePhoto" method="post" enctype="multipart/form-data" class="photo-form">
-                    <div class="profile-img-wrapper">
-                        <img src="~/images/users/@Model?.ImagePath" alt="Profile Picture" class="profile-img" />
-                        <div class="upload-overlay">
-                            <input type="file" name="image" id="newImage" accept="image/*" onchange="this.form.submit()" hidden />
-                            <label for="newImage" class="upload-text">
-                                <i class="fas fa-camera"></i> Change Photo
-                            </label>
-                        </div>
+                <div class="profile-img-wrapper">
+                    <img src="~/images/users/@Model?.ImagePath" alt="Profile Picture" class="profile-img" />
+                    <div class="upload-overlay view-only">
+                        <span class="upload-text">
+                            <i class="fas fa-camera"></i> Profile Picture
+                        </span>
                     </div>
-                </form>
-                
+                </div>
+
                 <h2 class="profile-name">@Model.FullName</h2>
                 <span class="profile-role">Client</span>
             </div>
 
-            <form asp-action="Update" method="post" enctype="multipart/form-data" class="profile-form">
-                <div asp-validation-summary="All" class="validation-summary"></div>
-                
+            <div class="profile-form view-only">
                 <div class="form-group">
-                    <label asp-for="FullName" class="form-label">
+                    <label class="form-label">
                         <i class="fas fa-user"></i>
                         Full Name
                     </label>
-                    <input asp-for="FullName" class="form-input" placeholder="Enter your full name" />
-                    <span asp-validation-for="FullName" class="validation-error"></span>
+                    <div class="form-value">@Model.FullName</div>
                 </div>
-                
+
                 <div class="form-group">
-                    <label asp-for="Email" class="form-label">
+                    <label class="form-label">
                         <i class="fas fa-envelope"></i>
                         Email
                     </label>
-                    <input asp-for="Email" class="form-input" readonly />
-                    <span asp-validation-for="Email" class="validation-error"></span>
+                    <div class="form-value">@Model.Email</div>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="UserName" class="form-label">
+                    <label class="form-label">
                         <i class="fas fa-at"></i>
                         Username
                     </label>
-                    <input asp-for="UserName" class="form-input" readonly />
-                    <span asp-validation-for="UserName" class="validation-error"></span>
+                    <div class="form-value">@Model.UserName</div>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="Phone" class="form-label">
+                    <label class="form-label">
                         <i class="fas fa-phone"></i>
                         Phone Number
                     </label>
-                    <input asp-for="Phone" class="form-input" placeholder="(123) 456-7890" />
-                    <span asp-validation-for="Phone" class="validation-error"></span>
+                    <div class="form-value">@Model.Phone</div>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="Address" class="form-label">
+                    <label class="form-label">
                         <i class="fas fa-map-marker-alt"></i>
                         Address
                     </label>
-                    <input asp-for="Address" class="form-input" placeholder="123 Main St, New York" />
-                    <span asp-validation-for="Address" class="validation-error"></span>
+                    <div class="form-value">@Model.Address</div>
                 </div>
+            </div>
+        </div>
 
-                <button type="submit" class="btn-update">
-                    <i class="fas fa-save"></i>
-                    Update Profile
-                </button>
-            </form>
+        <!-- Edit Profile button -->
+        <div class="profile-actions">
+            <a asp-controller="Client" asp-action="EditProfile" class="btn-edit">
+                <i class="fas fa-user-edit"></i>
+                Edit Profile
+            </a>
         </div>
     </div>
 </section>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <!-- No validation or edit scripts needed for view-only page -->
 }

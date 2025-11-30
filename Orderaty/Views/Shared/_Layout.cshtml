@@ -28,150 +28,154 @@
             <div class="navbar-right-wrapper">
                 <!-- Navigation Menu -->
                 <div class="navbar-menu" id="navbar-menu">
-                <div class="navbar-links">
-                    @if(User.Identity.Name == null || (User.Identity.IsAuthenticated && User.IsInRole("Client")))
-                    {
-                        <a href="/" class="navbar-item">
-                            <i class="fas fa-home"></i>
-                            <span>Home</span>
-                        </a>
-                    }
-                    else if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                    {
-                        <a href="/Admin/Users" class="navbar-item">
-                            <i class="fas fa-users"></i>
-                            <span>Users</span>
-                        </a>
-                        <a href="/Admin/Coupons" class="navbar-item">
-                            <i class="fas fa-ticket-alt"></i>
-                            <span>Coupons</span>
-                        </a>
-                    }
-                    else if (User.Identity.IsAuthenticated && User.IsInRole("Seller"))
-                    {
-                        <a href="/Seller/Dashboard" class="navbar-item">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    }
-                    else if (User.Identity.IsAuthenticated && User.IsInRole("Delivery"))
-                    {
-                        <a href="/Delivery/Dashboard" class="navbar-item">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>Dashboard</span>
-                        </a>
-						<a href="@Url.Action("Orders", "Delivery")" class="navbar-item">
-							<i class="fas fa-receipt"></i>
-							<span>Orders</span>
-						</a>
-                    }
-                    
-                    @if(User.Identity.IsAuthenticated && User.IsInRole("Client"))
-                    {
-                        @inject Orderaty.Data.AppDbContext DbContext
-                        var currentUserId = DbContext.Users.FirstOrDefault(c => c.UserName == User.Identity.Name)?.Id;
-                        var cartCount = DbContext.CartItems.Count(c => c.ClientId == currentUserId);
-                        
-                        <a href="/Cart/Index" class="navbar-item">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span>Cart</span>
-                            <span class="cart-badge" id="cart-count">@cartCount</span>
-                        </a>
-						<a href="@Url.Action("History", "Order")" class="navbar-item">
-							<i class="fas fa-receipt"></i>
-							<span>Orders</span>
-						</a>
-                    }
-                    
+                    <div class="navbar-links">
+                        @if (User.Identity.Name == null || (User.Identity.IsAuthenticated && User.IsInRole("Client")))
+                        {
+                            <a href="/" class="navbar-item">
+                                <i class="fas fa-home"></i>
+                                <span>Home</span>
+                            </a>
+                        }
+                        else if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <a href="/Admin/Users" class="navbar-item">
+                                <i class="fas fa-users"></i>
+                                <span>Users</span>
+                            </a>
+                            <a href="/Admin/Coupons" class="navbar-item">
+                                <i class="fas fa-ticket-alt"></i>
+                                <span>Coupons</span>
+                            </a>
+                        }
+                        else if (User.Identity.IsAuthenticated && User.IsInRole("Seller"))
+                        {
+                            <a href="/Seller/Dashboard" class="navbar-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        }
+                        else if (User.Identity.IsAuthenticated && User.IsInRole("Delivery"))
+                        {
+                            <a href="/Delivery/Dashboard" class="navbar-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>Dashboard</span>
+                            </a>
+                            <a href="@Url.Action("Orders", "Delivery")" class="navbar-item">
+                                <i class="fas fa-receipt"></i>
+                                <span>Orders</span>
+                            </a>
+                        }
+
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Client"))
+                        {
+                            @inject Orderaty.Data.AppDbContext DbContext
+                            var currentUserId = DbContext.Users.FirstOrDefault(c => c.UserName == User.Identity.Name)?.Id;
+                            var cartCount = DbContext.CartItems.Count(c => c.ClientId == currentUserId);
+
+                            <a href="/Cart/Index" class="navbar-item">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Cart</span>
+                                <span class="cart-badge" id="cart-count">@cartCount</span>
+                            </a>
+                            <a href="@Url.Action("History", "Order")" class="navbar-item">
+                                <i class="fas fa-receipt"></i>
+                                <span>Orders</span>
+                            </a>
+                        }
+
+                    </div>
+
+                    <!-- Mobile Divider -->
+                    <div class="navbar-divider"></div>
+
+                    <!-- User Actions -->
+                    <div class="navbar-actions">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a href="/Admin/Dashboard" class="navbar-item navbar-profile">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Admin Panel</span>
+                                </a>
+                                <a href="/Admin/Profile" class="navbar-item navbar-profile">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span>Profile</span>
+                                </a>
+                            }
+                            else if (User.IsInRole("Client"))
+                            {
+                                <a href="/Client/Profile" class="navbar-item navbar-profile">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span>Profile</span>
+                                </a>
+                            }
+                            else if (User.IsInRole("Seller"))
+                            {
+                                <a href="/Seller/Profile" class="navbar-item navbar-profile">
+                                    <i class="fas fa-store-alt"></i>
+                                    <span>My Store</span>
+                                </a>
+                            }
+                            else if (User.IsInRole("Delivery"))
+                            {
+                                <a href="/Delivery/Profile" class="navbar-item navbar-profile">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span>Profile</span>
+                                </a>
+                            }
+                            <a asp-controller="User" asp-action="Logout" class="navbar-item navbar-logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="User" asp-action="Login" class="navbar-btn btn-login">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Login</span>
+                            </a>
+                            <a asp-controller="User" asp-action="Register" class="navbar-btn btn-register">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Sign Up</span>
+                            </a>
+                        }
+                    </div>
                 </div>
-                
-                <!-- Mobile Divider -->
-                <div class="navbar-divider"></div>
-                
-                <!-- User Actions -->
-                <div class="navbar-actions">
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <a href="/Admin/Dashboard" class="navbar-item navbar-profile">
-                                <i class="fas fa-shield-alt"></i>
-                                <span>Admin Panel</span>
-                            </a>
-                        }
-                        else if (User.IsInRole("Client"))
-                        {
-                            <a href="/Client/Profile" class="navbar-item navbar-profile">
-                                <i class="fas fa-user-circle"></i>
-                                <span>Profile</span>
-                            </a>
-                        }
-                        else if (User.IsInRole("Seller"))
-                        {
-                            <a href="/Seller/Profile" class="navbar-item navbar-profile">
-                                <i class="fas fa-store-alt"></i>
-                                <span>My Store</span>
-                            </a>
-                        }
-                        else if (User.IsInRole("Delivery"))
-                        {
-                            <a href="/Delivery/Profile" class="navbar-item navbar-profile">
-                                <i class="fas fa-user-circle"></i>
-                                <span>Profile</span>
-                            </a>
-                        }
-                        <a asp-controller="User" asp-action="Logout" class="navbar-item navbar-logout">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Logout</span>
-                        </a>
-                    }
-                    else
-                    {
-                        <a asp-controller="User" asp-action="Login" class="navbar-btn btn-login">
-                            <i class="fas fa-sign-in-alt"></i>
-                            <span>Login</span>
-                        </a>
-                        <a asp-controller="User" asp-action="Register" class="navbar-btn btn-register">
-                            <i class="fas fa-user-plus"></i>
-                            <span>Sign Up</span>
-                        </a>
-                    }
-                </div>
-            </div>
-            
-            <!-- Theme & Mobile Toggle -->
-            <div class="navbar-right">
-                <!-- Theme Switcher -->
-                <div class="theme-switcher">
-                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Change theme">
-                        <i class="fas fa-palette"></i>
-                    </button>
-                    <div class="theme-dropdown" id="theme-dropdown">
-                        <div class="theme-dropdown-header">
-                            <i class="fas fa-swatchbook"></i>
-                            <span>Choose Theme</span>
-                        </div>
-                        <button class="theme-option" data-theme="green-fresh">
-                            <div class="theme-icon">
-                                <i class="fas fa-leaf"></i>
-                            </div>
-                            <div class="theme-details">
-                                <div class="theme-name">Green Fresh</div>
-                                <div class="theme-description">Natural & vibrant</div>
-                            </div>
-                            <i class="fas fa-check theme-checkmark"></i>
+
+                <!-- Theme & Mobile Toggle -->
+                <div class="navbar-right">
+                    <!-- Theme Switcher -->
+                    <div class="theme-switcher">
+                        <button class="theme-toggle-btn" id="theme-toggle" aria-label="Change theme">
+                            <i class="fas fa-palette"></i>
                         </button>
-                        <button class="theme-option active" data-theme="ocean-blue">
-                            <div class="theme-icon">
-                                <i class="fas fa-water"></i>
+                        <div class="theme-dropdown" id="theme-dropdown">
+                            <div class="theme-dropdown-header">
+                                <i class="fas fa-swatchbook"></i>
+                                <span>Choose Theme</span>
                             </div>
-                            <div class="theme-details">
-                                <div class="theme-name">Ocean Blue</div>
-                                <div class="theme-description">Professional & calm</div>
-                            </div>
-                            <i class="fas fa-check theme-checkmark"></i>
-                        </button>
-                        @* <button class="theme-option" data-theme="sunset-purple">
+                            <button class="theme-option" data-theme="green-fresh">
+                                <div class="theme-icon">
+                                    <i class="fas fa-leaf"></i>
+                                </div>
+                                <div class="theme-details">
+                                    <div class="theme-name">Green Fresh</div>
+                                    <div class="theme-description">Natural & vibrant</div>
+                                </div>
+                                <i class="fas fa-check theme-checkmark"></i>
+                            </button>
+                            <button class="theme-option active" data-theme="ocean-blue">
+                                <div class="theme-icon">
+                                    <i class="fas fa-water"></i>
+                                </div>
+                                <div class="theme-details">
+                                    <div class="theme-name">Ocean Blue</div>
+                                    <div class="theme-description">Professional & calm</div>
+                                </div>
+                                <i class="fas fa-check theme-checkmark"></i>
+                            </button>
+                            @* <button class="theme-option" data-theme="sunset-purple">
                             <div class="theme-icon">
                                 <i class="fas fa-moon"></i>
                             </div>
@@ -181,26 +185,26 @@
                             </div>
                             <i class="fas fa-check theme-checkmark"></i>
                         </button> *@
-                        <button class="theme-option" data-theme="dark">
-                            <div class="theme-icon">
-                                <i class="fas fa-moon"></i>
-                            </div>
-                            <div class="theme-details">
-                                <div class="theme-name">Dark Mode</div>
-                                <div class="theme-description">Easy on the eyes</div>
-                            </div>
-                            <i class="fas fa-check theme-checkmark"></i>
-                        </button>
+                            <button class="theme-option" data-theme="dark">
+                                <div class="theme-icon">
+                                    <i class="fas fa-moon"></i>
+                                </div>
+                                <div class="theme-details">
+                                    <div class="theme-name">Dark Mode</div>
+                                    <div class="theme-description">Easy on the eyes</div>
+                                </div>
+                                <i class="fas fa-check theme-checkmark"></i>
+                            </button>
+                        </div>
                     </div>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button class="navbar-toggle" id="navbar-toggle" aria-label="Toggle menu">
+                        <span class="toggle-bar"></span>
+                        <span class="toggle-bar"></span>
+                        <span class="toggle-bar"></span>
+                    </button>
                 </div>
-                
-                <!-- Mobile Menu Toggle -->
-                <button class="navbar-toggle" id="navbar-toggle" aria-label="Toggle menu">
-                    <span class="toggle-bar"></span>
-                    <span class="toggle-bar"></span>
-                    <span class="toggle-bar"></span>
-                </button>
-            </div>
             </div>
         </div>
     </nav>
@@ -221,7 +225,7 @@
                         <li><a href="#">Press</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="footer-column">
                     <h3>Support</h3>
                     <ul>
@@ -230,7 +234,7 @@
                         <li><a href="#">Safety</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="footer-column">
                     <h3>Legal</h3>
                     <ul>
@@ -239,7 +243,7 @@
                     </ul>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
                 <p>&copy; 2025 Orderaty. All rights reserved.</p>
             </div>

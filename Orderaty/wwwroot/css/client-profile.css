@@ -118,24 +118,40 @@
     box-shadow: 0 0 0 3px rgba(31, 154, 58, 0.1);
 }
 
-.edit-btn {
-    background: var(--primary-bg-light);
+.btn-edit {
+    width: 100%;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: var(--text-white);
     border: none;
-    border-radius: 8px;
-    padding: 8px 10px;
+    border-radius: 10px;
     font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    color: var(--primary-color);
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+    box-shadow: 0 4px 12px rgba(31, 154, 58, 0.3);
+    text-decoration: none;
 }
 
-.edit-btn:hover {
-    background: var(--primary-bg);
-    transform: scale(1.1);
-}
+    .btn-edit:hover {
+        background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(31, 154, 58, 0.4);
+        color: var(--text-white);
+    }
+
+    .btn-edit:active {
+        transform: translateY(0);
+    }
+
+    .btn-edit i {
+        font-size: 16px;
+    }
 
 .profile-role {
     display: inline-block;

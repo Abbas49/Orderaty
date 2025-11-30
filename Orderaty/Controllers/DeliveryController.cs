@@ -1,9 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using Orderaty.Data;
 using Orderaty.Models;
 using Orderaty.ViewModels;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Orderaty.Controllers
 {
@@ -55,7 +60,7 @@ namespace Orderaty.Controllers
 
             // Calculate statistics
             var allDeliveries = delivery.Orders.Where(o => o.Status == OrderStatus.Delivered).ToList();
-            
+
             // Total deliveries
             ViewBag.TotalDeliveriesToday = allDeliveries.Count(o => o.CreatedAt >= startOfToday);
             ViewBag.TotalDeliveriesWeek = allDeliveries.Count(o => o.CreatedAt >= startOfWeek);
@@ -85,7 +90,7 @@ namespace Orderaty.Controllers
             }
 
             // Performance rating (mock - based on delivery count and completion)
-            var completionRate = delivery.Orders.Any() ? 
+            var completionRate = delivery.Orders.Any() ?
                 (decimal)allDeliveries.Count / delivery.Orders.Count * 100 : 0;
             ViewBag.PerformanceRating = Math.Min(5.0m, completionRate / 20); // Convert to 5-star scale
 
@@ -139,7 +144,7 @@ namespace Orderaty.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditProfile(EditDeliveryVM model)
+        public async Task<IActionResult> EditProfile(EditDeliveryVM model, string? currentPassword, string? newPassword, string? confirmPassword)
         {
             var user = await userManager.GetUserAsync(User);
             if (user == null)
@@ -156,9 +161,48 @@ namespace Orderaty.Controllers
                 user.Image = await SaveImage(model.NewImage);
             }
 
+            // Password change handling
+            var wantsPasswordChange = !string.IsNullOrEmpty(currentPassword) || !string.IsNullOrEmpty(newPassword) || !string.IsNullOrEmpty(confirmPassword);
+            if (wantsPasswordChange)
+            {
+                if (string.IsNullOrEmpty(currentPassword))
+                    ModelState.AddModelError("currentPassword", "Current password is required to change password.");
+                if (string.IsNullOrEmpty(newPassword))
+                    ModelState.AddModelError("newPassword", "New password is required.");
+                if (newPassword != confirmPassword)
+                    ModelState.AddModelError("confirmPassword", "New password and confirmation do not match.");
+
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+            }
+
+            // Update identity fields first
+            var updateResult = await userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                foreach (var err in updateResult.Errors)
+                    ModelState.AddModelError(string.Empty, err.Description);
+                return View(model);
+            }
+
+            // Then change password if requested
+            if (wantsPasswordChange)
+            {
+                var changeResult = await userManager.ChangePasswordAsync(user, currentPassword!, newPassword!);
+                if (!changeResult.Succeeded)
+                {
+                    foreach (var err in changeResult.Errors)
+                        ModelState.AddModelError(string.Empty, err.Description);
+                    return View(model);
+                }
+            }
+
             db.Users.Update(user);
             await db.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = "Profile updated successfully.";
             return RedirectToAction("Profile");
         }
 
@@ -220,7 +264,7 @@ namespace Orderaty.Controllers
                 return NotFound();
 
             string successMessage = "";
-            
+
             switch (order.Status)
             {
                 case OrderStatus.PendingDelivery:
@@ -283,7 +327,4 @@ namespace Orderaty.Controllers
         }
 
     }
-
-
 }
-

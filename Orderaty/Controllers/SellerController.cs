@@ -2,9 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using Orderaty.Data;
 using Orderaty.Models;
 using Orderaty.ViewModels;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Orderaty.Controllers
 {
@@ -64,10 +69,10 @@ namespace Orderaty.Controllers
             ViewBag.TotalRevenue = seller.Orders.Where(o => o.Status == OrderStatus.Delivered).Sum(o => o.TotalPrice);
             ViewBag.AverageRating = seller.SellerReviews.Any() ? seller.SellerReviews.Average(r => r.Rating) : 0;
             ViewBag.TotalReviews = seller.SellerReviews.Count;
-            
+
             // Low stock products (less than 10 items)
             ViewBag.LowStockProducts = seller.Products.Where(p => p.Available_Amount < 10).Count();
-            
+
             // Recent orders (last 5)
             ViewBag.RecentOrders = seller.Orders
                 .OrderByDescending(o => o.CreatedAt)
@@ -115,7 +120,7 @@ namespace Orderaty.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Seller model, IFormFile? imageFile)
+        public async Task<IActionResult> Edit(Seller model, IFormFile? imageFile, string? currentPassword, string? newPassword, string? confirmPassword)
         {
             var user = await userManager.GetUserAsync(User);
             var seller = await db.Sellers.Include(s => s.User)
@@ -124,17 +129,17 @@ namespace Orderaty.Controllers
             if (seller == null)
                 return NotFound();
 
-            // تحديث بيانات البائع
+            // update seller fields
             seller.Description = model.Description;
             seller.Address = model.Address;
             seller.Status = model.Status;
             seller.Category = model.Category;
 
-            // تحديث اسم المستخدم
+            // update user profile
             if (!string.IsNullOrEmpty(model.User?.FullName))
                 seller.User.FullName = model.User.FullName;
 
-            // تحديث الصورة لو اترفعت جديدة
+            // update image if uploaded
             if (imageFile != null)
             {
                 var folderPath = Path.Combine(hostingEnvironment.WebRootPath, "images", "users");
@@ -149,11 +154,48 @@ namespace Orderaty.Controllers
                     await imageFile.CopyToAsync(stream);
                 }
 
-                seller.User.Image = fileName; 
+                seller.User.Image = fileName;
+            }
+
+            // Password change handling
+            var wantsPasswordChange = !string.IsNullOrEmpty(currentPassword) || !string.IsNullOrEmpty(newPassword) || !string.IsNullOrEmpty(confirmPassword);
+            if (wantsPasswordChange)
+            {
+                if (string.IsNullOrEmpty(currentPassword))
+                    ModelState.AddModelError("currentPassword", "Current password is required to change password.");
+                if (string.IsNullOrEmpty(newPassword))
+                    ModelState.AddModelError("newPassword", "New password is required.");
+                if (newPassword != confirmPassword)
+                    ModelState.AddModelError("confirmPassword", "New password and confirmation do not match.");
+
+                if (!ModelState.IsValid)
+                    return View(seller);
+            }
+
+            // Update identity fields first
+            var updateResult = await userManager.UpdateAsync(seller.User);
+            if (!updateResult.Succeeded)
+            {
+                foreach (var err in updateResult.Errors)
+                    ModelState.AddModelError(string.Empty, err.Description);
+                return View(seller);
+            }
+
+            // Then change password if requested
+            if (wantsPasswordChange)
+            {
+                var changeResult = await userManager.ChangePasswordAsync(seller.User, currentPassword!, newPassword!);
+                if (!changeResult.Succeeded)
+                {
+                    foreach (var err in changeResult.Errors)
+                        ModelState.AddModelError(string.Empty, err.Description);
+                    return View(seller);
+                }
             }
 
             await db.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = "Profile updated successfully.";
             return RedirectToAction("Profile");
         }
 
@@ -199,7 +241,7 @@ namespace Orderaty.Controllers
             };
 
             var result = await sellers.ToListAsync();
-            
+
             // Pass the filter values to the view for maintaining state
             ViewBag.CurrentSearch = sellerName;
             ViewBag.CurrentCategory = category;
@@ -220,7 +262,7 @@ namespace Orderaty.Controllers
                         .ThenInclude(c => c.User)
                 .FirstOrDefaultAsync(s => s.Id == id);
 
-            if(seller == null)
+            if (seller == null)
                 return NotFound();
 
             // Check if current user is a client and has already reviewed this seller

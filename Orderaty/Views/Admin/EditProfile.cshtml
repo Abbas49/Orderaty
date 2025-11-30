@@ -1,11 +1,11 @@
-﻿@model Orderaty.ViewModels.EditDeliveryVM
+﻿@model Orderaty.Models.User
 @{
     ViewData["Title"] = "Edit Profile";
     Layout = "_Layout";
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/delivery-profile.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin-profile.css" asp-append-version="true" />
 }
 
 <!-- Edit Profile Section -->
@@ -14,27 +14,28 @@
         <div class="profile-card">
             <div class="profile-header">
                 <h2 class="profile-name">Edit Profile</h2>
-                <p class="profile-subtitle">Update your delivery information</p>
+                <p class="profile-subtitle">Update your administrator information</p>
             </div>
 
-            <form asp-action="EditProfile" method="post" enctype="multipart/form-data" class="profile-form">
+            <form asp-action="EditProfile" method="post" enctype="multipart/form-data" class="profile-form" novalidate>
                 <div asp-validation-summary="All" class="validation-summary"></div>
-                
+
+                <input type="hidden" asp-for="Id" />
+
                 <!-- Profile Image Upload -->
                 <div class="form-group-image">
                     <div class="profile-img-wrapper">
-                        <img id="profilePreview" 
-                             src="@(string.IsNullOrEmpty(Model.CurrentImage) ? Url.Content("~/images/default-user.png") : Url.Content("~/images/users/" + Model.CurrentImage))" 
-                             alt="Profile Picture" 
+                        <img id="profilePreview"
+                             src="@(string.IsNullOrEmpty(Model.Image) ? Url.Content("~/images/default-user.png") : Url.Content("~/images/users/" + Model.Image))"
+                             alt="Profile Picture"
                              class="profile-img" />
-                        <div class="upload-overlay" onclick="document.getElementById('NewImage').click()">
+                        <div class="upload-overlay" onclick="document.getElementById('imageFile').click()">
                             <span class="upload-text">
                                 <i class="fas fa-camera"></i> Change Photo
                             </span>
                         </div>
                     </div>
-                    <input asp-for="NewImage" type="file" id="NewImage" accept="image/*" style="display: none;" />
-                    <span asp-validation-for="NewImage" class="validation-error"></span>
+                    <input type="file" name="imageFile" id="imageFile" accept="image/*" style="display: none;" />
                 </div>
 
                 <div class="form-group">
@@ -53,6 +54,15 @@
                     </label>
                     <input asp-for="PhoneNumber" class="form-input" placeholder="(123) 456-7890" />
                     <span asp-validation-for="PhoneNumber" class="validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </label>
+                    <input asp-for="Email" class="form-input" placeholder="your.email@example.com" />
+                    <span asp-validation-for="Email" class="validation-error"></span>
                 </div>
 
                 <!-- Change Password Section -->
@@ -111,8 +121,60 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        // Preview image when selected (delivery form uses #NewImage)
-        document.getElementById('NewImage').addEventListener('change', function (e) {
+        // Hide validation summary when it has no visible text (handles ASP.NET empty <ul>/<li>)
+        (function () {
+            const summarySelector = '.validation-summary';
+
+            function hasVisibleText(el) {
+                // innerText reflects visible text to the user (ignores hidden/empty nodes)
+                try {
+                    return (el && el.innerText && el.innerText.trim().length > 0);
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            function updateSummaryVisibility(el) {
+                if (!el) return;
+                if (hasVisibleText(el)) {
+                    el.style.display = '';
+                    el.setAttribute('aria-hidden', 'false');
+                } else {
+                    el.style.display = 'none';
+                    el.setAttribute('aria-hidden', 'true');
+                }
+            }
+
+            function init() {
+                const summary = document.querySelector(summarySelector);
+                updateSummaryVisibility(summary);
+
+                if (!summary) return;
+
+                // Observe content changes (client validation will add/remove nodes)
+                const mo = new MutationObserver(() => updateSummaryVisibility(summary));
+                mo.observe(summary, { childList: true, subtree: true, characterData: true });
+
+                // Also check after form submit / validation run
+                const form = summary.closest('form');
+                if (form) {
+                    form.addEventListener('submit', function () {
+                        setTimeout(() => updateSummaryVisibility(summary), 10);
+                    });
+                }
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
+
+    <script>
+        // Preview image when selected
+        document.getElementById('imageFile').addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -160,6 +222,7 @@
                     }
 
                     if (blocked) {
+                        // Prevent submit to show client-side errors (server will also validate)
                         e.preventDefault();
                         return false;
                     }

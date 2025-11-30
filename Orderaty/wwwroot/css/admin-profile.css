@@ -1,0 +1,291 @@
+/* Admin profile styles updated to use color variables from site.css (no color :root here) */
+
+/* Page wrapper */
+.profile-section {
+    background: linear-gradient(180deg, var(--bg-section, #f7f9fb) 0%, var(--bg-white, #ffffff) 100%);
+    padding: 48px 20px;
+    font-family: inherit;
+    color: var(--text-primary, #0f172a);
+}
+
+.profile-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+}
+
+/* Card */
+.profile-card {
+    background: var(--bg-white, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 6px 18px var(--shadow-md, rgba(15,23,42,0.06));
+    padding: 28px;
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+    overflow: hidden;
+}
+
+/* Left header (avatar + basic info) */
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 260px;
+    text-align: center;
+    padding-right: 8px;
+    border-right: 1px dashed var(--border-light, rgba(15,23,42,0.05));
+}
+
+.profile-img-wrapper {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: linear-gradient(180deg, #f3f4f6, #ffffff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    border: 2px solid rgba(15,23,42,0.04);
+}
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Overlay for change photo */
+.upload-overlay {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 18px;
+    font-size: 13px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .18s ease, transform .18s ease;
+    pointer-events: none;
+}
+
+.profile-img-wrapper:hover .upload-overlay,
+.profile-img-wrapper:focus-within .upload-overlay {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(-2px);
+}
+
+.upload-text i {
+    margin-right: 6px;
+}
+
+/* Text in header */
+.profile-name {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.profile-role {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 6px 10px;
+    background: var(--primary-bg, rgba(43,122,120,0.08));
+    color: var(--primary-color, #23625f);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Right content area */
+.profile-info {
+    flex: 1;
+    padding-left: 24px;
+}
+
+/* Info rows */
+.info-group {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--border-light, rgba(15,23,42,0.04));
+}
+
+    .info-group:last-of-type {
+        border-bottom: none;
+    }
+
+.info-label {
+    min-width: 140px;
+    color: var(--text-secondary, #6b7280);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 15px;
+    color: var(--text-primary, #0f172a);
+    word-break: break-word;
+}
+
+/* Buttons */
+.btn-edit, .btn-update, .btn-cancel {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-edit {
+    margin-top: 14px;
+    background: transparent;
+    color: var(--primary-color, #23625f);
+    border: 1px solid rgba(35,98,95,0.08);
+    padding: 8px 12px;
+}
+
+.btn-update {
+    background: var(--primary-color, #23625f);
+    color: var(--text-white, #fff);
+    box-shadow: 0 6px 14px rgba(35,98,95,0.12);
+}
+
+.btn-cancel {
+    background: transparent;
+    color: var(--text-secondary, #6b7280);
+    border: 1px solid var(--border-light, rgba(15,23,42,0.06));
+}
+
+/* Edit form */
+.profile-form {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+
+.form-group-image {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.form-label {
+    display: block;
+    color: var(--text-secondary, #6b7280);
+    font-size: 14px;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.form-input, input[type="file"], textarea, select {
+    width: 100%;
+    background: var(--bg-white, #fff);
+    border: 1px solid var(--border-light, rgba(15,23,42,0.06));
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text-primary, #0f172a);
+    outline: none;
+    box-sizing: border-box;
+}
+
+    .form-input:focus, textarea:focus, select:focus {
+        box-shadow: 0 4px 10px var(--shadow-input, rgba(3,10,18,0.06));
+        border-color: var(--primary-color, #23625f);
+    }
+
+/* Validation styles consistent with other pages */
+.validation-summary {
+    background: var(--error-bg, #fff4f4);
+    color: var(--error-color, #e11d48);
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(225,29,72,0.08);
+    margin-bottom: 6px;
+}
+
+    /* Hide the summary element when it has no children (prevents an empty red strip) */
+    .validation-summary:empty {
+        display: none;
+    }
+
+.validation-error {
+    color: var(--error-color, #e11d48);
+    font-size: 13px;
+    display: block;
+    margin-top: 6px;
+}
+
+/* Form actions */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+    margin-top: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .profile-card {
+        flex-direction: column;
+        padding: 18px;
+    }
+
+    .profile-header {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px dashed var(--border-light, rgba(15,23,42,0.04));
+        padding-bottom: 16px;
+        margin-bottom: 12px;
+    }
+
+    .profile-info {
+        padding-left: 0;
+    }
+
+    .profile-container {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 420px) {
+    .profile-img-wrapper {
+        width: 110px;
+        height: 110px;
+    }
+
+    .profile-name {
+        font-size: 18px;
+    }
+
+    .info-label {
+        min-width: 110px;
+        font-size: 13px;
+    }
+
+    .info-value {
+        font-size: 14px;
+    }
+}

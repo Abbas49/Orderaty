@@ -1,9 +1,16 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Orderaty.Data;
 using Orderaty.Models;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Orderaty.Controllers
 {
@@ -13,12 +20,14 @@ namespace Orderaty.Controllers
         private readonly AppDbContext db;
         private readonly UserManager<User> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
+        private readonly IWebHostEnvironment hostingEnvironment;
 
-        public AdminController(AppDbContext db, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public AdminController(AppDbContext db, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment hostingEnvironment)
         {
             this.db = db;
             this.userManager = userManager;
             this.roleManager = roleManager;
+            this.hostingEnvironment = hostingEnvironment;
         }
 
         // ===================== DASHBOARD =====================
@@ -63,7 +72,7 @@ namespace Orderaty.Controllers
             if (!string.IsNullOrEmpty(search))
             {
                 search = search.ToLower();
-                users = users.Where(u => 
+                users = users.Where(u =>
                     u.FullName.ToLower().Contains(search) ||
                     u.Email.ToLower().Contains(search) ||
                     u.UserName.ToLower().Contains(search)
@@ -407,7 +416,7 @@ namespace Orderaty.Controllers
             var coupon = await db.Coupons
                 .Include(c => c.Orders)
                 .FirstOrDefaultAsync(c => c.Id == id);
-            
+
             if (coupon == null)
             {
                 return NotFound();
@@ -430,11 +439,11 @@ namespace Orderaty.Controllers
                 // Check if code already exists (excluding current coupon)
                 var existingCoupon = await db.Coupons
                     .FirstOrDefaultAsync(c => c.Code == coupon.Code && c.Id != coupon.Id);
-                
+
                 if (existingCoupon != null)
                 {
                     ModelState.AddModelError("Code", "This coupon code already exists.");
-                    
+
                     // Reload usage statistics for view
                     var couponWithOrders = await db.Coupons
                         .Include(c => c.Orders)
@@ -442,7 +451,7 @@ namespace Orderaty.Controllers
                     ViewBag.TimesUsed = couponWithOrders?.Orders?.Count ?? 0;
                     ViewBag.TotalSavings = couponWithOrders?.Orders?.Sum(o => coupon.DiscountValue) ?? 0;
                     ViewBag.LastUsed = couponWithOrders?.Orders?.OrderByDescending(o => o.CreatedAt).FirstOrDefault()?.CreatedAt.ToString("MMM dd, yyyy");
-                    
+
                     return View(coupon);
                 }
 
@@ -450,7 +459,7 @@ namespace Orderaty.Controllers
                 if (coupon.ExpireDate < DateTime.Now.Date)
                 {
                     ModelState.AddModelError("ExpireDate", "Expiration date must be in the future.");
-                    
+
                     // Reload usage statistics for view
                     var couponWithOrders = await db.Coupons
                         .Include(c => c.Orders)
@@ -458,7 +467,7 @@ namespace Orderaty.Controllers
                     ViewBag.TimesUsed = couponWithOrders?.Orders?.Count ?? 0;
                     ViewBag.TotalSavings = couponWithOrders?.Orders?.Sum(o => coupon.DiscountValue) ?? 0;
                     ViewBag.LastUsed = couponWithOrders?.Orders?.OrderByDescending(o => o.CreatedAt).FirstOrDefault()?.CreatedAt.ToString("MMM dd, yyyy");
-                    
+
                     return View(coupon);
                 }
 
@@ -466,7 +475,7 @@ namespace Orderaty.Controllers
                 if (coupon.DiscountValue <= 0)
                 {
                     ModelState.AddModelError("DiscountValue", "Discount value must be greater than zero.");
-                    
+
                     // Reload usage statistics for view
                     var couponWithOrders = await db.Coupons
                         .Include(c => c.Orders)
@@ -474,7 +483,7 @@ namespace Orderaty.Controllers
                     ViewBag.TimesUsed = couponWithOrders?.Orders?.Count ?? 0;
                     ViewBag.TotalSavings = couponWithOrders?.Orders?.Sum(o => coupon.DiscountValue) ?? 0;
                     ViewBag.LastUsed = couponWithOrders?.Orders?.OrderByDescending(o => o.CreatedAt).FirstOrDefault()?.CreatedAt.ToString("MMM dd, yyyy");
-                    
+
                     return View(coupon);
                 }
 
@@ -482,7 +491,7 @@ namespace Orderaty.Controllers
                 if (coupon.MinimumTotal < 0)
                 {
                     ModelState.AddModelError("MinimumTotal", "Minimum total cannot be negative.");
-                    
+
                     // Reload usage statistics for view
                     var couponWithOrders = await db.Coupons
                         .Include(c => c.Orders)
@@ -490,7 +499,7 @@ namespace Orderaty.Controllers
                     ViewBag.TimesUsed = couponWithOrders?.Orders?.Count ?? 0;
                     ViewBag.TotalSavings = couponWithOrders?.Orders?.Sum(o => coupon.DiscountValue) ?? 0;
                     ViewBag.LastUsed = couponWithOrders?.Orders?.OrderByDescending(o => o.CreatedAt).FirstOrDefault()?.CreatedAt.ToString("MMM dd, yyyy");
-                    
+
                     return View(coupon);
                 }
 
@@ -513,6 +522,126 @@ namespace Orderaty.Controllers
             return View(coupon);
         }
 
+        // ===================== ADMIN PROFILE =====================
+        // GET: /Admin/Profile
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction("Login", "User");
 
+            return View(user);
+        }
+
+        // GET: /Admin/EditProfile
+        [HttpGet]
+        public async Task<IActionResult> EditProfile()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction("Login", "User");
+
+            return View(user);
+        }
+
+        // POST: /Admin/EditProfile
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfile(User model, IFormFile? imageFile, string? currentPassword, string? newPassword, string? confirmPassword)
+        {
+            if (model == null) return BadRequest();
+
+            var currentUser = await userManager.GetUserAsync(User);
+            if (currentUser == null) return RedirectToAction("Login", "User");
+
+            // Update editable fields
+            currentUser.FullName = model.FullName;
+            currentUser.PhoneNumber = model.PhoneNumber;
+            // Only update email/userName if changed - calling UpdateAsync will validate uniqueness etc.
+            if (!string.IsNullOrEmpty(model.Email))
+                currentUser.Email = model.Email;
+            if (!string.IsNullOrEmpty(model.UserName))
+                currentUser.UserName = model.UserName;
+
+            // Handle image upload
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                try
+                {
+                    var fileName = await SaveImage(imageFile);
+                    currentUser.Image = fileName;
+                }
+                catch
+                {
+                    ModelState.AddModelError(string.Empty, "Failed to save uploaded image.");
+                    return View(model);
+                }
+            }
+
+            // If password change requested, validate client-side parameters server-side
+            var wantsPasswordChange = !string.IsNullOrEmpty(newPassword) || !string.IsNullOrEmpty(currentPassword) || !string.IsNullOrEmpty(confirmPassword);
+            if (wantsPasswordChange)
+            {
+                if (string.IsNullOrEmpty(currentPassword))
+                {
+                    ModelState.AddModelError("currentPassword", "Current password is required to change password.");
+                }
+                if (string.IsNullOrEmpty(newPassword))
+                {
+                    ModelState.AddModelError("newPassword", "New password is required.");
+                }
+                if (newPassword != confirmPassword)
+                {
+                    ModelState.AddModelError("confirmPassword", "New password and confirmation do not match.");
+                }
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+            }
+
+            // First, update user profile fields (email/username validation occurs here)
+            var updateResult = await userManager.UpdateAsync(currentUser);
+            if (!updateResult.Succeeded)
+            {
+                foreach (var err in updateResult.Errors)
+                    ModelState.AddModelError(string.Empty, err.Description);
+                return View(model);
+            }
+
+            // Then attempt to change password if requested
+            if (wantsPasswordChange)
+            {
+                var changeResult = await userManager.ChangePasswordAsync(currentUser, currentPassword!, newPassword!);
+                if (!changeResult.Succeeded)
+                {
+                    foreach (var err in changeResult.Errors)
+                        ModelState.AddModelError(string.Empty, err.Description);
+                    return View(model);
+                }
+            }
+
+            // Persist any other DB changes if needed
+            await db.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Profile updated successfully.";
+            return RedirectToAction(nameof(Profile));
+        }
+
+        private async Task<string> SaveImage(IFormFile image)
+        {
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}";
+            var imgPath = Path.Combine(hostingEnvironment.WebRootPath, "images", "users");
+            if (!Directory.Exists(imgPath))
+            {
+                Directory.CreateDirectory(imgPath);
+            }
+            var fullPath = Path.Combine(imgPath, fileName);
+            using (var fileStream = new FileStream(fullPath, FileMode.Create))
+            {
+                await image.CopyToAsync(fileStream);
+            }
+            return fileName;
+        }
     }
 }
